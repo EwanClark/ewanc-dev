@@ -4,7 +4,6 @@ import type React from "react"
 
 import { useState } from "react"
 import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -58,7 +57,7 @@ export default function ProfilePage() {
     return (
       <>
         <Navbar />
-        <div className="container mx-auto px-4 py-16 flex items-center justify-center min-h-[calc(100vh-16rem)]">
+        <div className="container py-16 flex items-center justify-center min-h-[calc(100vh-16rem)]">
           <Card className="w-full max-w-md">
             <CardHeader>
               <CardTitle>Not Authenticated</CardTitle>
@@ -66,7 +65,6 @@ export default function ProfilePage() {
             </CardHeader>
           </Card>
         </div>
-        <Footer />
       </>
     )
   }
@@ -74,7 +72,7 @@ export default function ProfilePage() {
   return (
     <>
       <Navbar />
-      <div className="container mx-auto px-4 py-16">
+      <div className="container py-16">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-3xl font-bold mb-8">Your Profile</h1>
 
@@ -138,7 +136,6 @@ export default function ProfilePage() {
           </Card>
         </div>
       </div>
-      <Footer />
     </>
   )
 }

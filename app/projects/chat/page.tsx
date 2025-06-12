@@ -77,7 +77,7 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <div className="flex-1 container mx-auto px-4 py-6 flex flex-col">
+      <div className="flex-1 container py-6 flex flex-col">
         <Card className="flex-1 flex flex-col">
           <CardHeader className="border-b">
             <CardTitle>Chat Room</CardTitle>

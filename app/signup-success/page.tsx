@@ -1,6 +1,5 @@
 import Link from "next/link"
 import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { CheckCircle } from "lucide-react"
@@ -9,7 +8,7 @@ export default function SignupSuccessPage() {
   return (
     <>
       <Navbar />
-      <div className="container mx-auto px-4 py-16 flex items-center justify-center min-h-[calc(100vh-16rem)]">
+      <div className="container py-16 flex items-center justify-center min-h-[calc(100vh-16rem)]">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
             <div className="flex justify-center mb-4">
@@ -33,7 +32,6 @@ export default function SignupSuccessPage() {
           </CardFooter>
         </Card>
       </div>
-      <Footer />
     </>
   )
 }

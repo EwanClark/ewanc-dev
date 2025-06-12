@@ -4,7 +4,6 @@ import type React from "react"
 
 import { useState } from "react"
 import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -43,7 +42,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/95">
       <Navbar />
-      <div className="container mx-auto px-4 py-12">
+      <div className="container py-12">
         <div className="max-w-3xl mx-auto mb-12 text-center">
           <h1 className="text-4xl font-bold tracking-tight mb-4">Get in Touch</h1>
           <p className="text-xl text-muted-foreground">Have a question or want to work together? Send me a message!</p>
@@ -149,7 +148,6 @@ export default function ContactPage() {
           </Card>
         </div>
       </div>
-      <Footer />
     </div>
   )
 }

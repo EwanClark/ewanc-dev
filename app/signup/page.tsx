@@ -6,7 +6,6 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -55,7 +54,7 @@ export default function SignupPage() {
   return (
     <>
       <Navbar />
-      <div className="container mx-auto px-4 py-16 flex items-center justify-center min-h-[calc(100vh-16rem)]">
+      <div className="container py-16 flex items-center justify-center min-h-[calc(100vh-16rem)]">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl">Create an account</CardTitle>
@@ -144,7 +143,6 @@ export default function SignupPage() {
           </CardFooter>
         </Card>
       </div>
-      <Footer />
     </>
   )
 }

@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       <HeroSection />
-      <div className="container mx-auto px-4 py-16 space-y-24">
+      <div className="container py-16 space-y-24">
         <TechStack />
         <ProjectsGrid />
       </div>

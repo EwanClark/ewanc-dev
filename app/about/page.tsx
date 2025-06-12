@@ -1,5 +1,4 @@
 import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, MapPin, GraduationCap, Code } from "lucide-react"
@@ -8,7 +7,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen">
       <Navbar />
-      <div className="container mx-auto px-4 py-16">
+      <div className="container py-16">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-3xl font-bold mb-8">About Me</h1>
 
@@ -105,7 +104,6 @@ export default function AboutPage() {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   )
 }

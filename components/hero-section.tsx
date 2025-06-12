@@ -5,7 +5,7 @@ export function HeroSection() {
   return (
     <div>
       <Navbar />
-      <div className="container mx-auto px-4 py-24">
+      <div className="container py-24">
         <div className="flex flex-col lg:flex-row items-center gap-12">
           <div className="flex-shrink-0 order-1 lg:order-1">
             <div className="w-48 h-48 lg:w-64 lg:h-64 rounded-full bg-muted border-2 border-dashed border-border flex items-center justify-center">
