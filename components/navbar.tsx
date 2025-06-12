@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Github, Twitter, Code, ChevronDown, LogOut, User } from "lucide-react"
+import { Github, Code, ChevronDown, LogOut, User } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 
 export function Navbar() {
@@ -74,22 +74,14 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Only show social links on main portfolio pages */}
+          {/* Only show GitHub link on main portfolio pages */}
           {!currentProject && (
-            <>
-              <Link href="https://github.com" target="_blank" rel="noopener noreferrer">
-                <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <Github className="h-4 w-4" />
-                  <span className="sr-only">GitHub</span>
-                </Button>
-              </Link>
-              <Link href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-                <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <Twitter className="h-4 w-4" />
-                  <span className="sr-only">Twitter</span>
-                </Button>
-              </Link>
-            </>
+            <Link href="https://github.com/ewanclark/ewanclark" target="_blank" rel="noopener noreferrer">
+              <Button variant="ghost" size="icon" className="h-9 w-9">
+                <Github className="h-4 w-4" />
+                <span className="sr-only">GitHub</span>
+              </Button>
+            </Link>
           )}
 
           {/* User authentication */}
