@@ -127,6 +127,29 @@ export default function ProfilePage() {
                     </Button>
                   </div>
                   <p className="text-xs text-muted-foreground">Enter a URL for your avatar image</p>
+                  
+                  {!avatarUrl && user.providerAvatarUrl && user.provider && (
+                    <div className="mt-3 bg-primary/10 text-primary rounded-md p-3 flex items-start gap-2">
+                      <div>
+                        <Avatar className="h-10 w-10 border border-primary/20">
+                          <AvatarImage src={user.providerAvatarUrl} />
+                          <AvatarFallback>{user.provider.charAt(0).toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">We found a profile picture from {user.provider === 'google' ? 'Google' : 'GitHub'}</p>
+                        <p className="text-xs text-primary/80">Would you like to use your {user.provider === 'google' ? 'Google' : 'GitHub'} profile picture?</p>
+                        <Button 
+                          type="button" 
+                          size="sm" 
+                          className="mt-2"
+                          onClick={() => setAvatarUrl(user.providerAvatarUrl || '')}
+                        >
+                          Use this avatar
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <Button type="submit" disabled={loading}>
                   {loading ? "Saving..." : "Save changes"}

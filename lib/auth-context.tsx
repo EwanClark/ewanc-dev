@@ -3,13 +3,28 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "./supabase"
-import { Session, User, AuthError } from "@supabase/supabase-js"
+import { Session, User as SupabaseUser, AuthError } from "@supabase/supabase-js"
+
+// Extend the User type to ensure TypeScript knows about the identities property
+type User = SupabaseUser & {
+  identities?: Array<{
+    id: string;
+    user_id: string;
+    identity_data?: Record<string, any>;
+    provider: string;
+    created_at?: string;
+    last_sign_in_at?: string;
+    updated_at?: string;
+  }>;
+}
 
 type UserProfile = {
   id: string
   name: string | null
   email: string | null
   avatarUrl?: string | null
+  provider?: "github" | "google" | "email" | null
+  providerAvatarUrl?: string | null
 }
 
 type AuthContextType = {
@@ -53,11 +68,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             .eq("id", session.user.id)
             .single()
           
+          // Detect provider from identities
+          const identities = (session.user as User).identities || []
+          const provider = identities.length > 0 
+            ? identities[0].provider as "github" | "google" | "email" 
+            : "email";
+            
+          // Get provider-specific avatar URL
+          const providerAvatarUrl = provider !== "email" 
+            ? session.user.user_metadata?.avatar_url || null 
+            : null;
+            
           setUser({
             id: session.user.id,
             name: profile?.full_name || session.user.user_metadata?.full_name || null,
             email: session.user.email || null,
-            avatarUrl: profile?.avatar_url || session.user.user_metadata?.avatar_url || null,
+            avatarUrl: profile?.avatar_url || null,
+            provider: provider,
+            providerAvatarUrl: providerAvatarUrl,
           })
         }
       } catch (error) {
@@ -73,11 +101,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session)
       
       if (session?.user) {
+        // Detect provider from identities
+        const identities = (session.user as User).identities || []
+        const provider = identities.length > 0 
+          ? identities[0].provider as "github" | "google" | "email" 
+          : "email";
+          
+        // Get provider-specific avatar URL
+        const providerAvatarUrl = provider !== "email" 
+          ? session.user.user_metadata?.avatar_url || null 
+          : null;
+          
         setUser({
           id: session.user.id,
           name: session.user.user_metadata?.full_name || null,
           email: session.user.email || null,
           avatarUrl: session.user.user_metadata?.avatar_url || null,
+          provider: provider,
+          providerAvatarUrl: providerAvatarUrl,
         })
 
         // Update profile in the background
