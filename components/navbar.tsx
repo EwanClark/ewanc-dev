@@ -30,6 +30,7 @@ export function Navbar() {
   const navItems = [
     { name: "Home", href: "/" },
     { name: "Projects", href: "/projects" },
+    // { name: "Experience", href: "/experience" }, // Uncomment when ready to show experience
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
   ]

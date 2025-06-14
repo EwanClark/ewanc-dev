@@ -47,7 +47,7 @@ export function ProjectsGrid() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {projects.map((project) => (
           <Link key={project.id} href={`/projects/${project.id}`}>
-            <Card className="h-full hover:shadow-md transition-all duration-200 hover:scale-[1.02] cursor-pointer group">
+            <Card className="h-full hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer group">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">

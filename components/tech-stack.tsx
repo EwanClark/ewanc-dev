@@ -43,7 +43,7 @@ export function TechStack() {
               {category.technologies.map((tech) => (
                 <Card
                   key={tech.name}
-                  className="p-4 hover:shadow-md transition-all duration-200 hover:scale-105 cursor-pointer group"
+                  className="p-4 hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer group"
                 >
                   <div className="flex items-center gap-3">
                     <div className="text-muted-foreground group-hover:text-foreground transition-colors">
