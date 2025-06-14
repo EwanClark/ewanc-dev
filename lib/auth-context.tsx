@@ -36,6 +36,8 @@ type AuthContextType = {
   signInWithGithub: () => Promise<{ error: AuthError | null }>
   signInWithGoogle: () => Promise<{ error: AuthError | null }>
   signOut: () => Promise<void>
+  updateProfile: (data: { name?: string; avatarUrl?: string | null }) => Promise<{ error: Error | null }>
+  uploadAvatar: (file: File) => Promise<{ url?: string; error: Error | null }>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -228,6 +230,78 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push("/")
   }
 
+  const updateProfile = async (data: { name?: string; avatarUrl?: string | null }) => {
+    if (!user || !session) {
+      return { error: new Error("No authenticated user found") }
+    }
+
+    try {
+      // Update profile in database
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          full_name: data.name ?? user.name,
+          avatar_url: data.avatarUrl === undefined ? user.avatarUrl : data.avatarUrl,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", user.id)
+
+      if (error) {
+        throw error
+      }
+
+      // Update local state
+      setUser({
+        ...user,
+        name: data.name ?? user.name,
+        avatarUrl: data.avatarUrl === undefined ? user.avatarUrl : data.avatarUrl,
+      })
+
+      return { error: null }
+    } catch (error) {
+      console.error("Error updating profile:", error)
+      return { error: error as Error }
+    }
+  }
+
+  const uploadAvatar = async (file: File) => {
+    if (!user || !session) {
+      return { error: new Error("No authenticated user found") }
+    }
+
+    try {
+      // Create a unique filename
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${user.id}-${Date.now()}.${fileExt}`
+      const filePath = `avatars/${fileName}`
+
+      // Upload file to Supabase storage
+      const { data, error } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        })
+
+      if (error) {
+        if (error.message.includes('Bucket not found')) {
+          throw new Error('Storage bucket not found. Please set up the avatars bucket in Supabase. See AVATAR_SETUP.md for instructions.')
+        }
+        throw error
+      }
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath)
+
+      return { url: publicUrl, error: null }
+    } catch (error) {
+      console.error("Error uploading avatar:", error)
+      return { error: error as Error }
+    }
+  }
+
   return (
     <AuthContext.Provider 
       value={{ 
@@ -238,7 +312,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signUp, 
         signInWithGithub, 
         signInWithGoogle, 
-        signOut 
+        signOut, 
+        updateProfile, 
+        uploadAvatar 
       }}
     >
       {children}

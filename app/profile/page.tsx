@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,14 +12,19 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Code, Upload } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
+import { ImageCropModal } from "@/components/image-crop-modal"
 
 export default function ProfilePage() {
-  const { user } = useAuth()
+  const { user, updateProfile, uploadAvatar } = useAuth()
   const [name, setName] = useState(user?.name || "")
   const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || "")
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [uploadLoading, setUploadLoading] = useState(false)
+  const [cropModalOpen, setCropModalOpen] = useState(false)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -30,27 +35,87 @@ export default function ProfilePage() {
     setSuccess(false)
 
     try {
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Update user in localStorage
-      const updatedUser = {
-        ...user,
+      const { error } = await updateProfile({
         name,
-        avatarUrl: avatarUrl || undefined,
+        avatarUrl: avatarUrl || null,
+      })
+
+      if (error) {
+        throw error
       }
 
-      localStorage.setItem("demo-user", JSON.stringify(updatedUser))
       setSuccess(true)
-
-      // Refresh the page to update the navbar
-      window.location.reload()
     } catch (err) {
       setError("An unexpected error occurred")
       console.error(err)
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        setError("File size must be less than 5MB")
+        return
+      }
+      
+      if (!file.type.startsWith('image/')) {
+        setError("Please select an image file")
+        return
+      }
+
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        setSelectedImage(event.target?.result as string)
+        setCropModalOpen(true)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleCropComplete = async (croppedImageBlob: Blob) => {
+    setUploadLoading(true)
+    setError(null)
+
+    try {
+      // Convert blob to file
+      const file = new File([croppedImageBlob], 'avatar.jpg', {
+        type: 'image/jpeg',
+      })
+
+      const { url, error } = await uploadAvatar(file)
+      
+      if (error) {
+        throw error
+      }
+
+      if (url) {
+        setAvatarUrl(url)
+        // Auto-save the profile with the new avatar
+        const { error: updateError } = await updateProfile({
+          name,
+          avatarUrl: url,
+        })
+        
+        if (updateError) {
+          throw updateError
+        }
+        
+        setSuccess(true)
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to upload avatar"
+      setError(errorMessage)
+      console.error(err)
+    } finally {
+      setUploadLoading(false)
+    }
+  }
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click()
   }
 
   if (!user) {
@@ -121,9 +186,22 @@ export default function ProfilePage() {
                       value={avatarUrl}
                       onChange={(e) => setAvatarUrl(e.target.value)}
                     />
-                    <Button type="button" variant="outline" className="shrink-0" disabled>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                    />
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      className="shrink-0" 
+                      onClick={handleUploadClick}
+                      disabled={uploadLoading}
+                    >
                       <Upload className="h-4 w-4 mr-2" />
-                      Upload
+                      {uploadLoading ? "Uploading..." : "Upload"}
                     </Button>
                   </div>
                   <p className="text-xs text-muted-foreground">Enter a URL for your avatar image</p>
@@ -159,6 +237,18 @@ export default function ProfilePage() {
           </Card>
         </div>
       </div>
+
+      {selectedImage && (
+        <ImageCropModal
+          isOpen={cropModalOpen}
+          onClose={() => {
+            setCropModalOpen(false)
+            setSelectedImage(null)
+          }}
+          onCropComplete={handleCropComplete}
+          imageSrc={selectedImage}
+        />
+      )}
     </>
   )
 }
