@@ -41,14 +41,8 @@ const projects = [
 export function ProjectsGrid() {
   return (
     <section>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-start mb-8">
         <h2 className="text-2xl font-semibold">Projects</h2>
-        <Link
-          href="/projects"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-        >
-          View all <ArrowUpRight className="h-4 w-4" />
-        </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {projects.map((project) => (
