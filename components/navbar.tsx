@@ -77,7 +77,7 @@ export function Navbar() {
         <div className="flex items-center gap-3">
           {/* Only show GitHub link on main portfolio pages */}
           {!currentProject && (
-            <Link href="https://github.com/ewanclark/ewanclark" target="_blank" rel="noopener noreferrer">
+            <Link href="https://github.com/ewanclark/" target="_blank" rel="noopener noreferrer">
               <Button variant="ghost" size="icon" className="h-9 w-9">
                 <Github className="h-4 w-4" />
                 <span className="sr-only">GitHub</span>
