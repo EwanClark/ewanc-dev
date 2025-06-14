@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/navbar"
 import { MapPin } from "lucide-react"
+import Image from "next/image"
 
 export function HeroSection() {
   return (
@@ -8,11 +9,14 @@ export function HeroSection() {
       <div className="container py-24">
         <div className="flex flex-col lg:flex-row items-center gap-12">
           <div className="flex-shrink-0 order-1 lg:order-1">
-            <div className="w-48 h-48 lg:w-64 lg:h-64 rounded-full bg-muted border-2 border-border overflow-hidden">
-              <img 
+            <div className="w-48 h-48 lg:w-64 lg:h-64 rounded-full bg-muted border-2 border-border overflow-hidden relative">
+              <Image 
                 src="/profile-picture.jpg" 
                 alt="Profile Picture" 
-                className="w-full h-full object-cover"
+                fill
+                priority
+                sizes="(max-width: 768px) 192px, 256px"
+                className="object-cover"
               />
             </div>
           </div>
@@ -20,8 +24,8 @@ export function HeroSection() {
           <div className="flex-1 max-w-2xl order-2 lg:order-2 text-center lg:text-left">
             <h1 className="text-4xl font-bold tracking-tight mb-6">Full-Stack Developer</h1>
             <p className="text-xl text-muted-foreground mb-6 leading-relaxed">
-              Year 9 self-taught developer specializing in backend development and full-stack applications. Building
-              scalable web solutions with modern technologies.
+              Year 8 self-taught developer specializing in backend development and full-stack applications. Building
+              web solutions with modern technologies.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6 text-sm text-muted-foreground mb-4">
               <div className="flex items-center gap-2">

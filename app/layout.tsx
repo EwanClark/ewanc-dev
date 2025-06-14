@@ -11,7 +11,14 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Dev Portfolio - Full-Stack Developer",
-  description: "Year 9 self-taught developer specializing in backend development and full-stack applications."
+  description: "Year 9 self-taught developer specializing in backend development and full-stack applications.",
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon.svg', type: 'image/svg+xml' }
+    ],
+    apple: { url: '/apple-touch-icon.png' }
+  }
 }
 
 export default function RootLayout({
