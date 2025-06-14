@@ -11,7 +11,7 @@ export async function middleware(req: NextRequest) {
   } = await supabase.auth.getSession()
 
   // If the user is not signed in and the route is protected, redirect to login
-  const protectedRoutes = ["/dashboard"]
+  const protectedRoutes = ["/dashboard", "/profile"]
   const isProtectedRoute = protectedRoutes.some((route) => req.nextUrl.pathname.startsWith(route))
 
   if (!session && isProtectedRoute) {

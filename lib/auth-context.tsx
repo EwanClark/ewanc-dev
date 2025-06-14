@@ -2,124 +2,207 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
+import { createClient } from "./supabase"
+import { Session, User, AuthError } from "@supabase/supabase-js"
 
-type User = {
+type UserProfile = {
   id: string
-  name: string
-  email: string
-  avatarUrl?: string
+  name: string | null
+  email: string | null
+  avatarUrl?: string | null
 }
 
 type AuthContextType = {
-  user: User | null
+  user: UserProfile | null
+  session: Session | null
   loading: boolean
-  signIn: (email: string, password: string) => Promise<{ error: any }>
-  signUp: (email: string, password: string, name: string) => Promise<{ error: any }>
+  signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>
+  signUp: (email: string, password: string, name: string) => Promise<{ error: AuthError | null }>
+  signInWithGithub: () => Promise<{ error: AuthError | null }>
+  signInWithGoogle: () => Promise<{ error: AuthError | null }>
   signOut: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-// Mock user data for demo purposes
-const MOCK_USERS = [
-  {
-    id: "1",
-    name: "John Developer",
-    email: "john@example.com",
-    password: "password123",
-    avatarUrl: undefined,
-  },
-  {
-    id: "2",
-    name: "Jane Coder",
-    email: "jane@example.com",
-    password: "password123",
-    avatarUrl: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
-  },
-]
-
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [session, setSession] = useState<Session | null>(null)
+  const [user, setUser] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+  const supabase = createClient()
 
   useEffect(() => {
-    // Check for existing session in localStorage
-    const checkSession = () => {
+    const fetchSession = async () => {
+      setLoading(true)
+      
       try {
-        const savedUser = localStorage.getItem("demo-user")
-        if (savedUser) {
-          setUser(JSON.parse(savedUser))
+        const { data: { session }, error } = await supabase.auth.getSession()
+        
+        if (error) {
+          console.error("Error fetching session:", error.message)
+          return
+        }
+        
+        setSession(session)
+        
+        if (session?.user) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", session.user.id)
+            .single()
+          
+          setUser({
+            id: session.user.id,
+            name: profile?.full_name || session.user.user_metadata?.full_name || null,
+            email: session.user.email || null,
+            avatarUrl: profile?.avatar_url || session.user.user_metadata?.avatar_url || null,
+          })
         }
       } catch (error) {
-        console.error("Error loading user session:", error)
+        console.error("Error in session fetch:", error)
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
 
-    checkSession()
-  }, [])
+    fetchSession()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session)
+      
+      if (session?.user) {
+        setUser({
+          id: session.user.id,
+          name: session.user.user_metadata?.full_name || null,
+          email: session.user.email || null,
+          avatarUrl: session.user.user_metadata?.avatar_url || null,
+        })
+
+        // Update profile in the background
+        supabase
+          .from("profiles")
+          .upsert({
+            id: session.user.id,
+            full_name: session.user.user_metadata?.full_name || null,
+            avatar_url: session.user.user_metadata?.avatar_url || null,
+            updated_at: new Date().toISOString(),
+          }, { onConflict: 'id' })
+          .then(({ error }) => {
+            if (error) console.error("Error updating profile:", error)
+          })
+      } else {
+        setUser(null)
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [supabase, router])
 
   const signIn = async (email: string, password: string) => {
     setLoading(true)
-
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    const mockUser = MOCK_USERS.find((u) => u.email === email && u.password === password)
-
-    if (mockUser) {
-      const user = {
-        id: mockUser.id,
-        name: mockUser.name,
-        email: mockUser.email,
-        avatarUrl: mockUser.avatarUrl,
-      }
-
-      setUser(user)
-      localStorage.setItem("demo-user", JSON.stringify(user))
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+      
+      return { error }
+    } catch (error) {
+      console.error("Sign in error:", error)
+      return { error: error as AuthError }
+    } finally {
       setLoading(false)
-      return { error: null }
-    } else {
-      setLoading(false)
-      return { error: { message: "Invalid email or password" } }
     }
   }
 
   const signUp = async (email: string, password: string, name: string) => {
     setLoading(true)
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+          },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      })
 
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+      if (!error && data.user) {
+        // Create a profile entry
+        await supabase.from("profiles").upsert({
+          id: data.user.id,
+          full_name: name,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+      }
 
-    // Check if user already exists
-    const existingUser = MOCK_USERS.find((u) => u.email === email)
-    if (existingUser) {
+      return { error }
+    } catch (error) {
+      console.error("Sign up error:", error)
+      return { error: error as AuthError }
+    } finally {
       setLoading(false)
-      return { error: { message: "User with this email already exists" } }
     }
+  }
 
-    // Create new user
-    const newUser = {
-      id: Date.now().toString(),
-      name,
-      email,
-      avatarUrl: undefined,
+  const signInWithGithub = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "github",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      })
+      return { error }
+    } catch (error) {
+      console.error("GitHub sign in error:", error)
+      return { error: error as AuthError }
     }
+  }
 
-    setUser(newUser)
-    localStorage.setItem("demo-user", JSON.stringify(newUser))
-    setLoading(false)
-    return { error: null }
+  const signInWithGoogle = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      })
+      return { error }
+    } catch (error) {
+      console.error("Google sign in error:", error)
+      return { error: error as AuthError }
+    }
   }
 
   const signOut = async () => {
-    setUser(null)
-    localStorage.removeItem("demo-user")
+    await supabase.auth.signOut()
     router.push("/")
   }
 
-  return <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider 
+      value={{ 
+        user, 
+        session, 
+        loading, 
+        signIn, 
+        signUp, 
+        signInWithGithub, 
+        signInWithGoogle, 
+        signOut 
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export function useAuth() {

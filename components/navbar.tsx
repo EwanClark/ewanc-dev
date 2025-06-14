@@ -92,7 +92,7 @@ export function Navbar() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.avatarUrl || "/placeholder.svg"} alt={user.name} />
+                    <AvatarImage src={user.avatarUrl || "/placeholder.svg"} alt={user.name ?? undefined} />
                     <AvatarFallback>
                       <Code className="h-4 w-4" />
                     </AvatarFallback>

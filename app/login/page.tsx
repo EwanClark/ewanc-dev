@@ -17,7 +17,7 @@ import { useAuth } from "@/lib/auth-context"
 
 export default function LoginPage() {
   const router = useRouter()
-  const { signIn } = useAuth()
+  const { signIn, signInWithGithub, signInWithGoogle, loading: authLoading } = useAuth()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -45,12 +45,35 @@ export default function LoginPage() {
   }
 
   const handleGithubLogin = async () => {
-    alert("GitHub login would be implemented with Supabase OAuth in production")
+    setLoading(true)
+    setError(null)
+    try {
+      const { error } = await signInWithGithub()
+      if (error) {
+        setError(error.message)
+      }
+    } catch (err) {
+      setError("An unexpected error occurred")
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
   }
-
-  const handleDemoLogin = () => {
-    setEmail("john@example.com")
-    setPassword("password123")
+  
+  const handleGoogleLogin = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const { error } = await signInWithGoogle()
+      if (error) {
+        setError(error.message)
+      }
+    } catch (err) {
+      setError("An unexpected error occurred")
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -66,10 +89,7 @@ export default function LoginPage() {
             <Alert>
               <Info className="h-4 w-4" />
               <AlertDescription>
-                <strong>Demo Mode:</strong> Use john@example.com / password123 or jane@example.com / password123
-                <Button variant="link" className="p-0 h-auto ml-2" onClick={handleDemoLogin}>
-                  Fill demo credentials
-                </Button>
+                <strong>Authentication:</strong> Sign in with email and password or use social providers
               </AlertDescription>
             </Alert>
 
@@ -121,10 +141,18 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <Button variant="outline" className="w-full" onClick={handleGithubLogin}>
-              <Github className="mr-2 h-4 w-4" />
-              GitHub
-            </Button>
+            <div className="space-y-2">
+              <Button variant="outline" className="w-full" onClick={handleGithubLogin}>
+                <Github className="mr-2 h-4 w-4" />
+                GitHub
+              </Button>
+              <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
+                <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+                  <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
+                </svg>
+                Google
+              </Button>
+            </div>
           </CardContent>
           <CardFooter className="flex justify-center">
             <p className="text-sm text-muted-foreground">
