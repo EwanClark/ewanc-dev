@@ -17,7 +17,7 @@ import { ImageCropModal } from "@/components/image-crop-modal"
 export default function ProfilePage() {
   const { user, updateProfile, uploadAvatar } = useAuth()
   const [name, setName] = useState(user?.name || "")
-  const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || "")
+  const [avatarUrl, setAvatarUrl] = useState(user?.customAvatarUrl || "")
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -205,26 +205,49 @@ export default function ProfilePage() {
                     </Button>
                   </div>
                   <p className="text-xs text-muted-foreground">Enter a URL for your avatar image</p>
-                  
-                  {!avatarUrl && user.providerAvatarUrl && user.provider && (
-                    <div className="mt-3 bg-primary/10 text-primary rounded-md p-3 flex items-start gap-2">
-                      <div>
-                        <Avatar className="h-10 w-10 border border-primary/20">
-                          <AvatarImage src={user.providerAvatarUrl} />
-                          <AvatarFallback>{user.provider.charAt(0).toUpperCase()}</AvatarFallback>
-                        </Avatar>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">We found a profile picture from {user.provider === 'google' ? 'Google' : 'GitHub'}</p>
-                        <p className="text-xs text-primary/80">Would you like to use your {user.provider === 'google' ? 'Google' : 'GitHub'} profile picture?</p>
-                        <Button 
-                          type="button" 
-                          size="sm" 
-                          className="mt-2"
-                          onClick={() => setAvatarUrl(user.providerAvatarUrl || '')}
-                        >
-                          Use this avatar
-                        </Button>
+                  {!avatarUrl && (
+                    <div className="mt-3 space-y-2">
+                      {user.providerAvatarUrl && user.provider && (
+                        <div className="bg-primary/10 text-primary rounded-md p-3 flex items-start gap-2">
+                          <div>
+                            <Avatar className="h-10 w-10 border border-primary/20">
+                              <AvatarImage src={user.providerAvatarUrl} />
+                              <AvatarFallback>{user.provider.charAt(0).toUpperCase()}</AvatarFallback>
+                            </Avatar>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">We found a profile picture from {user.provider === 'google' ? 'Google' : 'GitHub'}</p>
+                            <p className="text-xs text-primary/80">Would you like to use your {user.provider === 'google' ? 'Google' : 'GitHub'} profile picture?</p>
+                            <Button 
+                              type="button" 
+                              size="sm" 
+                              className="mt-2"
+                              onClick={() => setAvatarUrl(user.providerAvatarUrl || '')}
+                            >
+                              Use this avatar
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                      <div className="bg-muted/30 text-muted-foreground rounded-md p-3 flex items-start gap-2">
+                        <div>
+                          <Avatar className="h-10 w-10 border border-muted-foreground/20">
+                            <AvatarImage src="/placeholder.svg" />
+                            <AvatarFallback>D</AvatarFallback>
+                          </Avatar>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">Use default avatar</p>
+                          <p className="text-xs">Use the default avatar provided by the site.</p>
+                          <Button 
+                            type="button" 
+                            size="sm" 
+                            className="mt-2"
+                            onClick={() => setAvatarUrl("")}
+                          >
+                            Use default
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   )}

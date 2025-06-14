@@ -8,6 +8,7 @@ export interface Database {
           id: string
           full_name: string | null
           avatar_url: string | null
+          custom_avatar_url: string | null // Added
           website: string | null
           created_at: string
           updated_at: string
@@ -16,6 +17,7 @@ export interface Database {
           id: string
           full_name?: string | null
           avatar_url?: string | null
+          custom_avatar_url?: string | null // Added
           website?: string | null
           created_at?: string
           updated_at?: string
@@ -24,6 +26,7 @@ export interface Database {
           id?: string
           full_name?: string | null
           avatar_url?: string | null
+          custom_avatar_url?: string | null // Added
           website?: string | null
           created_at?: string
           updated_at?: string
