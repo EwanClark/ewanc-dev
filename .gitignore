@@ -15,7 +15,6 @@ npm-debug.log*
 
 # env files
 .env*
-google-oauth-secrets.json
 
 # vercel
 .vercel
