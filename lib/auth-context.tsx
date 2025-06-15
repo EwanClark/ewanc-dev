@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
-import { createClient } from "./supabase"
+import { createClient } from "@/utils/supabase/client"
 import { Session, User as SupabaseUser, AuthError } from "@supabase/supabase-js"
 
 // Extend the User type to ensure TypeScript knows about the identities property
