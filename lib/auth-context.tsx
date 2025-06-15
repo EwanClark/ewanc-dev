@@ -56,15 +56,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ? identities[0].provider as "github" | "google" | "email" 
       : "email";
       
-    // Get provider-specific avatar URL
+    // Get provider-specific avatar URL (only for display, not storage)
     const providerAvatarUrl = provider !== "email" 
       ? sessionUser.user_metadata?.avatar_url || null 
       : null;
 
     return {
       id: sessionUser.id,
+      // PRIORITIZE existing profile data over OAuth metadata
       name: existingProfile?.full_name || sessionUser.user_metadata?.full_name || null,
       email: sessionUser.email || null,
+      // NEVER overwrite custom avatar with OAuth avatar
       avatarUrl: existingProfile?.avatar_url || null,
       provider: provider,
       providerAvatarUrl: providerAvatarUrl,
@@ -86,20 +88,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session)
         
         if (session?.user) {
-          // First set user with session data immediately
-          const tempUser = createUserProfile(session.user)
-          setUser(tempUser)
-
-          // Then fetch and update with profile data
+          // Fetch existing profile first
           const { data: profile } = await supabase
             .from("profiles")
             .select("*")
             .eq("id", session.user.id)
             .single()
           
-          // Update user with profile data if it exists
-          const finalUser = createUserProfile(session.user, profile)
-          setUser(finalUser)
+          // Create user profile prioritizing existing data
+          const userProfile = createUserProfile(session.user, profile)
+          setUser(userProfile)
         }
       } catch (error) {
         console.error("Error in session fetch:", error)
@@ -114,12 +112,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session)
       
       if (session?.user) {
-        // Immediately set user with session data (non-blocking)
-        const tempUser = createUserProfile(session.user)
-        setUser(tempUser)
-
-        // Handle profile operations in the background
-        const handleProfileOperations = async () => {
+        // Handle profile operations
+        const handleUserProfile = async () => {
           try {
             // Check if profile exists
             const { data: existingProfile } = await supabase
@@ -128,30 +122,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               .eq("id", session.user.id)
               .single()
 
-            if (existingProfile) {
-              // Update user state with existing profile data
-              const finalUser = createUserProfile(session.user, existingProfile)
-              setUser(finalUser)
-            } else {
-              // Create new profile for new users only
+            // Create user profile prioritizing existing data
+            const userProfile = createUserProfile(session.user, existingProfile)
+            setUser(userProfile)
+
+            // Only create profile if it doesn't exist, NEVER update existing ones
+            if (!existingProfile) {
               await supabase
                 .from("profiles")
                 .insert({
                   id: session.user.id,
                   full_name: session.user.user_metadata?.full_name || null,
-                  avatar_url: session.user.user_metadata?.avatar_url || null,
+                  avatar_url: null, // Don't auto-set OAuth avatar
                   created_at: new Date().toISOString(),
                   updated_at: new Date().toISOString(),
                 })
             }
+            // If profile exists, do NOT update it with OAuth data
           } catch (error) {
             console.error("Error handling profile operations:", error)
-            // Authentication still works even if profile operations fail
+            // Fallback: set user with just session data
+            const userProfile = createUserProfile(session.user)
+            setUser(userProfile)
           }
         }
 
-        // Run profile operations in background (don't await)
-        handleProfileOperations()
+        handleUserProfile()
       } else {
         setUser(null)
       }
@@ -194,8 +190,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
 
       if (!error && data.user) {
-        // Create a profile entry
-        await supabase.from("profiles").upsert({
+        // Create a profile entry for new signups
+        await supabase.from("profiles").insert({
           id: data.user.id,
           full_name: name,
           created_at: new Date().toISOString(),
