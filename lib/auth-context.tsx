@@ -99,7 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     fetchSession()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session)
       
       if (session?.user) {
@@ -113,28 +113,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const providerAvatarUrl = provider !== "email" 
           ? session.user.user_metadata?.avatar_url || null 
           : null;
+
+        // Check if profile exists
+        const { data: existingProfile } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", session.user.id)
+          .single()
           
         setUser({
           id: session.user.id,
-          name: session.user.user_metadata?.full_name || null,
+          name: existingProfile?.full_name || session.user.user_metadata?.full_name || null,
           email: session.user.email || null,
-          avatarUrl: session.user.user_metadata?.avatar_url || null,
+          avatarUrl: existingProfile?.avatar_url || null,
           provider: provider,
           providerAvatarUrl: providerAvatarUrl,
         })
 
-        // Update profile in the background
-        supabase
-          .from("profiles")
-          .upsert({
-            id: session.user.id,
-            full_name: session.user.user_metadata?.full_name || null,
-            avatar_url: session.user.user_metadata?.avatar_url || null,
-            updated_at: new Date().toISOString(),
-          }, { onConflict: 'id' })
-          .then(({ error }) => {
-            if (error) console.error("Error updating profile:", error)
-          })
+        // Only create profile if it doesn't exist (don't overwrite existing data)
+        if (!existingProfile) {
+          supabase
+            .from("profiles")
+            .insert({
+              id: session.user.id,
+              full_name: session.user.user_metadata?.full_name || null,
+              avatar_url: session.user.user_metadata?.avatar_url || null,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            })
+            .then(({ error }) => {
+              if (error) console.error("Error creating profile:", error)
+            })
+        }
       } else {
         setUser(null)
       }
