@@ -49,6 +49,71 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
   const supabase = createClient()
 
+  const processUserSession = async (session: Session | null) => {
+    if (!session?.user) {
+      setUser(null)
+      return
+    }
+
+    // Detect provider from identities
+    const identities = (session.user as User).identities || []
+    const provider = identities.length > 0 
+      ? identities[0].provider as "github" | "google" | "email" 
+      : "email";
+      
+    // Get provider-specific avatar URL
+    const providerAvatarUrl = provider !== "email" 
+      ? session.user.user_metadata?.avatar_url || null 
+      : null;
+
+    try {
+      // Check if profile exists
+      const { data: existingProfile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .single()
+
+      // Set user state immediately with available data
+      setUser({
+        id: session.user.id,
+        name: existingProfile?.full_name || session.user.user_metadata?.full_name || null,
+        email: session.user.email || null,
+        avatarUrl: existingProfile?.avatar_url || null,
+        provider: provider,
+        providerAvatarUrl: providerAvatarUrl,
+      })
+
+      // Only create profile if it doesn't exist (don't block authentication)
+      if (!existingProfile) {
+        supabase
+          .from("profiles")
+          .insert({
+            id: session.user.id,
+            full_name: session.user.user_metadata?.full_name || null,
+            avatar_url: session.user.user_metadata?.avatar_url || null,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          })
+          .then(({ error }) => {
+            if (error) console.error("Error creating profile:", error)
+          })
+      }
+    } catch (error) {
+      console.error("Error processing user session:", error)
+      
+      // Even if profile operations fail, still set the user from session data
+      setUser({
+        id: session.user.id,
+        name: session.user.user_metadata?.full_name || null,
+        email: session.user.email || null,
+        avatarUrl: session.user.user_metadata?.avatar_url || null,
+        provider: provider,
+        providerAvatarUrl: providerAvatarUrl,
+      })
+    }
+  }
+
   useEffect(() => {
     const fetchSession = async () => {
       setLoading(true)
@@ -62,34 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
         
         setSession(session)
-        
-        if (session?.user) {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", session.user.id)
-            .single()
-          
-          // Detect provider from identities
-          const identities = (session.user as User).identities || []
-          const provider = identities.length > 0 
-            ? identities[0].provider as "github" | "google" | "email" 
-            : "email";
-            
-          // Get provider-specific avatar URL
-          const providerAvatarUrl = provider !== "email" 
-            ? session.user.user_metadata?.avatar_url || null 
-            : null;
-            
-          setUser({
-            id: session.user.id,
-            name: profile?.full_name || session.user.user_metadata?.full_name || null,
-            email: session.user.email || null,
-            avatarUrl: profile?.avatar_url || null,
-            provider: provider,
-            providerAvatarUrl: providerAvatarUrl,
-          })
-        }
+        await processUserSession(session)
       } catch (error) {
         console.error("Error in session fetch:", error)
       } finally {
@@ -101,53 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session)
-      
-      if (session?.user) {
-        // Detect provider from identities
-        const identities = (session.user as User).identities || []
-        const provider = identities.length > 0 
-          ? identities[0].provider as "github" | "google" | "email" 
-          : "email";
-          
-        // Get provider-specific avatar URL
-        const providerAvatarUrl = provider !== "email" 
-          ? session.user.user_metadata?.avatar_url || null 
-          : null;
-
-        // Check if profile exists
-        const { data: existingProfile } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", session.user.id)
-          .single()
-          
-        setUser({
-          id: session.user.id,
-          name: existingProfile?.full_name || session.user.user_metadata?.full_name || null,
-          email: session.user.email || null,
-          avatarUrl: existingProfile?.avatar_url || null,
-          provider: provider,
-          providerAvatarUrl: providerAvatarUrl,
-        })
-
-        // Only create profile if it doesn't exist (don't overwrite existing data)
-        if (!existingProfile) {
-          supabase
-            .from("profiles")
-            .insert({
-              id: session.user.id,
-              full_name: session.user.user_metadata?.full_name || null,
-              avatar_url: session.user.user_metadata?.avatar_url || null,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            })
-            .then(({ error }) => {
-              if (error) console.error("Error creating profile:", error)
-            })
-        }
-      } else {
-        setUser(null)
-      }
+      await processUserSession(session)
     })
 
     return () => {
