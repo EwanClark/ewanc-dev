@@ -1,25 +1,6 @@
-import { User } from '@supabase/auth-helpers-nextjs'
+import { User, UserIdentity } from '@supabase/supabase-js'
 
-// Extend the User type from Supabase to include identities
-declare module '@supabase/auth-helpers-nextjs' {
-  interface User {
-    identities?: {
-      id: string;
-      provider: string;
-      identity_data?: Record<string, any>;
-      user_id: string;
-    }[];
-  }
-}
+// No need to extend @supabase/auth-helpers-nextjs as we're not using it
 
-// Extend the User type from Supabase JS as well
-declare module '@supabase/supabase-js' {
-  interface User {
-    identities?: {
-      id: string;
-      provider: string;
-      identity_data?: Record<string, any>;
-      user_id: string;
-    }[];
-  }
-}
+// We don't need to extend the User type from Supabase JS
+// because it already has the identities property with UserIdentity[] type

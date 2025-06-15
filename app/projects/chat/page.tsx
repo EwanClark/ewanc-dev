@@ -64,8 +64,8 @@ export default function ChatPage() {
     const message: Message = {
       id: Date.now().toString(),
       userId: user.id,
-      userName: user.name,
-      userAvatar: user.avatarUrl,
+      userName: user.name || 'Anonymous',
+      userAvatar: user.avatarUrl || undefined,
       content: newMessage,
       timestamp: new Date(),
     }

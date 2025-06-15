@@ -53,10 +53,8 @@ function Calendar({
         day_hidden: "invisible",
         ...classNames,
       }}
-      components={{
-        IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
-        IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
-      }}
+      // Remove the custom components as they're causing type issues
+      // Use CSS for styling the navigation buttons instead
       {...props}
     />
   )
