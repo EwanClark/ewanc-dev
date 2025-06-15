@@ -162,7 +162,7 @@ export function ImageCropModal({ isOpen, onClose, onCropComplete, imageSrc }: Im
                 max={3}
                 step={0.1}
                 value={[scale]}
-                onValueChange={(value) => setScale(value[0])}
+                onValueChange={(value: number[]) => setScale(value[0])}
                 className="mt-2"
               />
             </div>
@@ -175,7 +175,7 @@ export function ImageCropModal({ isOpen, onClose, onCropComplete, imageSrc }: Im
                 max={180}
                 step={1}
                 value={[rotation]}
-                onValueChange={(value) => setRotation(value[0])}
+                onValueChange={(value: number[]) => setRotation(value[0])}
                 className="mt-2"
               />
             </div>
