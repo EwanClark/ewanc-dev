@@ -113,14 +113,21 @@ const projects = {
   },
 }
 
-interface ProjectPageProps {
-  params: {
-    id: string
-  }
-  searchParams?: Record<string, string | string[] | undefined>
+type Params = {
+  id: string
 }
 
-export default function ProjectPage({ params, searchParams }: ProjectPageProps) {
+type SearchParams = {
+  [key: string]: string | string[] | undefined
+}
+
+export default function ProjectPage({ 
+  params,
+  searchParams
+}: {
+  params: Params
+  searchParams?: SearchParams
+}) {
   const project = projects[params.id as keyof typeof projects]
 
   if (!project) {
