@@ -1,16 +1,15 @@
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-import { createClient as createBrowserClient } from "@supabase/supabase-js"
+// This file exists for backwards compatibility
+// It re-exports the new client utilities from the utils/supabase directory
+import { createClient as createBrowserClient } from "@/utils/supabase/client"
+import { createClient as createServerClient } from "@/utils/supabase/server"
 import type { Database } from "@/types/supabase"
 
-// Create a single supabase client for the entire client-side application
+// Create a client for client-side components (browser)
 export const createClient = () => {
-  return createClientComponentClient<Database>()
+  return createBrowserClient()
 }
 
-// For direct client use without Next.js context
-export const createBrowserSupabaseClient = () => {
-  return createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+// Create a supabase client for server components
+export const createServerComponentClient = async () => {
+  return await createServerClient()
 }

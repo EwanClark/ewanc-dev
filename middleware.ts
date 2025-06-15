@@ -1,26 +1,50 @@
-import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs"
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
+import { updateSession } from "@/utils/supabase/middleware"
+import { createServerClient } from "@supabase/ssr"
 
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next()
-  const supabase = createMiddlewareClient({ req, res })
+  // Updates the session if needed and returns the updated response
+  const response = await updateSession(req)
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
+  // Get the session from the request
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return Array.from(req.cookies.getAll()).map(cookie => ({
+            name: cookie.name,
+            value: cookie.value,
+          }))
+        },
+        setAll(cookies) {
+          cookies.forEach(cookie => {
+            response.cookies.set({
+              name: cookie.name,
+              value: cookie.value,
+              ...cookie.options,
+            })
+          })
+        }
+      },
+    }
+  )
+
+  const { data: { user } } = await supabase.auth.getUser()
 
   // If the user is not signed in and the route is protected, redirect to login
   const protectedRoutes = ["/dashboard", "/profile"]
   const isProtectedRoute = protectedRoutes.some((route) => req.nextUrl.pathname.startsWith(route))
 
-  if (!session && isProtectedRoute) {
+  if (!user && isProtectedRoute) {
     const redirectUrl = new URL("/login", req.url)
     redirectUrl.searchParams.set("redirect", req.nextUrl.pathname)
     return NextResponse.redirect(redirectUrl)
   }
 
-  return res
+  return response
 }
 
 export const config = {
