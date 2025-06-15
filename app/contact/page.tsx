@@ -11,7 +11,7 @@ export default function ContactPage() {
         <div className="max-w-3xl mx-auto">
           <h1 className="text-3xl font-bold mb-4">Contact Me</h1>
           <p className="text-muted-foreground mb-8">
-            Have a project in mind or want to discuss a collaboration? Feel free to reach out via email.
+            Have a project in mind? Reach out via email!
           </p>
           
           <div className="grid gap-8">
@@ -26,9 +26,8 @@ export default function ContactPage() {
               <CardContent className="pt-0">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div>
-                    <h3 className="text-lg font-medium mb-1">Email Address:</h3>
-                    <p className="text-lg font-semibold mb-2">ewanclark4312@gmail.com</p>
-                    <p className="text-sm text-muted-foreground">I'll respond to all inquiries within 24-48 hours.</p>
+                    <h3 className="text-lg font-normal mb-1">Email Address:</h3>
+                    <p className="text-lg font-bold mb-2">ewanclark4312@gmail.com</p>
                   </div>
                   <EmailButton email="ewanclark4312@gmail.com" />
                 </div>
@@ -41,9 +40,9 @@ export default function ContactPage() {
                 <CardContent className="pt-6">
                   <div className="flex flex-col items-center text-center">
                     <Code className="h-10 w-10 mb-4 text-primary" />
-                    <h3 className="font-semibold mb-2">Project Inquiries</h3>
+                    <h3 className="font-semibold mb-2">Recruiters</h3>
                     <p className="text-sm text-muted-foreground">
-                      Looking for help with backend development or a full-stack project.
+                      Interested in discussing job opportunities or potential roles? Let’s connect!
                     </p>
                   </div>
                 </CardContent>
@@ -53,9 +52,9 @@ export default function ContactPage() {
                 <CardContent className="pt-6">
                   <div className="flex flex-col items-center text-center">
                     <Github className="h-10 w-10 mb-4 text-primary" />
-                    <h3 className="font-semibold mb-2">Open Source</h3>
+                    <h3 className="font-semibold mb-2">Developers</h3>
                     <p className="text-sm text-muted-foreground">
-                      Interested in collaborating on open source projects and tools.
+                      Want to collaborate, pair program, or discuss tech? I’m open to developer connections.
                     </p>
                   </div>
                 </CardContent>
@@ -65,17 +64,17 @@ export default function ContactPage() {
                 <CardContent className="pt-6">
                   <div className="flex flex-col items-center text-center">
                     <Laptop className="h-10 w-10 mb-4 text-primary" />
-                    <h3 className="font-semibold mb-2">Availability</h3>
+                    <h3 className="font-semibold mb-2">Project Requests</h3>
                     <p className="text-sm text-muted-foreground">
-                      Currently available for new projects and collaborations.
+                      Need a website or app built? Reach out to discuss your project requirements.
                     </p>
                   </div>
                 </CardContent>
               </Card>
             </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
   )
 }

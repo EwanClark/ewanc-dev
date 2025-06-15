@@ -1,7 +1,7 @@
-import { Navbar } from "@/components/navbar"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Calendar, MapPin, GraduationCap, Code } from "lucide-react"
+import { Navbar } from "@/components/navbar";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, MapPin, GraduationCap, Code } from "lucide-react";
 
 export default function AboutPage() {
   return (
@@ -19,20 +19,25 @@ export default function AboutPage() {
                     <GraduationCap className="h-6 w-6" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold mb-2">Self-Taught Developer</h3>
+                    <h3 className="font-semibold mb-2">
+                      Self-Taught Developer
+                    </h3>
                     <p className="text-muted-foreground mb-4">
-                      Currently in Year 9, I've been learning programming for the past two years, focusing primarily on
-                      backend development and full-stack applications. My journey started with curiosity about how
-                      websites work, leading me to dive deep into server-side technologies and database management.
+                      Currently in Year 8, I've been successfully building
+                      applications since 2020, focusing primarily on backend
+                      development and full-stack applications. My journey
+                      started with curiosity about how complex technologies
+                      work, leading me to dive deep into server-side
+                      technologies and database management.
                     </p>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
-                        <span>Started coding in 2022</span>
+                        <span>Started programming in 2020</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <MapPin className="h-4 w-4" />
-                        <span>Australia</span>
+                        <span>London, UK</span>
                       </div>
                     </div>
                   </div>
@@ -49,15 +54,16 @@ export default function AboutPage() {
                   <div className="flex-1">
                     <h3 className="font-semibold mb-2">Development Focus</h3>
                     <p className="text-muted-foreground mb-4">
-                      I specialize in backend development with a strong foundation in Node.js, Express, and database
-                      technologies. My approach emphasizes clean code, scalable architecture, and efficient
-                      problem-solving. I enjoy building APIs, working with databases, and creating full-stack
-                      applications.
+                      I specialize in backend development with skills in Python,
+                      Express, and database technologies. My approach emphasizes
+                      clean code, scalable architecture, and efficient
+                      problem-solving. I enjoy building APIs, working with
+                      databases, and creating full-stack applications.
                     </p>
                     <div className="flex flex-wrap gap-2">
                       <Badge variant="secondary">Backend Development</Badge>
                       <Badge variant="secondary">API Design</Badge>
-                      <Badge variant="secondary">Database Management</Badge>
+                      <Badge variant="secondary">Artificial Intelligence</Badge>
                       <Badge variant="secondary">Full-Stack Applications</Badge>
                     </div>
                   </div>
@@ -70,10 +76,10 @@ export default function AboutPage() {
                 <CardContent className="pt-6">
                   <h3 className="font-semibold mb-3">Current Learning</h3>
                   <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Advanced PostgreSQL and database optimization</li>
-                    <li>• Docker containerization and deployment</li>
+                    <li>• PostgreSQL for keeping user data secure</li>
+                    <li>• Supabase for backend as a service</li>
                     <li>• TypeScript for better code quality</li>
-                    <li>• Testing strategies and best practices</li>
+                    <li>• TensorFlow for artificial intelligence</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -82,10 +88,10 @@ export default function AboutPage() {
                 <CardContent className="pt-6">
                   <h3 className="font-semibold mb-3">Interests</h3>
                   <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• System architecture and scalability</li>
-                    <li>• Open source contributions</li>
-                    <li>• Performance optimization</li>
-                    <li>• Developer tools and automation</li>
+                    <li>• AI and how it is similar to our brains</li>
+                    <li>• Linux to improve my developer environment</li>
+                    <li>• Performance optimization with Rust and C++</li>
+                    <li>• Developer tools for better productivity</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -95,9 +101,10 @@ export default function AboutPage() {
               <CardContent className="pt-6">
                 <h3 className="font-semibold mb-3">Goals</h3>
                 <p className="text-muted-foreground">
-                  My goal is to continue developing my skills in backend development while expanding into DevOps and
-                  system architecture. I'm particularly interested in building scalable applications that solve
-                  real-world problems and contributing to open-source projects that help other developers.
+                  My goal is to continue developing my skills in backend
+                  development while expanding into Rust and C++ to build
+                  lightning-fast and scalable applications that solve real-world
+                  problems and improve the lives of others.
                 </p>
               </CardContent>
             </Card>
@@ -105,5 +112,5 @@ export default function AboutPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
