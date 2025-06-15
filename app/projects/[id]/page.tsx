@@ -117,9 +117,10 @@ interface ProjectPageProps {
   params: {
     id: string
   }
+  searchParams?: Record<string, string | string[] | undefined>
 }
 
-export default function ProjectPage({ params }: ProjectPageProps) {
+export default function ProjectPage({ params, searchParams }: ProjectPageProps) {
   const project = projects[params.id as keyof typeof projects]
 
   if (!project) {
