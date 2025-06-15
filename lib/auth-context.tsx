@@ -64,31 +64,56 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session)
         
         if (session?.user) {
+          // Detect provider from identities
+          const identities = (session.user as User).identities || []
+          const provider = identities.length > 0 
+            ? identities[0].provider as "github" | "google" | "email" 
+            : "email"
+            
+          // Get provider-specific avatar URL
+          const providerAvatarUrl = provider !== "email" 
+            ? session.user.user_metadata?.avatar_url || null 
+            : null
+            
+          // Check if a profile already exists
           const { data: profile } = await supabase
             .from("profiles")
             .select("*")
             .eq("id", session.user.id)
             .single()
           
-          // Detect provider from identities
-          const identities = (session.user as User).identities || []
-          const provider = identities.length > 0 
-            ? identities[0].provider as "github" | "google" | "email" 
-            : "email";
+          if (profile) {
+            // Use existing profile data
+            setUser({
+              id: session.user.id,
+              name: profile.full_name || session.user.user_metadata?.full_name || null,
+              email: session.user.email || null,
+              avatarUrl: profile.avatar_url || null,
+              provider: provider,
+              providerAvatarUrl: providerAvatarUrl,
+            })
+          } else {
+            // No profile exists, set user with provider data and create profile
+            setUser({
+              id: session.user.id,
+              name: session.user.user_metadata?.full_name || null,
+              email: session.user.email || null,
+              avatarUrl: session.user.user_metadata?.avatar_url || null,
+              provider: provider,
+              providerAvatarUrl: providerAvatarUrl,
+            })
             
-          // Get provider-specific avatar URL
-          const providerAvatarUrl = provider !== "email" 
-            ? session.user.user_metadata?.avatar_url || null 
-            : null;
-            
-          setUser({
-            id: session.user.id,
-            name: profile?.full_name || session.user.user_metadata?.full_name || null,
-            email: session.user.email || null,
-            avatarUrl: profile?.avatar_url || null,
-            provider: provider,
-            providerAvatarUrl: providerAvatarUrl,
-          })
+            // Create new profile
+            await supabase
+              .from("profiles")
+              .upsert({
+                id: session.user.id,
+                full_name: session.user.user_metadata?.full_name || null,
+                avatar_url: session.user.user_metadata?.avatar_url || null,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+              }, { onConflict: 'id' })
+          }
         }
       } catch (error) {
         console.error("Error in session fetch:", error)
@@ -132,17 +157,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             providerAvatarUrl: providerAvatarUrl,
           })
           
-          // Only update profile if it doesn't exist yet
-          if (event === 'SIGNED_IN' && !existingProfile.created_at) {
-            await supabase
-              .from("profiles")
-              .upsert({
-                id: session.user.id,
-                full_name: existingProfile.full_name || session.user.user_metadata?.full_name || null,
-                avatar_url: existingProfile.avatar_url || null,
-                updated_at: new Date().toISOString(),
-              }, { onConflict: 'id' })
-          }
+          // We have an existing profile, no need to update it during sign-in
+          // This prevents overwriting custom profile data with OAuth provider data
         } else {
           // No profile exists, create one with provider data
           setUser({
@@ -231,8 +247,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         provider: "github",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
-          // Don't automatically overwrite user's profile
-          skipBrowserRedirect: false,
         },
       })
       return { error }
@@ -248,8 +262,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
-          // Don't automatically overwrite user's profile
-          skipBrowserRedirect: false,
         },
       })
       return { error }
