@@ -99,7 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     fetchSession()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session)
       
       if (session?.user) {
@@ -113,28 +113,58 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const providerAvatarUrl = provider !== "email" 
           ? session.user.user_metadata?.avatar_url || null 
           : null;
-          
-        setUser({
-          id: session.user.id,
-          name: session.user.user_metadata?.full_name || null,
-          email: session.user.email || null,
-          avatarUrl: session.user.user_metadata?.avatar_url || null,
-          provider: provider,
-          providerAvatarUrl: providerAvatarUrl,
-        })
-
-        // Update profile in the background
-        supabase
+        
+        // First check if a profile already exists
+        const { data: existingProfile } = await supabase
           .from("profiles")
-          .upsert({
+          .select("*")
+          .eq("id", session.user.id)
+          .single()
+          
+        if (existingProfile) {
+          // Profile exists, keep the existing profile data
+          setUser({
             id: session.user.id,
-            full_name: session.user.user_metadata?.full_name || null,
-            avatar_url: session.user.user_metadata?.avatar_url || null,
-            updated_at: new Date().toISOString(),
-          }, { onConflict: 'id' })
-          .then(({ error }) => {
-            if (error) console.error("Error updating profile:", error)
+            name: existingProfile.full_name || session.user.user_metadata?.full_name || null,
+            email: session.user.email || null,
+            avatarUrl: existingProfile.avatar_url || null,
+            provider: provider,
+            providerAvatarUrl: providerAvatarUrl,
           })
+          
+          // Only update profile if it doesn't exist yet
+          if (event === 'SIGNED_IN' && !existingProfile.created_at) {
+            await supabase
+              .from("profiles")
+              .upsert({
+                id: session.user.id,
+                full_name: existingProfile.full_name || session.user.user_metadata?.full_name || null,
+                avatar_url: existingProfile.avatar_url || null,
+                updated_at: new Date().toISOString(),
+              }, { onConflict: 'id' })
+          }
+        } else {
+          // No profile exists, create one with provider data
+          setUser({
+            id: session.user.id,
+            name: session.user.user_metadata?.full_name || null,
+            email: session.user.email || null,
+            avatarUrl: session.user.user_metadata?.avatar_url || null,
+            provider: provider,
+            providerAvatarUrl: providerAvatarUrl,
+          })
+
+          // Update profile in the background
+          await supabase
+            .from("profiles")
+            .upsert({
+              id: session.user.id,
+              full_name: session.user.user_metadata?.full_name || null,
+              avatar_url: session.user.user_metadata?.avatar_url || null,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            }, { onConflict: 'id' })
+        }
       } else {
         setUser(null)
       }
@@ -201,6 +231,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         provider: "github",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
+          // Don't automatically overwrite user's profile
+          skipBrowserRedirect: false,
         },
       })
       return { error }
@@ -216,6 +248,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
+          // Don't automatically overwrite user's profile
+          skipBrowserRedirect: false,
         },
       })
       return { error }
