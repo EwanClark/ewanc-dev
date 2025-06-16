@@ -314,17 +314,37 @@ export default function ProfilePage() {
         <Navbar />
         <div className="container py-16">
           <div className="max-w-4xl mx-auto">
-            <Card className="border border-border/40">
+            <div className="flex items-center justify-between mb-8">
+              <div className="animate-pulse w-60">
+                <div className="h-8 bg-muted rounded w-full mb-2"></div>
+                <div className="h-4 bg-muted rounded w-3/4"></div>
+              </div>
+            </div>
+            
+            <Card className="border border-border/40 shadow-sm">
+              <CardHeader className="border-b border-border/30">
+                <div className="animate-pulse w-full">
+                  <div className="h-6 bg-muted rounded w-1/3 mb-2"></div>
+                  <div className="h-4 bg-muted rounded w-2/3"></div>
+                </div>
+              </CardHeader>
               <CardContent className="pt-6">
-                <div className="flex flex-col items-center justify-center min-h-[300px]">
-                  <div className="animate-pulse flex space-x-4">
-                    <div className="rounded-full bg-muted h-12 w-12"></div>
-                    <div className="flex-1 space-y-4 py-1">
-                      <div className="h-4 bg-muted rounded w-3/4"></div>
-                      <div className="space-y-2">
-                        <div className="h-4 bg-muted rounded"></div>
-                        <div className="h-4 bg-muted rounded w-5/6"></div>
+                <div className="flex flex-col md:flex-row gap-8">
+                  <div className="flex flex-col items-center md:w-1/3">
+                    <div className="animate-pulse space-y-6 w-full">
+                      <div className="flex justify-center">
+                        <div className="rounded-full bg-muted h-40 w-40"></div>
                       </div>
+                      <div className="h-36 bg-muted rounded w-full"></div>
+                      <div className="h-24 bg-muted rounded w-full"></div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex-1">
+                    <div className="animate-pulse space-y-6 w-full">
+                      <div className="h-40 bg-muted rounded w-full"></div>
+                      <div className="h-32 bg-muted rounded w-full"></div>
+                      <div className="h-10 bg-muted rounded w-1/3 ml-auto"></div>
                     </div>
                   </div>
                 </div>
@@ -342,16 +362,33 @@ export default function ProfilePage() {
         <Navbar />
         <div className="container py-16">
           <div className="max-w-4xl mx-auto">
-            <Card className="border border-border/40">
-              <CardContent className="pt-6">
-                <div className="flex flex-col items-center justify-center min-h-[300px]">
-                  <div className="text-center">
-                    <UserIcon className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                    <h2 className="text-xl font-semibold mb-2">Authentication Required</h2>
-                    <p className="text-muted-foreground mb-6">You need to be logged in to view your profile.</p>
-                    <Button size="lg" asChild>
-                      <a href="/login">Log In</a>
-                    </Button>
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h1 className="text-4xl font-bold tracking-tight">Profile Settings</h1>
+                <p className="text-muted-foreground mt-1">Manage your personal information and preferences</p>
+              </div>
+            </div>
+            
+            <Card className="border border-border/40 shadow-sm overflow-hidden">
+              <CardContent className="p-0">
+                <div className="flex flex-col items-center justify-center min-h-[400px] relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-background z-0"></div>
+                  <div className="text-center z-10 p-8">
+                    <div className="w-20 h-20 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-6">
+                      <UserIcon className="h-10 w-10 text-primary/70" />
+                    </div>
+                    <h2 className="text-2xl font-semibold mb-3">Authentication Required</h2>
+                    <p className="text-muted-foreground max-w-md mx-auto mb-8">
+                      You need to be logged in to access your profile settings and manage your account.
+                    </p>
+                    <div className="flex gap-4 justify-center">
+                      <Button size="lg" asChild className="px-8 font-medium">
+                        <a href="/login">Log In</a>
+                      </Button>
+                      <Button size="lg" variant="outline" asChild className="px-8 font-medium">
+                        <a href="/signup">Create Account</a>
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -368,7 +405,10 @@ export default function ProfilePage() {
       <div className="container py-16">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-8">
-            <h1 className="text-3xl font-bold">Your Profile</h1>
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight">Profile Settings</h1>
+              <p className="text-muted-foreground mt-1">Manage your personal information and preferences</p>
+            </div>
           </div>
           
           {/* Display alert message */}
@@ -394,83 +434,108 @@ export default function ProfilePage() {
           )}
 
       <Card className="mb-6 border border-border/40 shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle>Profile Information</CardTitle>
-          <CardDescription>Update your account profile information</CardDescription>
+        <CardHeader className="border-b border-border/30">
+          <CardTitle className="text-xl">Account Settings</CardTitle>
+          <CardDescription>Manage your personal profile and preferences</CardDescription>
         </CardHeader>
         
-        <CardContent>
+        <CardContent className="pt-6">
           <div className="flex flex-col md:flex-row gap-8">
             {/* Avatar section */}
-            <div className="flex flex-col items-center gap-5">
+            <div className="flex flex-col items-center gap-5 md:w-1/3">
               <div className="relative group">
-                <Avatar className="w-36 h-36 border-2 border-border shadow-md transition-all group-hover:shadow-lg">
+                <Avatar className="w-40 h-40 border-2 border-border shadow-md transition-all group-hover:shadow-lg">
                   <AvatarImage src={getPreviewAvatarUrl() || ''} alt={fullName || 'User'} />
-                  <AvatarFallback className="text-2xl">{(fullName || user.email || 'User').substring(0, 2).toUpperCase()}</AvatarFallback>
+                  <AvatarFallback className="text-2xl font-medium">{(fullName || user.email || 'User').substring(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
                   {avatarSource === 'upload' && (
-                    <Button size="sm" variant="secondary" className="text-xs" onClick={handleImageSelect}>
-                      Edit
+                    <Button size="sm" variant="secondary" className="text-xs font-medium shadow-sm" onClick={handleImageSelect}>
+                      Edit Image
                     </Button>
                   )}
                 </div>
               </div>
               
+              <div className="text-center mb-2">
+                <h3 className="font-medium">{fullName || user.email || 'User'}</h3>
+                <p className="text-sm text-muted-foreground">{user.email}</p>
+              </div>
+              
               {/* Avatar Source Selection */}
-              <div className="w-full max-w-sm space-y-4 pt-2 bg-card/50 p-4 rounded-lg">
-                <Label className="text-sm font-medium">Profile Picture Source</Label>
+              <div className="w-full space-y-4 pt-2 bg-card/50 p-5 rounded-lg border border-border/20">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-semibold">Profile Picture Options</h3>
+                  <span className="inline-flex items-center justify-center rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">Customize</span>
+                </div>
+                <p className="text-xs text-muted-foreground mb-2">Your profile picture appears across the platform and helps others recognize you</p>
+                
                 <RadioGroup 
                   value={avatarSource} 
                   onValueChange={(value) => setAvatarSource(value as 'upload' | 'provider' | 'url' | 'default')}
-                  className="space-y-2"
+                  className="space-y-2.5"
                 >
-                  <div className="flex items-center space-x-2 rounded-md p-1 hover:bg-muted/50 transition-colors">
+                  <div className="flex items-center space-x-2 rounded-md p-1.5 hover:bg-muted/50 transition-colors">
                     <RadioGroupItem value="upload" id="upload" />
-                    <Label htmlFor="upload" className="cursor-pointer">Upload custom image</Label>
+                    <Label htmlFor="upload" className="cursor-pointer flex flex-col">
+                      <span>Upload custom image</span>
+                      <span className="text-xs text-muted-foreground">Upload your own profile picture</span>
+                    </Label>
                   </div>
                   
                   {/* Show provider option if providers are available */}
                   {hasProviders && (
-                    <div className="flex items-center space-x-2 rounded-md p-1 hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center space-x-2 rounded-md p-1.5 hover:bg-muted/50 transition-colors">
                       <RadioGroupItem value="provider" id="provider" />
-                      <Label htmlFor="provider" className="cursor-pointer">Use OAuth provider picture</Label>
+                      <Label htmlFor="provider" className="cursor-pointer flex flex-col">
+                        <span>OAuth provider picture</span>
+                        <span className="text-xs text-muted-foreground">Use image from your connected account</span>
+                      </Label>
                     </div>
                   )}
                   
-                  <div className="flex items-center space-x-2 rounded-md p-1 hover:bg-muted/50 transition-colors">
+                  <div className="flex items-center space-x-2 rounded-md p-1.5 hover:bg-muted/50 transition-colors">
                     <RadioGroupItem value="url" id="url" />
-                    <Label htmlFor="url" className="cursor-pointer">Use custom URL</Label>
+                    <Label htmlFor="url" className="cursor-pointer flex flex-col">
+                      <span>Use custom URL</span>
+                      <span className="text-xs text-muted-foreground">Link to an existing image online</span>
+                    </Label>
                   </div>
                   
-                  <div className="flex items-center space-x-2 rounded-md p-1 hover:bg-muted/50 transition-colors">
+                  <div className="flex items-center space-x-2 rounded-md p-1.5 hover:bg-muted/50 transition-colors">
                     <RadioGroupItem value="default" id="default" />
-                    <Label htmlFor="default" className="cursor-pointer">Use default image</Label>
+                    <Label htmlFor="default" className="cursor-pointer flex flex-col">
+                      <span>Use default image</span>
+                      <span className="text-xs text-muted-foreground">Revert to the system default avatar</span>
+                    </Label>
                   </div>
                 </RadioGroup>
               </div>
 
               {/* Provider selection - only show when provider is selected */}
               {avatarSource === 'provider' && hasProviders && (
-                <div className="w-full max-w-sm space-y-3 bg-card/50 p-4 rounded-lg mt-2">
-                  <Label className="text-sm font-medium">Select Provider</Label>
+                <div className="w-full space-y-3 bg-card/50 p-5 rounded-lg mt-4 border border-border/20">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-semibold">Connected Accounts</h3>
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-1">Choose which account profile picture to use</p>
                   <RadioGroup value={selectedProvider} onValueChange={handleProviderSelection} className="space-y-2">
                     {availableProviders.map((providerOption) => (
-                      <div key={providerOption.provider} className="flex items-center space-x-2 rounded-md p-1 hover:bg-muted/50 transition-colors">
+                      <div key={providerOption.provider} className="flex items-center space-x-2 rounded-md p-2 hover:bg-muted/50 transition-colors border border-border/10">
                         <RadioGroupItem 
                           value={providerOption.provider} 
                           id={`sel-${providerOption.provider}`}
                         />
                         <Label 
                           htmlFor={`sel-${providerOption.provider}`}
-                          className="flex items-center cursor-pointer"
+                          className="flex items-center cursor-pointer justify-between w-full"
                         >
-                          {providerOption.provider}
+                          <span className="font-medium capitalize">{providerOption.provider}</span>
                           {providerOption.avatarUrl && (
                             <img 
                               src={providerOption.avatarUrl} 
                               alt={`${providerOption.provider} avatar`}
-                              className="inline-block w-6 h-6 ml-2 rounded-full border shadow-sm"
+                              className="inline-block w-8 h-8 rounded-full border shadow-sm"
                             />
                           )}
                         </Label>
@@ -482,89 +547,151 @@ export default function ProfilePage() {
 
               {/* Upload buttons - only show for upload source */}
               {avatarSource === 'upload' && (
-                <div className="flex gap-2">
-                  <Button variant="secondary" onClick={handleUploadClick} className="flex-1">
-                    Upload New
-                  </Button>
-                  {uploadedAvatarUrl && (
-                    <Button variant="outline" onClick={handleImageSelect} className="flex-1">
-                      Edit Current
+                <div className="w-full space-y-3 bg-card/50 p-5 rounded-lg mt-4 border border-border/20">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-semibold">Image Upload Options</h3>
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-2">Upload or modify your custom profile picture</p>
+                  <div className="flex gap-3">
+                    <Button 
+                      variant="secondary" 
+                      onClick={handleUploadClick} 
+                      className="flex-1 font-medium"
+                      size="sm"
+                    >
+                      Upload New Image
                     </Button>
-                  )}
+                    {uploadedAvatarUrl && (
+                      <Button 
+                        variant="outline" 
+                        onClick={handleImageSelect} 
+                        className="flex-1 font-medium"
+                        size="sm"
+                      >
+                        Edit Current Image
+                      </Button>
+                    )}
+                  </div>
                 </div>
               )}
 
               {/* URL input - only show for URL source */}
               {avatarSource === 'url' && (
-                <div className="w-full max-w-sm space-y-2">
-                  <Label htmlFor="customUrl" className="text-sm font-medium">Image URL</Label>
-                  <Input
-                    id="customUrl"
-                    value={customAvatarUrl}
-                    onChange={(e) => setCustomAvatarUrl(e.target.value)}
-                    placeholder="https://example.com/avatar.jpg"
-                    className="bg-background"
-                  />
+                <div className="w-full space-y-3 bg-card/50 p-5 rounded-lg mt-4 border border-border/20">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-semibold">External Image URL</h3>
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-2">Enter the web address of your preferred image</p>
+                  <div className="space-y-2">
+                    <Input
+                      id="customUrl"
+                      value={customAvatarUrl}
+                      onChange={(e) => setCustomAvatarUrl(e.target.value)}
+                      placeholder="https://example.com/avatar.jpg"
+                      className="bg-background/70 border-border/30"
+                    />
+                  </div>
                 </div>
               )}
               
-              <div className="text-xs text-muted-foreground text-center p-2 bg-muted/40 rounded-md mt-2">
-                <p>Recommended size: 256x256px</p>
-                {avatarSource === 'upload' && <p>Max file size: 2MB</p>}
+              <div className="w-full bg-muted/30 rounded-lg mt-4 border border-border/20 p-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                  <h4 className="text-xs font-semibold">Image Requirements</h4>
+                </div>
+                <div className="text-xs text-muted-foreground space-y-1 pl-5">
+                  <p>• Recommended dimensions: 256x256 pixels</p>
+                  <p>• Supported formats: JPG, PNG, GIF</p>
+                  {avatarSource === 'upload' && <p>• Maximum file size: 2MB</p>}
+                  <p>• Square aspect ratio works best</p>
+                </div>
               </div>
             </div>
             
             {/* Profile details section */}
             <div className="flex-1 space-y-6">
-              <div className="bg-card/50 p-5 rounded-lg space-y-2">
-                <h3 className="text-md font-semibold mb-3">Account Information</h3>
-              
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium">Email</Label>
-                  <Input 
-                    id="email" 
-                    value={user.email || ''} 
-                    disabled 
-                    className="bg-background/70"
-                  />
-                  <p className="text-xs text-muted-foreground">Your email address cannot be changed</p>
+              <div className="bg-card/50 p-6 rounded-lg border border-border/40">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-base font-semibold">Primary Information</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">Your basic account details</p>
+                  </div>
                 </div>
-                
-                <div className="space-y-2 mt-4">
-                  <Label htmlFor="fullName" className="text-sm font-medium">Full name</Label>
-                  <Input
-                    id="fullName"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Enter your full name"
-                    className="bg-background/70"
-                  />
+              
+                <div className="space-y-5">
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-end">
+                      <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
+                      <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Verified</span>
+                    </div>
+                    <Input 
+                      id="email" 
+                      value={user.email || ''} 
+                      disabled 
+                      className="bg-background/70 border-border/30 text-muted-foreground"
+                    />
+                    <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                      Your email address cannot be changed for security reasons
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-2 pt-2">
+                    <Label htmlFor="fullName" className="text-sm font-medium">Full Name</Label>
+                    <Input
+                      id="fullName"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="Enter your full name"
+                      className="bg-background/70 border-border/30"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Your name will be displayed on your profile and throughout the platform
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              <div className="bg-card/50 p-5 rounded-lg space-y-2">
-                <h3 className="text-md font-semibold mb-3">Additional Information</h3>
+              <div className="bg-card/50 p-6 rounded-lg border border-border/40">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-base font-semibold">Professional Details</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">Additional information about you</p>
+                  </div>
+                </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="website" className="text-sm font-medium">Website (optional)</Label>
+                  <Label htmlFor="website" className="text-sm font-medium">Personal Website</Label>
                   <Input
                     id="website"
                     value={website}
                     onChange={(e) => setWebsite(e.target.value)}
                     placeholder="https://yourwebsite.com"
-                    className="bg-background/70"
+                    className="bg-background/70 border-border/30"
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Include your website to showcase your work or portfolio
+                  </p>
                 </div>
               </div>
               
-              <div className="pt-4 flex justify-end">
+              <div className="pt-6 flex items-center justify-between">
+                <p className="text-sm text-muted-foreground">Last updated: {profile?.updated_at ? new Date(profile.updated_at).toLocaleDateString() : 'Never'}</p>
                 <Button 
                   onClick={handleSaveChanges} 
                   disabled={updating}
                   size="lg"
-                  className="transition-all"
+                  className="transition-all font-medium px-8"
                 >
-                  {updating ? 'Saving...' : 'Save changes'}
+                  {updating ? (
+                    <span className="flex items-center gap-2">
+                      <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Saving...
+                    </span>
+                  ) : 'Save Changes'}
                 </Button>
               </div>
             </div>
