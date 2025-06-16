@@ -8,25 +8,33 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ImageCropModal } from '@/components/image-crop-modal'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useToast } from '@/components/ui/use-toast'
+import { useAuth } from '@/lib/auth-context'
 import { User } from '@supabase/supabase-js'
 import { Database } from '@/types/supabase'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 
 export default function ProfilePage() {
+  const { user: authUser, updateProfile, uploadAvatar, getDisplayAvatarUrl } = useAuth()
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [fullName, setFullName] = useState('')
-  const [avatarUrl, setAvatarUrl] = useState('')
+  const [website, setWebsite] = useState('')
+  const [avatarSource, setAvatarSource] = useState<'upload' | 'provider' | 'url' | 'default'>('upload')
+  const [customAvatarUrl, setCustomAvatarUrl] = useState('')
+  const [uploadedAvatarUrl, setUploadedAvatarUrl] = useState('')
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
   const [imageToEdit, setImageToEdit] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
   const { toast } = useToast()
 
-  // Initialize Supabase client inside the component
   const supabase = createClient()
+
+  // Check if user has OAuth provider
+  const hasProviderAvatar = authUser?.providerAvatarUrl && authUser?.provider !== 'email'
 
   useEffect(() => {
     const fetchUserAndProfile = async () => {
@@ -53,7 +61,17 @@ export default function ProfilePage() {
         
         setProfile(profile)
         setFullName(profile?.full_name || '')
-        setAvatarUrl(profile?.avatar_url || '')
+        setWebsite(profile?.website || '')
+        setAvatarSource(profile?.avatar_source || 'upload')
+        
+        // Set the appropriate avatar URL based on source
+        if (profile?.avatar_source === 'url' || profile?.avatar_source === 'upload') {
+          if (profile?.avatar_source === 'url') {
+            setCustomAvatarUrl(profile?.avatar_url || '')
+          } else {
+            setUploadedAvatarUrl(profile?.avatar_url || '')
+          }
+        }
       } catch (error) {
         console.error('Error fetching user data:', error)
       } finally {
@@ -70,17 +88,30 @@ export default function ProfilePage() {
     try {
       setUpdating(true)
       
-      const updates = {
-        id: user.id,
-        full_name: fullName,
-        avatar_url: avatarUrl,
-        updated_at: new Date().toISOString(),
+      let avatarUrl = null
+      
+      // Determine avatar URL based on selected source
+      switch (avatarSource) {
+        case 'upload':
+          avatarUrl = uploadedAvatarUrl || null
+          break
+        case 'provider':
+          avatarUrl = authUser?.providerAvatarUrl || null
+          break
+        case 'url':
+          avatarUrl = customAvatarUrl || null
+          break
+        case 'default':
+          avatarUrl = '/default-profile-picture.jpg'
+          break
       }
       
-      // Upsert doesn't take the eq clause, it's part of the update
-      const { error } = await supabase
-        .from('profiles')
-        .upsert(updates)
+      const { error } = await updateProfile({
+        name: fullName,
+        avatarUrl: avatarUrl,
+        avatarSource: avatarSource,
+        website: website || null,
+      })
       
       if (error) {
         throw error
@@ -92,7 +123,14 @@ export default function ProfilePage() {
       })
       
       // Update local profile state
-      setProfile(prev => prev ? { ...prev, ...updates } : null)
+      setProfile(prev => prev ? { 
+        ...prev, 
+        full_name: fullName,
+        avatar_url: avatarUrl,
+        avatar_source: avatarSource,
+        website: website || null,
+        updated_at: new Date().toISOString()
+      } : null)
     } catch (error) {
       console.error('Error updating profile:', error)
       toast({
@@ -106,28 +144,25 @@ export default function ProfilePage() {
   }
 
   const handleImageSelect = () => {
-    setImageToEdit(avatarUrl || profile?.avatar_url || '')
+    const currentUrl = getDisplayAvatarUrl()
+    setImageToEdit(currentUrl || '')
     setIsImageModalOpen(true)
   }
 
   const handleUploadClick = () => {
-    // Create a file input element programmatically
     const fileInput = document.createElement('input')
     fileInput.type = 'file'
     fileInput.accept = 'image/*'
     
-    // Handle file selection
     fileInput.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0]
       if (!file) return
       
-      // Create image URL for preview
       const imageUrl = URL.createObjectURL(file)
       setImageToEdit(imageUrl)
       setIsImageModalOpen(true)
     }
     
-    // Trigger the file input click event
     fileInput.click()
   }
 
@@ -137,48 +172,21 @@ export default function ProfilePage() {
     try {
       setUpdating(true)
       
-      // Upload the cropped image to Supabase Storage
-      const fileName = `avatar-${user.id}-${Date.now()}.jpg`
-      const filePath = `avatars/${fileName}`
+      const { url, error } = await uploadAvatar(new File([croppedImageBlob], `avatar-${user.id}.jpg`, { type: 'image/jpeg' }))
       
-      // Convert blob to File object for upload
-      const file = new File([croppedImageBlob], fileName, { type: 'image/jpeg' })
-      
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('avatars') // Make sure this bucket exists in your Supabase storage
-        .upload(filePath, file, { upsert: true })
-      
-      if (uploadError) {
-        throw uploadError
+      if (error) {
+        throw error
       }
       
-      // Get the public URL for the uploaded image
-      const { data: publicUrlData } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath)
-      
-      const newAvatarUrl = publicUrlData.publicUrl
-      
-      // Update avatar URL in the profile
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ 
-          avatar_url: newAvatarUrl,
-          updated_at: new Date().toISOString()
+      if (url) {
+        setUploadedAvatarUrl(url)
+        setAvatarSource('upload')
+        
+        toast({
+          title: 'Avatar uploaded',
+          description: 'Your profile picture has been uploaded successfully. Click "Save changes" to apply.',
         })
-        .eq('id', user.id)
-      
-      if (updateError) {
-        throw updateError
       }
-      
-      setAvatarUrl(newAvatarUrl)
-      setProfile(prev => prev ? { ...prev, avatar_url: newAvatarUrl } : null)
-      
-      toast({
-        title: 'Avatar updated',
-        description: 'Your profile picture has been updated successfully.',
-      })
     } catch (error) {
       console.error('Error uploading avatar:', error)
       toast({
@@ -188,6 +196,21 @@ export default function ProfilePage() {
       })
     } finally {
       setUpdating(false)
+    }
+  }
+
+  const getPreviewAvatarUrl = () => {
+    switch (avatarSource) {
+      case 'upload':
+        return uploadedAvatarUrl || null
+      case 'provider':
+        return authUser?.providerAvatarUrl || null
+      case 'url':
+        return customAvatarUrl || null
+      case 'default':
+        return '/default-profile-picture.jpg'
+      default:
+        return null
     }
   }
 
@@ -237,20 +260,64 @@ export default function ProfilePage() {
             {/* Avatar section */}
             <div className="flex flex-col items-center gap-4">
               <Avatar className="w-32 h-32 border-2 border-border">
-                <AvatarImage src={avatarUrl || profile?.avatar_url || ''} alt={fullName || 'User'} />
+                <AvatarImage src={getPreviewAvatarUrl() || ''} alt={fullName || 'User'} />
                 <AvatarFallback>{(fullName || user.email || 'User').substring(0, 2)}</AvatarFallback>
               </Avatar>
               
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={handleUploadClick}>Upload</Button>
-                {(avatarUrl || profile?.avatar_url) && (
-                  <Button variant="outline" onClick={handleImageSelect}>Edit</Button>
-                )}
+              {/* Avatar Source Selection */}
+              <div className="w-full max-w-sm space-y-3">
+                <Label>Profile Picture Source</Label>
+                <RadioGroup value={avatarSource} onValueChange={(value: 'upload' | 'provider' | 'url' | 'default') => setAvatarSource(value)}>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="upload" id="upload" />
+                    <Label htmlFor="upload">Upload custom image</Label>
+                  </div>
+                  
+                  {hasProviderAvatar && (
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="provider" id="provider" />
+                      <Label htmlFor="provider">Use {authUser?.provider} profile picture</Label>
+                    </div>
+                  )}
+                  
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="url" id="url" />
+                    <Label htmlFor="url">Use custom URL</Label>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="default" id="default" />
+                    <Label htmlFor="default">Use default image</Label>
+                  </div>
+                </RadioGroup>
               </div>
+
+              {/* Upload buttons - only show for upload source */}
+              {avatarSource === 'upload' && (
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={handleUploadClick}>Upload New</Button>
+                  {uploadedAvatarUrl && (
+                    <Button variant="outline" onClick={handleImageSelect}>Edit Current</Button>
+                  )}
+                </div>
+              )}
+
+              {/* URL input - only show for URL source */}
+              {avatarSource === 'url' && (
+                <div className="w-full max-w-sm space-y-2">
+                  <Label htmlFor="customUrl">Image URL</Label>
+                  <Input
+                    id="customUrl"
+                    value={customAvatarUrl}
+                    onChange={(e) => setCustomAvatarUrl(e.target.value)}
+                    placeholder="https://example.com/avatar.jpg"
+                  />
+                </div>
+              )}
               
               <div className="text-sm text-muted-foreground text-center">
                 <p>Recommended size: 256x256px</p>
-                <p>Max file size: 2MB</p>
+                {avatarSource === 'upload' && <p>Max file size: 2MB</p>}
               </div>
             </div>
             
@@ -269,6 +336,16 @@ export default function ProfilePage() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Enter your full name"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="website">Website (optional)</Label>
+                <Input
+                  id="website"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                  placeholder="https://yourwebsite.com"
                 />
               </div>
               

@@ -25,6 +25,8 @@ type UserProfile = {
   avatarUrl?: string | null
   provider?: "github" | "google" | "email" | null
   providerAvatarUrl?: string | null
+  avatarSource?: 'upload' | 'provider' | 'url' | 'default'
+  website?: string | null
 }
 
 type AuthContextType = {
@@ -36,8 +38,9 @@ type AuthContextType = {
   signInWithGithub: () => Promise<{ error: AuthError | null }>
   signInWithGoogle: () => Promise<{ error: AuthError | null }>
   signOut: () => Promise<void>
-  updateProfile: (data: { name?: string; avatarUrl?: string | null }) => Promise<{ error: Error | null }>
+  updateProfile: (data: { name?: string; avatarUrl?: string | null; avatarSource?: 'upload' | 'provider' | 'url' | 'default'; website?: string | null }) => Promise<{ error: Error | null }>
   uploadAvatar: (file: File) => Promise<{ url?: string; error: Error | null }>
+  getDisplayAvatarUrl: () => string | null
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -56,22 +59,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ? identities[0].provider as "github" | "google" | "email" 
       : "email";
       
-    // Get provider-specific avatar URL (only for display, not storage)
+    // Get provider-specific avatar URL
     const providerAvatarUrl = provider !== "email" 
       ? sessionUser.user_metadata?.avatar_url || null 
       : null;
 
     return {
       id: sessionUser.id,
-      // PRIORITIZE existing profile data over OAuth metadata
       name: existingProfile?.full_name || sessionUser.user_metadata?.full_name || null,
       email: sessionUser.email || null,
-      // NEVER overwrite custom avatar with OAuth avatar
       avatarUrl: existingProfile?.avatar_url || null,
       provider: provider,
       providerAvatarUrl: providerAvatarUrl,
+      avatarSource: existingProfile?.avatar_source || 'upload',
+      website: existingProfile?.website || null,
     }
   }
+
+  const getDisplayAvatarUrl = (): string | null => {
+    if (!user) return null;
+
+    switch (user.avatarSource) {
+      case 'provider':
+        return user.providerAvatarUrl ?? null;
+      case 'url':
+        return user.avatarUrl ?? null;
+      case 'default':
+        return '/default-profile-picture.jpg';
+      case 'upload':
+      default:
+        return user.avatarUrl ?? null;
+    }
+  };
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -133,12 +152,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 .insert({
                   id: session.user.id,
                   full_name: session.user.user_metadata?.full_name || null,
-                  avatar_url: null, // Don't auto-set OAuth avatar
+                  avatar_url: null,
+                  avatar_source: 'upload',
                   created_at: new Date().toISOString(),
                   updated_at: new Date().toISOString(),
                 })
             }
-            // If profile exists, do NOT update it with OAuth data
           } catch (error) {
             console.error("Error handling profile operations:", error)
             // Fallback: set user with just session data
@@ -194,6 +213,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await supabase.from("profiles").insert({
           id: data.user.id,
           full_name: name,
+          avatar_source: 'upload',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         })
@@ -243,20 +263,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push("/")
   }
 
-  const updateProfile = async (data: { name?: string; avatarUrl?: string | null }) => {
+  const updateProfile = async (data: { name?: string; avatarUrl?: string | null; avatarSource?: 'upload' | 'provider' | 'url' | 'default'; website?: string | null }) => {
     if (!user || !session) {
       return { error: new Error("No authenticated user found") }
     }
 
     try {
       // Update profile in database
+      const updates: any = {
+        updated_at: new Date().toISOString(),
+      }
+
+      if (data.name !== undefined) updates.full_name = data.name
+      if (data.avatarUrl !== undefined) updates.avatar_url = data.avatarUrl
+      if (data.avatarSource !== undefined) updates.avatar_source = data.avatarSource
+      if (data.website !== undefined) updates.website = data.website
+
       const { error } = await supabase
         .from("profiles")
-        .update({
-          full_name: data.name ?? user.name,
-          avatar_url: data.avatarUrl === undefined ? user.avatarUrl : data.avatarUrl,
-          updated_at: new Date().toISOString(),
-        })
+        .update(updates)
         .eq("id", user.id)
 
       if (error) {
@@ -268,6 +293,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         ...user,
         name: data.name ?? user.name,
         avatarUrl: data.avatarUrl === undefined ? user.avatarUrl : data.avatarUrl,
+        avatarSource: data.avatarSource ?? user.avatarSource,
+        website: data.website === undefined ? user.website : data.website,
       })
 
       return { error: null }
@@ -327,7 +354,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signInWithGoogle, 
         signOut, 
         updateProfile, 
-        uploadAvatar 
+        uploadAvatar,
+        getDisplayAvatarUrl
       }}
     >
       {children}
