@@ -24,7 +24,6 @@ export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [fullName, setFullName] = useState('')
-  const [website, setWebsite] = useState('')
   const [avatarSource, setAvatarSource] = useState<'upload' | 'provider' | 'url' | 'default'>('upload')
   const [selectedProvider, setSelectedProvider] = useState<string>('')
   const [customAvatarUrl, setCustomAvatarUrl] = useState('')
@@ -68,7 +67,6 @@ export default function ProfilePage() {
         
         setProfile(profile)
         setFullName(profile?.full_name || '')
-        setWebsite(profile?.website || '')
         
         // Handle avatar source - ensure it's one of the valid values
         let savedAvatarSource = profile?.avatar_source || 'upload'
@@ -146,14 +144,12 @@ export default function ProfilePage() {
         name: fullName,
         avatarUrl,
         avatarSource,
-        website: website || null,
       })
       
       const { error } = await updateProfile({
         name: fullName,
         avatarUrl,
         avatarSource,
-        website: website || null,
       })
       
       if (error) {
@@ -181,7 +177,6 @@ export default function ProfilePage() {
         full_name: fullName,
         avatar_url: avatarUrl,
         avatar_source: avatarSource,
-        website: website || null,
         updated_at: new Date().toISOString()
       } : null)
     } catch (error) {
@@ -612,20 +607,7 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <div className="bg-card/50 p-6 rounded-lg border border-border/40">
-                <h3 className="text-base font-semibold mb-4">Professional Details</h3>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="website" className="text-sm font-medium">Personal Website</Label>
-                  <Input
-                    id="website"
-                    value={website}
-                    onChange={(e) => setWebsite(e.target.value)}
-                    placeholder="https://yourwebsite.com"
-                    className="bg-background/70 border-border/30"
-                  />
-                </div>
-              </div>
+
               
               <div className="pt-6 flex justify-end">
                 <Button 

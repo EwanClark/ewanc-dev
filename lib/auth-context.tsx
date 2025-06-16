@@ -36,7 +36,6 @@ type UserProfile = {
   provider?: "github" | "google" | "email" | null
   providerAvatarUrl?: string | null
   avatarSource?: 'upload' | 'provider' | 'url' | 'default'
-  website?: string | null
   availableProviders?: Array<{
     provider: string
     avatarUrl: string | null
@@ -64,7 +63,6 @@ type AuthContextType = {
     name?: string;
     avatarUrl?: string | null;
     avatarSource?: "upload" | "provider" | "url" | "default";
-    website?: string | null;
   }) => Promise<{ error: Error | null }>;
   uploadAvatar: (file: File) => Promise<{ url?: string; error: Error | null }>;
   getDisplayAvatarUrl: () => string | null;
@@ -330,7 +328,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     name?: string;
     avatarUrl?: string | null;
     avatarSource?: "upload" | "provider" | "url" | "default";
-    website?: string | null;
   }) => {
     if (!user || !session) {
       return { error: new Error("No authenticated user found") };
@@ -346,7 +343,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (data.avatarUrl !== undefined) updates.avatar_url = data.avatarUrl;
       if (data.avatarSource !== undefined)
         updates.avatar_source = data.avatarSource;
-      if (data.website !== undefined) updates.website = data.website;
 
       const { error } = await supabase
         .from("profiles")
@@ -364,7 +360,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         avatarUrl:
           data.avatarUrl === undefined ? user.avatarUrl : data.avatarUrl,
         avatarSource: data.avatarSource ?? user.avatarSource,
-        website: data.website === undefined ? user.website : data.website,
       });
 
       return { error: null };
