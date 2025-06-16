@@ -185,18 +185,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             .eq("id", session.user.id)
             .single();
 
-          if (!profile) {
-            // If no profile exists, create one
-            await supabase.from("profiles").insert({
-              id: session.user.id,
-              full_name: session.user.user_metadata?.full_name || null,
-              avatar_url: null,
-              avatar_source: "upload", // Set the default avatar source
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            });
-          }
-
           // Create user profile prioritizing existing data
           const userProfile = createUserProfile(session.user, profile);
           setUser(userProfile);
@@ -235,19 +223,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             // Only create profile if it doesn't exist, NEVER update existing ones
             if (!existingProfile) {
-              // Insert with required avatar_source field
-              const { error } = await supabase.from("profiles").insert({
+              await supabase.from("profiles").insert({
                 id: session.user.id,
                 full_name: session.user.user_metadata?.full_name || null,
                 avatar_url: null,
-                avatar_source: "upload",  // This is crucial for the constraint
+                avatar_source: "upload",
                 created_at: new Date().toISOString(),
                 updated_at: new Date().toISOString(),
               });
-              
-              if (error) {
-                console.error("Error creating profile:", error);
-              }
             }
           } catch (error) {
             console.error("Error handling profile operations:", error);
@@ -372,12 +355,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (data.name !== undefined) updates.full_name = data.name;
       if (data.avatarUrl !== undefined) updates.avatar_url = data.avatarUrl;
-      if (data.avatarSource !== undefined) {
+      if (data.avatarSource !== undefined)
         updates.avatar_source = data.avatarSource;
-      } else if (data.avatarUrl !== undefined && !user.avatarSource) {
-        // Ensure avatar_source is always set when updating avatar_url
-        updates.avatar_source = "upload";
-      }
       if (data.website !== undefined) updates.website = data.website;
 
       const { error } = await supabase
