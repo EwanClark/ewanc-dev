@@ -128,7 +128,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       providerAvatarUrl: providerAvatarUrl,
       avatarSource: existingProfile?.avatar_source || "upload",
       website: existingProfile?.website || null,
-      availableProviders: availableProviders, // Add this for multiple provider support
+      availableProviders: availableProviders,
     };
   };
 
@@ -137,7 +137,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     switch (user.avatarSource) {
       case "provider":
-        return user.providerAvatarUrl ?? null;
+        // For provider source, use the avatarUrl which should contain the selected provider's URL
+        return user.avatarUrl ?? null;
       case "url":
         return user.avatarUrl ?? null;
       case "default":
