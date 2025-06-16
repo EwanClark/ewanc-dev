@@ -365,7 +365,6 @@ export default function ProfilePage() {
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h1 className="text-4xl font-bold tracking-tight">Profile Settings</h1>
-                <p className="text-muted-foreground mt-1">Manage your personal information and preferences</p>
               </div>
             </div>
             
@@ -377,10 +376,7 @@ export default function ProfilePage() {
                     <div className="w-20 h-20 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-6">
                       <UserIcon className="h-10 w-10 text-primary/70" />
                     </div>
-                    <h2 className="text-2xl font-semibold mb-3">Authentication Required</h2>
-                    <p className="text-muted-foreground max-w-md mx-auto mb-8">
-                      You need to be logged in to access your profile settings and manage your account.
-                    </p>
+                    <h2 className="text-2xl font-semibold mb-6">Authentication Required</h2>
                     <div className="flex gap-4 justify-center">
                       <Button size="lg" asChild className="px-8 font-medium">
                         <a href="/login">Log In</a>
@@ -407,7 +403,6 @@ export default function ProfilePage() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-4xl font-bold tracking-tight">Profile Settings</h1>
-              <p className="text-muted-foreground mt-1">Manage your personal information and preferences</p>
             </div>
           </div>
           
@@ -436,7 +431,6 @@ export default function ProfilePage() {
       <Card className="mb-6 border border-border/40 shadow-sm">
         <CardHeader className="border-b border-border/30">
           <CardTitle className="text-xl">Account Settings</CardTitle>
-          <CardDescription>Manage your personal profile and preferences</CardDescription>
         </CardHeader>
         
         <CardContent className="pt-6">
@@ -464,11 +458,7 @@ export default function ProfilePage() {
               
               {/* Avatar Source Selection */}
               <div className="w-full space-y-4 pt-2 bg-card/50 p-5 rounded-lg border border-border/20">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-semibold">Profile Picture Options</h3>
-                  <span className="inline-flex items-center justify-center rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">Customize</span>
-                </div>
-                <p className="text-xs text-muted-foreground mb-2">Your profile picture appears across the platform and helps others recognize you</p>
+                <h3 className="text-sm font-semibold">Profile Picture Options</h3>
                 
                 <RadioGroup 
                   value={avatarSource} 
@@ -477,9 +467,8 @@ export default function ProfilePage() {
                 >
                   <div className="flex items-center space-x-2 rounded-md p-1.5 hover:bg-muted/50 transition-colors">
                     <RadioGroupItem value="upload" id="upload" />
-                    <Label htmlFor="upload" className="cursor-pointer flex flex-col">
-                      <span>Upload custom image</span>
-                      <span className="text-xs text-muted-foreground">Upload your own profile picture</span>
+                    <Label htmlFor="upload" className="cursor-pointer">
+                      Upload custom image
                     </Label>
                   </div>
                   
@@ -487,26 +476,23 @@ export default function ProfilePage() {
                   {hasProviders && (
                     <div className="flex items-center space-x-2 rounded-md p-1.5 hover:bg-muted/50 transition-colors">
                       <RadioGroupItem value="provider" id="provider" />
-                      <Label htmlFor="provider" className="cursor-pointer flex flex-col">
-                        <span>OAuth provider picture</span>
-                        <span className="text-xs text-muted-foreground">Use image from your connected account</span>
+                      <Label htmlFor="provider" className="cursor-pointer">
+                        OAuth provider picture
                       </Label>
                     </div>
                   )}
                   
                   <div className="flex items-center space-x-2 rounded-md p-1.5 hover:bg-muted/50 transition-colors">
                     <RadioGroupItem value="url" id="url" />
-                    <Label htmlFor="url" className="cursor-pointer flex flex-col">
-                      <span>Use custom URL</span>
-                      <span className="text-xs text-muted-foreground">Link to an existing image online</span>
+                    <Label htmlFor="url" className="cursor-pointer">
+                      Use custom URL
                     </Label>
                   </div>
                   
                   <div className="flex items-center space-x-2 rounded-md p-1.5 hover:bg-muted/50 transition-colors">
                     <RadioGroupItem value="default" id="default" />
-                    <Label htmlFor="default" className="cursor-pointer flex flex-col">
-                      <span>Use default image</span>
-                      <span className="text-xs text-muted-foreground">Revert to the system default avatar</span>
+                    <Label htmlFor="default" className="cursor-pointer">
+                      Use default image
                     </Label>
                   </div>
                 </RadioGroup>
@@ -515,10 +501,7 @@ export default function ProfilePage() {
               {/* Provider selection - only show when provider is selected */}
               {avatarSource === 'provider' && hasProviders && (
                 <div className="w-full space-y-3 bg-card/50 p-5 rounded-lg mt-4 border border-border/20">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-semibold">Connected Accounts</h3>
-                  </div>
-                  <p className="text-xs text-muted-foreground mb-1">Choose which account profile picture to use</p>
+                  <h3 className="text-sm font-semibold">Connected Accounts</h3>
                   <RadioGroup value={selectedProvider} onValueChange={handleProviderSelection} className="space-y-2">
                     {availableProviders.map((providerOption) => (
                       <div key={providerOption.provider} className="flex items-center space-x-2 rounded-md p-2 hover:bg-muted/50 transition-colors border border-border/10">
@@ -548,10 +531,7 @@ export default function ProfilePage() {
               {/* Upload buttons - only show for upload source */}
               {avatarSource === 'upload' && (
                 <div className="w-full space-y-3 bg-card/50 p-5 rounded-lg mt-4 border border-border/20">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-semibold">Image Upload Options</h3>
-                  </div>
-                  <p className="text-xs text-muted-foreground mb-2">Upload or modify your custom profile picture</p>
+                  <h3 className="text-sm font-semibold">Image Upload Options</h3>
                   <div className="flex gap-3">
                     <Button 
                       variant="secondary" 
@@ -578,11 +558,8 @@ export default function ProfilePage() {
               {/* URL input - only show for URL source */}
               {avatarSource === 'url' && (
                 <div className="w-full space-y-3 bg-card/50 p-5 rounded-lg mt-4 border border-border/20">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-semibold">External Image URL</h3>
-                  </div>
-                  <p className="text-xs text-muted-foreground mb-2">Enter the web address of your preferred image</p>
-                  <div className="space-y-2">
+                  <h3 className="text-sm font-semibold">External Image URL</h3>
+                  <div>
                     <Input
                       id="customUrl"
                       value={customAvatarUrl}
@@ -594,29 +571,16 @@ export default function ProfilePage() {
                 </div>
               )}
               
-              <div className="w-full bg-muted/30 rounded-lg mt-4 border border-border/20 p-3">
-                <div className="flex items-center gap-2 mb-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                  <h4 className="text-xs font-semibold">Image Requirements</h4>
-                </div>
-                <div className="text-xs text-muted-foreground space-y-1 pl-5">
-                  <p>• Recommended dimensions: 256x256 pixels</p>
-                  <p>• Supported formats: JPG, PNG, GIF</p>
-                  {avatarSource === 'upload' && <p>• Maximum file size: 2MB</p>}
-                  <p>• Square aspect ratio works best</p>
-                </div>
+              <div className="w-full bg-muted/30 rounded-lg mt-4 p-3 text-xs text-center text-muted-foreground">
+                <p>Recommended size: 256x256px</p>
+                {avatarSource === 'upload' && <p>Max file size: 2MB</p>}
               </div>
             </div>
             
             {/* Profile details section */}
             <div className="flex-1 space-y-6">
               <div className="bg-card/50 p-6 rounded-lg border border-border/40">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h3 className="text-base font-semibold">Primary Information</h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">Your basic account details</p>
-                  </div>
-                </div>
+                <h3 className="text-base font-semibold mb-4">Primary Information</h3>
               
                 <div className="space-y-5">
                   <div className="space-y-2">
@@ -630,9 +594,8 @@ export default function ProfilePage() {
                       disabled 
                       className="bg-background/70 border-border/30 text-muted-foreground"
                     />
-                    <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                      Your email address cannot be changed for security reasons
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Your email address cannot be changed
                     </p>
                   </div>
                   
@@ -645,20 +608,12 @@ export default function ProfilePage() {
                       placeholder="Enter your full name"
                       className="bg-background/70 border-border/30"
                     />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Your name will be displayed on your profile and throughout the platform
-                    </p>
                   </div>
                 </div>
               </div>
 
               <div className="bg-card/50 p-6 rounded-lg border border-border/40">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h3 className="text-base font-semibold">Professional Details</h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">Additional information about you</p>
-                  </div>
-                </div>
+                <h3 className="text-base font-semibold mb-4">Professional Details</h3>
                 
                 <div className="space-y-2">
                   <Label htmlFor="website" className="text-sm font-medium">Personal Website</Label>
@@ -669,29 +624,17 @@ export default function ProfilePage() {
                     placeholder="https://yourwebsite.com"
                     className="bg-background/70 border-border/30"
                   />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Include your website to showcase your work or portfolio
-                  </p>
                 </div>
               </div>
               
-              <div className="pt-6 flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">Last updated: {profile?.updated_at ? new Date(profile.updated_at).toLocaleDateString() : 'Never'}</p>
+              <div className="pt-6 flex justify-end">
                 <Button 
                   onClick={handleSaveChanges} 
                   disabled={updating}
                   size="lg"
-                  className="transition-all font-medium px-8"
+                  className="font-medium px-8"
                 >
-                  {updating ? (
-                    <span className="flex items-center gap-2">
-                      <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Saving...
-                    </span>
-                  ) : 'Save Changes'}
+                  {updating ? 'Saving...' : 'Save Changes'}
                 </Button>
               </div>
             </div>
