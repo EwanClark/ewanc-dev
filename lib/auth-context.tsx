@@ -83,10 +83,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     sessionUser: SupabaseUser,
     existingProfile?: any
   ) => {
-    // Debug logging - remove this after testing
-    console.log("Session user object:", sessionUser);
-    console.log("User metadata:", sessionUser.user_metadata);
-    console.log("Identities:", (sessionUser as User).identities);
 
     const identities = (sessionUser as User).identities || [];
 
@@ -119,14 +115,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       avatarUrl: identity.identity_data?.avatar_url || null,
       name: identity.identity_data?.full_name || null,
     }));
-
-    console.log(
-      "OAuth providers found:",
-      oauthProviders.map((p) => p.provider)
-    );
-    console.log("Primary provider:", provider);
-    console.log("Provider avatar URL:", providerAvatarUrl);
-    console.log("Available providers:", availableProviders);
 
     return {
       id: sessionUser.id,
