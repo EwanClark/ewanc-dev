@@ -22,9 +22,10 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [fullName, setFullName] = useState('')
   const [website, setWebsite] = useState('')
-  const [avatarSource, setAvatarSource] = useState<'upload' | 'provider' | 'url' | 'default'>('upload')
+  const [avatarSource, setAvatarSource] = useState<string>('upload') // Changed to string to handle provider-specific values
   const [customAvatarUrl, setCustomAvatarUrl] = useState('')
   const [uploadedAvatarUrl, setUploadedAvatarUrl] = useState('')
+  const [selectedProviderUrl, setSelectedProviderUrl] = useState('')
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
   const [imageToEdit, setImageToEdit] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
@@ -33,8 +34,9 @@ export default function ProfilePage() {
 
   const supabase = createClient()
 
-  // Check if user has OAuth provider
-  const hasProviderAvatar = authUser?.providerAvatarUrl && authUser?.provider !== 'email'
+  // Check if user has OAuth providers
+  const availableProviders = authUser?.availableProviders || []
+  const hasProviders = availableProviders.length > 0
 
   useEffect(() => {
     const fetchUserAndProfile = async () => {
@@ -62,15 +64,26 @@ export default function ProfilePage() {
         setProfile(profile)
         setFullName(profile?.full_name || '')
         setWebsite(profile?.website || '')
-        setAvatarSource(profile?.avatar_source || 'upload')
+        
+        // Handle avatar source - check if it's a provider-specific source
+        const savedAvatarSource = profile?.avatar_source || 'upload'
+        if (savedAvatarSource.startsWith('provider-')) {
+          setAvatarSource(savedAvatarSource)
+          // Find the matching provider URL
+          const providerName = savedAvatarSource.replace('provider-', '')
+          const matchingProvider = availableProviders.find(p => p.provider === providerName)
+          if (matchingProvider) {
+            setSelectedProviderUrl(matchingProvider.avatarUrl || '')
+          }
+        } else {
+          setAvatarSource(savedAvatarSource)
+        }
         
         // Set the appropriate avatar URL based on source
-        if (profile?.avatar_source === 'url' || profile?.avatar_source === 'upload') {
-          if (profile?.avatar_source === 'url') {
-            setCustomAvatarUrl(profile?.avatar_url || '')
-          } else {
-            setUploadedAvatarUrl(profile?.avatar_url || '')
-          }
+        if (profile?.avatar_source === 'url') {
+          setCustomAvatarUrl(profile?.avatar_url || '')
+        } else if (profile?.avatar_source === 'upload') {
+          setUploadedAvatarUrl(profile?.avatar_url || '')
         }
       } catch (error) {
         console.error('Error fetching user data:', error)
@@ -80,7 +93,7 @@ export default function ProfilePage() {
     }
 
     fetchUserAndProfile()
-  }, [])
+  }, [availableProviders])
 
   const handleSaveChanges = async () => {
     if (!user) return
@@ -89,27 +102,27 @@ export default function ProfilePage() {
       setUpdating(true)
       
       let avatarUrl = null
+      let finalAvatarSource = avatarSource
       
       // Determine avatar URL based on selected source
-      switch (avatarSource) {
-        case 'upload':
-          avatarUrl = uploadedAvatarUrl || null
-          break
-        case 'provider':
-          avatarUrl = authUser?.providerAvatarUrl || null
-          break
-        case 'url':
-          avatarUrl = customAvatarUrl || null
-          break
-        case 'default':
-          avatarUrl = '/default-profile-picture.jpg'
-          break
+      if (avatarSource === 'upload') {
+        avatarUrl = uploadedAvatarUrl || null
+      } else if (avatarSource === 'url') {
+        avatarUrl = customAvatarUrl || null
+      } else if (avatarSource === 'default') {
+        avatarUrl = '/default-profile-picture.jpg'
+      } else if (avatarSource.startsWith('provider-')) {
+        // Handle provider-specific avatar
+        const providerName = avatarSource.replace('provider-', '')
+        const matchingProvider = availableProviders.find(p => p.provider === providerName)
+        avatarUrl = matchingProvider?.avatarUrl || null
+        finalAvatarSource = avatarSource // Keep the provider-specific source
       }
       
       const { error } = await updateProfile({
         name: fullName,
         avatarUrl: avatarUrl,
-        avatarSource: avatarSource,
+        avatarSource: finalAvatarSource as 'upload' | 'provider' | 'url' | 'default',
         website: website || null,
       })
       
@@ -127,7 +140,7 @@ export default function ProfilePage() {
         ...prev, 
         full_name: fullName,
         avatar_url: avatarUrl,
-        avatar_source: avatarSource,
+        avatar_source: finalAvatarSource,
         website: website || null,
         updated_at: new Date().toISOString()
       } : null)
@@ -144,7 +157,7 @@ export default function ProfilePage() {
   }
 
   const handleImageSelect = () => {
-    const currentUrl = getDisplayAvatarUrl()
+    const currentUrl = getPreviewAvatarUrl()
     setImageToEdit(currentUrl || '')
     setIsImageModalOpen(true)
   }
@@ -200,18 +213,23 @@ export default function ProfilePage() {
   }
 
   const getPreviewAvatarUrl = () => {
-    switch (avatarSource) {
-      case 'upload':
-        return uploadedAvatarUrl || null
-      case 'provider':
-        return authUser?.providerAvatarUrl || null
-      case 'url':
-        return customAvatarUrl || null
-      case 'default':
-        return '/default-profile-picture.jpg'
-      default:
-        return null
+    if (avatarSource === 'upload') {
+      return uploadedAvatarUrl || null
+    } else if (avatarSource === 'url') {
+      return customAvatarUrl || null
+    } else if (avatarSource === 'default') {
+      return '/default-profile-picture.jpg'
+    } else if (avatarSource.startsWith('provider-')) {
+      const providerName = avatarSource.replace('provider-', '')
+      const matchingProvider = availableProviders.find(p => p.provider === providerName)
+      return matchingProvider?.avatarUrl || null
     }
+    return null
+  }
+
+  const handleProviderSelection = (providerName: string, avatarUrl: string) => {
+    setAvatarSource(`provider-${providerName}`)
+    setSelectedProviderUrl(avatarUrl)
   }
 
   if (loading) {
@@ -267,18 +285,35 @@ export default function ProfilePage() {
               {/* Avatar Source Selection */}
               <div className="w-full max-w-sm space-y-3">
                 <Label>Profile Picture Source</Label>
-                <RadioGroup value={avatarSource} onValueChange={(value: 'upload' | 'provider' | 'url' | 'default') => setAvatarSource(value)}>
+                <RadioGroup value={avatarSource} onValueChange={setAvatarSource}>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="upload" id="upload" />
                     <Label htmlFor="upload">Upload custom image</Label>
                   </div>
                   
-                  {hasProviderAvatar && (
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="provider" id="provider" />
-                      <Label htmlFor="provider">Use {authUser?.provider} profile picture</Label>
+                  {/* Show all available OAuth providers */}
+                  {availableProviders.map((providerOption) => (
+                    <div key={providerOption.provider} className="flex items-center space-x-2">
+                      <RadioGroupItem 
+                        value={`provider-${providerOption.provider}`} 
+                        id={`provider-${providerOption.provider}`}
+                        onClick={() => handleProviderSelection(providerOption.provider, providerOption.avatarUrl || '')}
+                      />
+                      <Label 
+                        htmlFor={`provider-${providerOption.provider}`}
+                        className="flex items-center cursor-pointer"
+                      >
+                        Use {providerOption.provider} profile picture
+                        {providerOption.avatarUrl && (
+                          <img 
+                            src={providerOption.avatarUrl} 
+                            alt={`${providerOption.provider} avatar`}
+                            className="inline-block w-6 h-6 ml-2 rounded-full border"
+                          />
+                        )}
+                      </Label>
                     </div>
-                  )}
+                  ))}
                   
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="url" id="url" />
