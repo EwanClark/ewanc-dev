@@ -4,20 +4,39 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { ImageCropModal } from '@/components/image-crop-modal'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@/components/ui/avatar'
 import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '@/components/ui/radio-group'
 import { useToast } from '@/components/ui/use-toast'
 import { useAuth } from '@/lib/auth-context'
-import { User } from '@supabase/supabase-js'
-import { Database } from '@/types/supabase'
+import type { User } from '@supabase/supabase-js'
+import type { Database } from '@/types/supabase'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 
 export default function ProfilePage() {
-  const { user: authUser, updateProfile, uploadAvatar, getDisplayAvatarUrl } = useAuth()
+  const {
+    user: authUser,
+    updateProfile,
+    uploadAvatar,
+    getDisplayAvatarUrl,
+  } = useAuth()
+
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [fullName, setFullName] = useState('')
@@ -34,133 +53,124 @@ export default function ProfilePage() {
   const { toast } = useToast()
 
   const supabase = createClient()
-
-  // Check if user has OAuth providers
   const availableProviders = authUser?.availableProviders || []
-  const hasProviders = availableProviders.length > 0
 
   useEffect(() => {
     const fetchUserAndProfile = async () => {
       try {
         setLoading(true)
-        
-        // Get user
-        const { data: { user } } = await supabase.auth.getUser()
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
         if (!user) return
-        
         setUser(user)
-        
-        // Get profile
-        const { data: profile, error } = await supabase
+
+        const { data: prof, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', user.id)
           .single()
-        
         if (error) {
           console.error('Error fetching profile:', error)
           return
         }
-        
-        setProfile(profile)
-        setFullName(profile?.full_name || '')
-        setWebsite(profile?.website || '')
-        
-        // Handle avatar source
-        const savedAvatarSource = profile?.avatar_source || 'upload'
-        
+
+        setProfile(prof)
+        setFullName(prof.full_name || '')
+        setWebsite(prof.website || '')
+
+        const savedAvatarSource = prof.avatar_source || 'upload'
         if (savedAvatarSource === 'provider') {
-          // Try to determine which provider by matching avatar URL
-          const matchingProvider = availableProviders.find(p => 
-            p.avatarUrl === profile?.avatar_url
+          const match = availableProviders.find(
+            (p) => p.avatarUrl === prof.avatar_url
           )
-          
-          if (matchingProvider) {
-            setAvatarSource(`provider-${matchingProvider.provider}`)
-            setSelectedProvider(matchingProvider.provider)
-            setSelectedProviderUrl(matchingProvider.avatarUrl || '')
-          } else {
-            // Default to first available provider if we can't match
-            if (availableProviders.length > 0) {
-              setAvatarSource(`provider-${availableProviders[0].provider}`)
-              setSelectedProvider(availableProviders[0].provider)
-              setSelectedProviderUrl(availableProviders[0].avatarUrl || '')
-            }
+          if (match) {
+            setAvatarSource(`provider-${match.provider}`)
+            setSelectedProvider(match.provider)
+            setSelectedProviderUrl(match.avatarUrl || '')
+          } else if (availableProviders.length > 0) {
+            setAvatarSource(`provider-${availableProviders[0].provider}`)
+            setSelectedProvider(availableProviders[0].provider)
+            setSelectedProviderUrl(
+              availableProviders[0].avatarUrl || ''
+            )
           }
         } else {
           setAvatarSource(savedAvatarSource)
         }
-        
-        // Set the appropriate avatar URL based on source
-        if (profile?.avatar_source === 'url') {
-          setCustomAvatarUrl(profile?.avatar_url || '')
-        } else if (profile?.avatar_source === 'upload') {
-          setUploadedAvatarUrl(profile?.avatar_url || '')
+
+        if (prof.avatar_source === 'url') {
+          setCustomAvatarUrl(prof.avatar_url || '')
+        } else if (prof.avatar_source === 'upload') {
+          setUploadedAvatarUrl(prof.avatar_url || '')
         }
-      } catch (error) {
-        console.error('Error fetching user data:', error)
+      } catch (err) {
+        console.error('Error fetching user data:', err)
       } finally {
         setLoading(false)
       }
     }
 
     fetchUserAndProfile()
-  }, [availableProviders])
+  }, [availableProviders, supabase])
 
   const handleSaveChanges = async () => {
     if (!user) return
-    
+
     try {
       setUpdating(true)
-      
-      let avatarUrl = null
+
+      let avatarUrl: string | null = null
       let finalAvatarSource = avatarSource
-      
-      // Determine avatar URL and source based on selected option
+
       if (avatarSource === 'upload') {
         avatarUrl = uploadedAvatarUrl || null
-        finalAvatarSource = 'upload'
       } else if (avatarSource === 'url') {
         avatarUrl = customAvatarUrl || null
-        finalAvatarSource = 'url'
       } else if (avatarSource === 'default') {
         avatarUrl = '/default-profile-picture.jpg'
-        finalAvatarSource = 'default'
       } else if (avatarSource.startsWith('provider-')) {
-        // Handle provider-specific avatar - save as 'provider' in DB
         const providerName = avatarSource.replace('provider-', '')
-        const matchingProvider = availableProviders.find(p => p.provider === providerName)
-        avatarUrl = matchingProvider?.avatarUrl || null
+        const match = availableProviders.find(
+          (p) => p.provider === providerName
+        )
+        avatarUrl = match?.avatarUrl || null
         finalAvatarSource = 'provider'
       }
-      
+
       const { error } = await updateProfile({
         name: fullName,
-        avatarUrl: avatarUrl,
-        avatarSource: finalAvatarSource as 'upload' | 'provider' | 'url' | 'default',
+        avatarUrl,
+        avatarSource: finalAvatarSource as
+          | 'upload'
+          | 'provider'
+          | 'url'
+          | 'default',
         website: website || null,
       })
-      
-      if (error) {
-        throw error
-      }
-      
+      if (error) throw error
+
+      // SUCCESS
       toast({
         title: 'Profile updated',
-        description: 'Your profile information has been updated successfully.',
+        description:
+          'Your profile information has been updated successfully.',
       })
-      
-      // Update local profile state
-      setProfile(prev => prev ? { 
-        ...prev, 
-        full_name: fullName,
-        avatar_url: avatarUrl,
-        avatar_source: finalAvatarSource,
-        website: website || null,
-        updated_at: new Date().toISOString()
-      } : null)
-    } catch (error) {
-      console.error('Error updating profile:', error)
+
+      setProfile((prev) =>
+        prev
+          ? {
+              ...prev,
+              full_name: fullName,
+              avatar_url: avatarUrl,
+              avatar_source: finalAvatarSource,
+              website: website || null,
+              updated_at: new Date().toISOString(),
+            }
+          : prev
+      )
+    } catch (err) {
+      console.error('Error updating profile:', err)
       toast({
         title: 'Update failed',
         description: 'There was an error updating your profile.',
@@ -181,45 +191,41 @@ export default function ProfilePage() {
     const fileInput = document.createElement('input')
     fileInput.type = 'file'
     fileInput.accept = 'image/*'
-    
-    fileInput.onchange = async (e) => {
+    fileInput.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0]
       if (!file) return
-      
-      const imageUrl = URL.createObjectURL(file)
-      setImageToEdit(imageUrl)
+      setImageToEdit(URL.createObjectURL(file))
       setIsImageModalOpen(true)
     }
-    
     fileInput.click()
   }
 
-  const handleCropComplete = async (croppedImageBlob: Blob) => {
+  const handleCropComplete = async (blob: Blob) => {
     if (!user) return
-    
+
     try {
       setUpdating(true)
-      
-      const { url, error } = await uploadAvatar(new File([croppedImageBlob], `avatar-${user.id}.jpg`, { type: 'image/jpeg' }))
-      
-      if (error) {
-        throw error
-      }
-      
-      if (url) {
-        setUploadedAvatarUrl(url)
-        setAvatarSource('upload')
-        
-        toast({
-          title: 'Avatar uploaded',
-          description: 'Your profile picture has been uploaded successfully. Click "Save changes" to apply.',
-        })
-      }
-    } catch (error) {
-      console.error('Error uploading avatar:', error)
+      const file = new File([blob], `avatar-${user.id}.jpg`, {
+        type: 'image/jpeg',
+      })
+      const { url, error } = await uploadAvatar(file)
+      if (error) throw error
+
+      setUploadedAvatarUrl(url || '')
+      setAvatarSource('upload')
+
+      // SUCCESS
+      toast({
+        title: 'Avatar uploaded',
+        description:
+          'Your profile picture has been uploaded successfully. Click "Save changes" to apply.',
+      })
+    } catch (err) {
+      console.error('Error uploading avatar:', err)
       toast({
         title: 'Upload failed',
-        description: 'There was an error uploading your profile picture.',
+        description:
+          'There was an error uploading your profile picture.',
         variant: 'destructive',
       })
     } finally {
@@ -230,19 +236,27 @@ export default function ProfilePage() {
   const getPreviewAvatarUrl = () => {
     if (avatarSource === 'upload') {
       return uploadedAvatarUrl || null
-    } else if (avatarSource === 'url') {
+    }
+    if (avatarSource === 'url') {
       return customAvatarUrl || null
-    } else if (avatarSource === 'default') {
+    }
+    if (avatarSource === 'default') {
       return '/default-profile-picture.jpg'
-    } else if (avatarSource.startsWith('provider-')) {
+    }
+    if (avatarSource.startsWith('provider-')) {
       const providerName = avatarSource.replace('provider-', '')
-      const matchingProvider = availableProviders.find(p => p.provider === providerName)
-      return matchingProvider?.avatarUrl || null
+      return (
+        availableProviders.find((p) => p.provider === providerName)
+          ?.avatarUrl || null
+      )
     }
     return null
   }
 
-  const handleProviderSelection = (providerName: string, avatarUrl: string) => {
+  const handleProviderSelection = (
+    providerName: string,
+    avatarUrl: string
+  ) => {
     setAvatarSource(`provider-${providerName}`)
     setSelectedProvider(providerName)
     setSelectedProviderUrl(avatarUrl)
@@ -282,47 +296,63 @@ export default function ProfilePage() {
   return (
     <div className="container mx-auto py-10">
       <h1 className="text-3xl font-bold mb-6">Your Profile</h1>
-      
+
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>Profile Information</CardTitle>
-          <CardDescription>Update your account profile information</CardDescription>
+          <CardDescription>
+            Update your account profile information
+          </CardDescription>
         </CardHeader>
-        
         <CardContent>
           <div className="flex flex-col md:flex-row gap-6">
             {/* Avatar section */}
             <div className="flex flex-col items-center gap-4">
               <Avatar className="w-32 h-32 border-2 border-border">
-                <AvatarImage src={getPreviewAvatarUrl() || ''} alt={fullName || 'User'} />
-                <AvatarFallback>{(fullName || user.email || 'User').substring(0, 2)}</AvatarFallback>
+                <AvatarImage
+                  src={getPreviewAvatarUrl() || ''}
+                  alt={fullName || 'User'}
+                />
+                <AvatarFallback>
+                  {(fullName || user.email || 'User').substring(0, 2)}
+                </AvatarFallback>
               </Avatar>
-              
-              {/* Avatar Source Selection */}
+
+              {/* Avatar Source */}
               <div className="w-full max-w-sm space-y-3">
                 <Label>Profile Picture Source</Label>
-                <RadioGroup value={avatarSource} onValueChange={setAvatarSource}>
+                <RadioGroup
+                  value={avatarSource}
+                  onValueChange={setAvatarSource}
+                >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="upload" id="upload" />
                     <Label htmlFor="upload">Upload custom image</Label>
                   </div>
-                  
-                  {/* Show all available OAuth providers */}
+
                   {availableProviders.map((providerOption) => (
-                    <div key={providerOption.provider} className="flex items-center space-x-2">
-                      <RadioGroupItem 
-                        value={`provider-${providerOption.provider}`} 
+                    <div
+                      key={providerOption.provider}
+                      className="flex items-center space-x-2"
+                    >
+                      <RadioGroupItem
+                        value={`provider-${providerOption.provider}`}
                         id={`provider-${providerOption.provider}`}
-                        onClick={() => handleProviderSelection(providerOption.provider, providerOption.avatarUrl || '')}
+                        onClick={() =>
+                          handleProviderSelection(
+                            providerOption.provider,
+                            providerOption.avatarUrl || ''
+                          )
+                        }
                       />
-                      <Label 
+                      <Label
                         htmlFor={`provider-${providerOption.provider}`}
                         className="flex items-center cursor-pointer"
                       >
                         Use {providerOption.provider} profile picture
                         {providerOption.avatarUrl && (
-                          <img 
-                            src={providerOption.avatarUrl} 
+                          <img
+                            src={providerOption.avatarUrl}
                             alt={`${providerOption.provider} avatar`}
                             className="inline-block w-6 h-6 ml-2 rounded-full border"
                           />
@@ -330,12 +360,12 @@ export default function ProfilePage() {
                       </Label>
                     </div>
                   ))}
-                  
+
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="url" id="url" />
                     <Label htmlFor="url">Use custom URL</Label>
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="default" id="default" />
                     <Label htmlFor="default">Use default image</Label>
@@ -343,17 +373,19 @@ export default function ProfilePage() {
                 </RadioGroup>
               </div>
 
-              {/* Upload buttons - only show for upload source */}
               {avatarSource === 'upload' && (
                 <div className="flex gap-2">
-                  <Button variant="outline" onClick={handleUploadClick}>Upload New</Button>
+                  <Button variant="outline" onClick={handleUploadClick}>
+                    Upload New
+                  </Button>
                   {uploadedAvatarUrl && (
-                    <Button variant="outline" onClick={handleImageSelect}>Edit Current</Button>
+                    <Button variant="outline" onClick={handleImageSelect}>
+                      Edit Current
+                    </Button>
                   )}
                 </div>
               )}
 
-              {/* URL input - only show for URL source */}
               {avatarSource === 'url' && (
                 <div className="w-full max-w-sm space-y-2">
                   <Label htmlFor="customUrl">Image URL</Label>
@@ -365,21 +397,22 @@ export default function ProfilePage() {
                   />
                 </div>
               )}
-              
+
               <div className="text-sm text-muted-foreground text-center">
                 <p>Recommended size: 256x256px</p>
                 {avatarSource === 'upload' && <p>Max file size: 2MB</p>}
               </div>
             </div>
-            
-            {/* Profile details section */}
+
+            {/* Profile details */}
             <div className="flex-1 space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" value={user.email || ''} disabled />
-                <p className="text-sm text-muted-foreground">Your email address cannot be changed</p>
+                <p className="text-sm text-muted-foreground">
+                  Your email address cannot be changed
+                </p>
               </div>
-              
               <div className="space-y-2">
                 <Label htmlFor="fullName">Full name</Label>
                 <Input
@@ -389,7 +422,6 @@ export default function ProfilePage() {
                   placeholder="Enter your full name"
                 />
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="website">Website (optional)</Label>
                 <Input
@@ -399,12 +431,8 @@ export default function ProfilePage() {
                   placeholder="https://yourwebsite.com"
                 />
               </div>
-              
               <div className="pt-4">
-                <Button 
-                  onClick={handleSaveChanges} 
-                  disabled={updating}
-                >
+                <Button onClick={handleSaveChanges} disabled={updating}>
                   {updating ? 'Saving...' : 'Save changes'}
                 </Button>
               </div>
@@ -412,7 +440,7 @@ export default function ProfilePage() {
           </div>
         </CardContent>
       </Card>
-      
+
       {isImageModalOpen && imageToEdit && (
         <ImageCropModal
           isOpen={isImageModalOpen}
