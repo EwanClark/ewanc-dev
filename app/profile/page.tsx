@@ -22,11 +22,10 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [fullName, setFullName] = useState('')
   const [website, setWebsite] = useState('')
-  const [avatarSource, setAvatarSource] = useState<string>('upload')
+  const [avatarSource, setAvatarSource] = useState<string>('upload') // Changed to string to handle provider-specific values
   const [customAvatarUrl, setCustomAvatarUrl] = useState('')
   const [uploadedAvatarUrl, setUploadedAvatarUrl] = useState('')
   const [selectedProviderUrl, setSelectedProviderUrl] = useState('')
-  const [selectedProvider, setSelectedProvider] = useState('')
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
   const [imageToEdit, setImageToEdit] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
@@ -66,26 +65,15 @@ export default function ProfilePage() {
         setFullName(profile?.full_name || '')
         setWebsite(profile?.website || '')
         
-        // Handle avatar source
+        // Handle avatar source - check if it's a provider-specific source
         const savedAvatarSource = profile?.avatar_source || 'upload'
-        
-        if (savedAvatarSource === 'provider') {
-          // Try to determine which provider by matching avatar URL
-          const matchingProvider = availableProviders.find(p => 
-            p.avatarUrl === profile?.avatar_url
-          )
-          
+        if (savedAvatarSource.startsWith('provider-')) {
+          setAvatarSource(savedAvatarSource)
+          // Find the matching provider URL
+          const providerName = savedAvatarSource.replace('provider-', '')
+          const matchingProvider = availableProviders.find(p => p.provider === providerName)
           if (matchingProvider) {
-            setAvatarSource(`provider-${matchingProvider.provider}`)
-            setSelectedProvider(matchingProvider.provider)
             setSelectedProviderUrl(matchingProvider.avatarUrl || '')
-          } else {
-            // Default to first available provider if we can't match
-            if (availableProviders.length > 0) {
-              setAvatarSource(`provider-${availableProviders[0].provider}`)
-              setSelectedProvider(availableProviders[0].provider)
-              setSelectedProviderUrl(availableProviders[0].avatarUrl || '')
-            }
           }
         } else {
           setAvatarSource(savedAvatarSource)
@@ -116,22 +104,19 @@ export default function ProfilePage() {
       let avatarUrl = null
       let finalAvatarSource = avatarSource
       
-      // Determine avatar URL and source based on selected option
+      // Determine avatar URL based on selected source
       if (avatarSource === 'upload') {
         avatarUrl = uploadedAvatarUrl || null
-        finalAvatarSource = 'upload'
       } else if (avatarSource === 'url') {
         avatarUrl = customAvatarUrl || null
-        finalAvatarSource = 'url'
       } else if (avatarSource === 'default') {
         avatarUrl = '/default-profile-picture.jpg'
-        finalAvatarSource = 'default'
       } else if (avatarSource.startsWith('provider-')) {
-        // Handle provider-specific avatar - save as 'provider' in DB
+        // Handle provider-specific avatar
         const providerName = avatarSource.replace('provider-', '')
         const matchingProvider = availableProviders.find(p => p.provider === providerName)
         avatarUrl = matchingProvider?.avatarUrl || null
-        finalAvatarSource = 'provider'
+        finalAvatarSource = avatarSource // Keep the provider-specific source
       }
       
       const { error } = await updateProfile({
@@ -244,7 +229,6 @@ export default function ProfilePage() {
 
   const handleProviderSelection = (providerName: string, avatarUrl: string) => {
     setAvatarSource(`provider-${providerName}`)
-    setSelectedProvider(providerName)
     setSelectedProviderUrl(avatarUrl)
   }
 
