@@ -11,10 +11,11 @@ import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useToast } from '@/components/ui/use-toast'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { CheckCircle2, XCircle } from 'lucide-react'
+import { CheckCircle2, XCircle, User as UserIcon } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
 import { User } from '@supabase/supabase-js'
 import { Database } from '@/types/supabase'
+import { Navbar } from '@/components/navbar'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 
@@ -309,115 +310,153 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto py-10">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex flex-col items-center justify-center min-h-[300px]">
-              <p>Loading profile...</p>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen">
+        <Navbar />
+        <div className="container py-16">
+          <div className="max-w-4xl mx-auto">
+            <Card className="border border-border/40">
+              <CardContent className="pt-6">
+                <div className="flex flex-col items-center justify-center min-h-[300px]">
+                  <div className="animate-pulse flex space-x-4">
+                    <div className="rounded-full bg-muted h-12 w-12"></div>
+                    <div className="flex-1 space-y-4 py-1">
+                      <div className="h-4 bg-muted rounded w-3/4"></div>
+                      <div className="space-y-2">
+                        <div className="h-4 bg-muted rounded"></div>
+                        <div className="h-4 bg-muted rounded w-5/6"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     )
   }
 
   if (!user) {
     return (
-      <div className="container mx-auto py-10">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex flex-col items-center justify-center min-h-[300px]">
-              <p>You need to be logged in to view your profile.</p>
-              <Button className="mt-4" asChild>
-                <a href="/login">Log In</a>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen">
+        <Navbar />
+        <div className="container py-16">
+          <div className="max-w-4xl mx-auto">
+            <Card className="border border-border/40">
+              <CardContent className="pt-6">
+                <div className="flex flex-col items-center justify-center min-h-[300px]">
+                  <div className="text-center">
+                    <UserIcon className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                    <h2 className="text-xl font-semibold mb-2">Authentication Required</h2>
+                    <p className="text-muted-foreground mb-6">You need to be logged in to view your profile.</p>
+                    <Button size="lg" asChild>
+                      <a href="/login">Log In</a>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-6">Your Profile</h1>
-      
-      {/* Display alert message */}
-      {showAlert && (
-        <Alert 
-          variant={alertStatus === 'error' ? 'destructive' : 'default'} 
-          className={`mb-4 ${alertStatus === 'success' ? 'border-green-500 bg-green-50 dark:bg-green-900/20 dark:border-green-900' : ''}`}
-        >
-          {alertStatus === 'success' ? (
-            <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
-          ) : (
-            <XCircle className="h-4 w-4" />
+    <div className="min-h-screen">
+      <Navbar />
+      <div className="container py-16">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <h1 className="text-3xl font-bold">Your Profile</h1>
+          </div>
+          
+          {/* Display alert message */}
+          {showAlert && (
+            <Alert 
+              variant={alertStatus === 'error' ? 'destructive' : 'default'} 
+              className={`mb-6 ${alertStatus === 'success' ? 'border-green-500 bg-green-50 dark:bg-green-900/20 dark:border-green-900' : ''}`}
+            >
+              {alertStatus === 'success' ? (
+                <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
+              ) : (
+                <XCircle className="h-4 w-4" />
+              )}
+              <AlertTitle>
+                {alertStatus === 'success' ? 'Success!' : 'Error!'}
+              </AlertTitle>
+              <AlertDescription>
+                {alertStatus === 'success' 
+                  ? 'Your profile has been updated successfully.'
+                  : 'There was an error saving your profile. Please try again.'}
+              </AlertDescription>
+            </Alert>
           )}
-          <AlertTitle>
-            {alertStatus === 'success' ? 'Success!' : 'Error!'}
-          </AlertTitle>
-          <AlertDescription>
-            {alertStatus === 'success' 
-              ? 'Your profile has been updated successfully.'
-              : 'There was an error saving your profile. Please try again.'}
-          </AlertDescription>
-        </Alert>
-      )}
 
-      <Card className="mb-6">
-        <CardHeader>
+      <Card className="mb-6 border border-border/40 shadow-sm">
+        <CardHeader className="pb-3">
           <CardTitle>Profile Information</CardTitle>
           <CardDescription>Update your account profile information</CardDescription>
         </CardHeader>
         
         <CardContent>
-          <div className="flex flex-col md:flex-row gap-6">
+          <div className="flex flex-col md:flex-row gap-8">
             {/* Avatar section */}
-            <div className="flex flex-col items-center gap-4">
-              <Avatar className="w-32 h-32 border-2 border-border">
-                <AvatarImage src={getPreviewAvatarUrl() || ''} alt={fullName || 'User'} />
-                <AvatarFallback>{(fullName || user.email || 'User').substring(0, 2)}</AvatarFallback>
-              </Avatar>
+            <div className="flex flex-col items-center gap-5">
+              <div className="relative group">
+                <Avatar className="w-36 h-36 border-2 border-border shadow-md transition-all group-hover:shadow-lg">
+                  <AvatarImage src={getPreviewAvatarUrl() || ''} alt={fullName || 'User'} />
+                  <AvatarFallback className="text-2xl">{(fullName || user.email || 'User').substring(0, 2).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  {avatarSource === 'upload' && (
+                    <Button size="sm" variant="secondary" className="text-xs" onClick={handleImageSelect}>
+                      Edit
+                    </Button>
+                  )}
+                </div>
+              </div>
               
               {/* Avatar Source Selection */}
-              <div className="w-full max-w-sm space-y-3">
-                <Label>Profile Picture Source</Label>
+              <div className="w-full max-w-sm space-y-4 pt-2 bg-card/50 p-4 rounded-lg">
+                <Label className="text-sm font-medium">Profile Picture Source</Label>
                 <RadioGroup 
                   value={avatarSource} 
                   onValueChange={(value) => setAvatarSource(value as 'upload' | 'provider' | 'url' | 'default')}
+                  className="space-y-2"
                 >
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 rounded-md p-1 hover:bg-muted/50 transition-colors">
                     <RadioGroupItem value="upload" id="upload" />
-                    <Label htmlFor="upload">Upload custom image</Label>
+                    <Label htmlFor="upload" className="cursor-pointer">Upload custom image</Label>
                   </div>
                   
                   {/* Show provider option if providers are available */}
                   {hasProviders && (
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 rounded-md p-1 hover:bg-muted/50 transition-colors">
                       <RadioGroupItem value="provider" id="provider" />
-                      <Label htmlFor="provider">Use OAuth provider picture</Label>
+                      <Label htmlFor="provider" className="cursor-pointer">Use OAuth provider picture</Label>
                     </div>
                   )}
                   
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 rounded-md p-1 hover:bg-muted/50 transition-colors">
                     <RadioGroupItem value="url" id="url" />
-                    <Label htmlFor="url">Use custom URL</Label>
+                    <Label htmlFor="url" className="cursor-pointer">Use custom URL</Label>
                   </div>
                   
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 rounded-md p-1 hover:bg-muted/50 transition-colors">
                     <RadioGroupItem value="default" id="default" />
-                    <Label htmlFor="default">Use default image</Label>
+                    <Label htmlFor="default" className="cursor-pointer">Use default image</Label>
                   </div>
                 </RadioGroup>
               </div>
 
               {/* Provider selection - only show when provider is selected */}
               {avatarSource === 'provider' && hasProviders && (
-                <div className="w-full max-w-sm space-y-3">
-                  <Label>Select Provider</Label>
-                  <RadioGroup value={selectedProvider} onValueChange={handleProviderSelection}>
+                <div className="w-full max-w-sm space-y-3 bg-card/50 p-4 rounded-lg mt-2">
+                  <Label className="text-sm font-medium">Select Provider</Label>
+                  <RadioGroup value={selectedProvider} onValueChange={handleProviderSelection} className="space-y-2">
                     {availableProviders.map((providerOption) => (
-                      <div key={providerOption.provider} className="flex items-center space-x-2">
+                      <div key={providerOption.provider} className="flex items-center space-x-2 rounded-md p-1 hover:bg-muted/50 transition-colors">
                         <RadioGroupItem 
                           value={providerOption.provider} 
                           id={`sel-${providerOption.provider}`}
@@ -431,7 +470,7 @@ export default function ProfilePage() {
                             <img 
                               src={providerOption.avatarUrl} 
                               alt={`${providerOption.provider} avatar`}
-                              className="inline-block w-6 h-6 ml-2 rounded-full border"
+                              className="inline-block w-6 h-6 ml-2 rounded-full border shadow-sm"
                             />
                           )}
                         </Label>
@@ -444,9 +483,13 @@ export default function ProfilePage() {
               {/* Upload buttons - only show for upload source */}
               {avatarSource === 'upload' && (
                 <div className="flex gap-2">
-                  <Button variant="outline" onClick={handleUploadClick}>Upload New</Button>
+                  <Button variant="secondary" onClick={handleUploadClick} className="flex-1">
+                    Upload New
+                  </Button>
                   {uploadedAvatarUrl && (
-                    <Button variant="outline" onClick={handleImageSelect}>Edit Current</Button>
+                    <Button variant="outline" onClick={handleImageSelect} className="flex-1">
+                      Edit Current
+                    </Button>
                   )}
                 </div>
               )}
@@ -454,54 +497,72 @@ export default function ProfilePage() {
               {/* URL input - only show for URL source */}
               {avatarSource === 'url' && (
                 <div className="w-full max-w-sm space-y-2">
-                  <Label htmlFor="customUrl">Image URL</Label>
+                  <Label htmlFor="customUrl" className="text-sm font-medium">Image URL</Label>
                   <Input
                     id="customUrl"
                     value={customAvatarUrl}
                     onChange={(e) => setCustomAvatarUrl(e.target.value)}
                     placeholder="https://example.com/avatar.jpg"
+                    className="bg-background"
                   />
                 </div>
               )}
               
-              <div className="text-sm text-muted-foreground text-center">
+              <div className="text-xs text-muted-foreground text-center p-2 bg-muted/40 rounded-md mt-2">
                 <p>Recommended size: 256x256px</p>
                 {avatarSource === 'upload' && <p>Max file size: 2MB</p>}
               </div>
             </div>
             
             {/* Profile details section */}
-            <div className="flex-1 space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" value={user.email || ''} disabled />
-                <p className="text-sm text-muted-foreground">Your email address cannot be changed</p>
-              </div>
+            <div className="flex-1 space-y-6">
+              <div className="bg-card/50 p-5 rounded-lg space-y-2">
+                <h3 className="text-md font-semibold mb-3">Account Information</h3>
               
-              <div className="space-y-2">
-                <Label htmlFor="fullName">Full name</Label>
-                <Input
-                  id="fullName"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Enter your full name"
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                  <Input 
+                    id="email" 
+                    value={user.email || ''} 
+                    disabled 
+                    className="bg-background/70"
+                  />
+                  <p className="text-xs text-muted-foreground">Your email address cannot be changed</p>
+                </div>
+                
+                <div className="space-y-2 mt-4">
+                  <Label htmlFor="fullName" className="text-sm font-medium">Full name</Label>
+                  <Input
+                    id="fullName"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Enter your full name"
+                    className="bg-background/70"
+                  />
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="website">Website (optional)</Label>
-                <Input
-                  id="website"
-                  value={website}
-                  onChange={(e) => setWebsite(e.target.value)}
-                  placeholder="https://yourwebsite.com"
-                />
+              <div className="bg-card/50 p-5 rounded-lg space-y-2">
+                <h3 className="text-md font-semibold mb-3">Additional Information</h3>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="website" className="text-sm font-medium">Website (optional)</Label>
+                  <Input
+                    id="website"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                    placeholder="https://yourwebsite.com"
+                    className="bg-background/70"
+                  />
+                </div>
               </div>
               
-              <div className="pt-4">
+              <div className="pt-4 flex justify-end">
                 <Button 
                   onClick={handleSaveChanges} 
                   disabled={updating}
+                  size="lg"
+                  className="transition-all"
                 >
                   {updating ? 'Saving...' : 'Save changes'}
                 </Button>
@@ -519,6 +580,8 @@ export default function ProfilePage() {
           imageSrc={imageToEdit}
         />
       )}
+        </div>
+      </div>
     </div>
   )
 }
