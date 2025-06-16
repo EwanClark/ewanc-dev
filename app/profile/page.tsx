@@ -10,8 +10,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useToast } from '@/components/ui/use-toast'
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
-import { CheckCircle2, XCircle } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
 import { User } from '@supabase/supabase-js'
 import { Database } from '@/types/supabase'
@@ -24,16 +22,15 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [fullName, setFullName] = useState('')
   const [website, setWebsite] = useState('')
-  const [avatarSource, setAvatarSource] = useState<string>('upload') // Changed to string to handle provider-specific values
+  const [avatarSource, setAvatarSource] = useState<string>('upload')
   const [customAvatarUrl, setCustomAvatarUrl] = useState('')
   const [uploadedAvatarUrl, setUploadedAvatarUrl] = useState('')
   const [selectedProviderUrl, setSelectedProviderUrl] = useState('')
+  const [selectedProvider, setSelectedProvider] = useState('')
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
   const [imageToEdit, setImageToEdit] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
-  const [alertStatus, setAlertStatus] = useState<'success' | 'error' | null>(null)
-  const [showAlert, setShowAlert] = useState(false)
   const { toast } = useToast()
 
   const supabase = createClient()
@@ -69,15 +66,26 @@ export default function ProfilePage() {
         setFullName(profile?.full_name || '')
         setWebsite(profile?.website || '')
         
-        // Handle avatar source - check if it's a provider-specific source
+        // Handle avatar source
         const savedAvatarSource = profile?.avatar_source || 'upload'
-        if (savedAvatarSource.startsWith('provider-')) {
-          setAvatarSource(savedAvatarSource)
-          // Find the matching provider URL
-          const providerName = savedAvatarSource.replace('provider-', '')
-          const matchingProvider = availableProviders.find(p => p.provider === providerName)
+        
+        if (savedAvatarSource === 'provider') {
+          // Try to determine which provider by matching avatar URL
+          const matchingProvider = availableProviders.find(p => 
+            p.avatarUrl === profile?.avatar_url
+          )
+          
           if (matchingProvider) {
+            setAvatarSource(`provider-${matchingProvider.provider}`)
+            setSelectedProvider(matchingProvider.provider)
             setSelectedProviderUrl(matchingProvider.avatarUrl || '')
+          } else {
+            // Default to first available provider if we can't match
+            if (availableProviders.length > 0) {
+              setAvatarSource(`provider-${availableProviders[0].provider}`)
+              setSelectedProvider(availableProviders[0].provider)
+              setSelectedProviderUrl(availableProviders[0].avatarUrl || '')
+            }
           }
         } else {
           setAvatarSource(savedAvatarSource)
@@ -104,24 +112,26 @@ export default function ProfilePage() {
     
     try {
       setUpdating(true)
-      setShowAlert(false)
       
       let avatarUrl = null
       let finalAvatarSource = avatarSource
       
-      // Determine avatar URL based on selected source
+      // Determine avatar URL and source based on selected option
       if (avatarSource === 'upload') {
         avatarUrl = uploadedAvatarUrl || null
+        finalAvatarSource = 'upload'
       } else if (avatarSource === 'url') {
         avatarUrl = customAvatarUrl || null
+        finalAvatarSource = 'url'
       } else if (avatarSource === 'default') {
         avatarUrl = '/default-profile-picture.jpg'
+        finalAvatarSource = 'default'
       } else if (avatarSource.startsWith('provider-')) {
-        // Handle provider-specific avatar
+        // Handle provider-specific avatar - save as 'provider' in DB
         const providerName = avatarSource.replace('provider-', '')
         const matchingProvider = availableProviders.find(p => p.provider === providerName)
         avatarUrl = matchingProvider?.avatarUrl || null
-        finalAvatarSource = avatarSource // Keep the provider-specific source
+        finalAvatarSource = 'provider'
       }
       
       const { error } = await updateProfile({
@@ -135,20 +145,10 @@ export default function ProfilePage() {
         throw error
       }
       
-      // Show toast notification
       toast({
         title: 'Profile updated',
         description: 'Your profile information has been updated successfully.',
       })
-      
-      // Show persistent success alert
-      setAlertStatus('success')
-      setShowAlert(true)
-      
-      // Auto-hide alert after 5 seconds
-      setTimeout(() => {
-        setShowAlert(false)
-      }, 5000)
       
       // Update local profile state
       setProfile(prev => prev ? { 
@@ -161,22 +161,11 @@ export default function ProfilePage() {
       } : null)
     } catch (error) {
       console.error('Error updating profile:', error)
-      
-      // Show toast notification
       toast({
         title: 'Update failed',
         description: 'There was an error updating your profile.',
         variant: 'destructive',
       })
-      
-      // Show persistent error alert
-      setAlertStatus('error')
-      setShowAlert(true)
-      
-      // Auto-hide alert after 5 seconds
-      setTimeout(() => {
-        setShowAlert(false)
-      }, 5000)
     } finally {
       setUpdating(false)
     }
@@ -210,7 +199,6 @@ export default function ProfilePage() {
     
     try {
       setUpdating(true)
-      setShowAlert(false)
       
       const { url, error } = await uploadAvatar(new File([croppedImageBlob], `avatar-${user.id}.jpg`, { type: 'image/jpeg' }))
       
@@ -222,39 +210,18 @@ export default function ProfilePage() {
         setUploadedAvatarUrl(url)
         setAvatarSource('upload')
         
-        // Show toast notification
         toast({
           title: 'Avatar uploaded',
           description: 'Your profile picture has been uploaded successfully. Click "Save changes" to apply.',
         })
-        
-        // Show persistent success alert
-        setAlertStatus('success')
-        setShowAlert(true)
-        
-        // Auto-hide alert after 5 seconds
-        setTimeout(() => {
-          setShowAlert(false)
-        }, 5000)
       }
     } catch (error) {
       console.error('Error uploading avatar:', error)
-      
-      // Show toast notification
       toast({
         title: 'Upload failed',
         description: 'There was an error uploading your profile picture.',
         variant: 'destructive',
       })
-      
-      // Show persistent error alert
-      setAlertStatus('error')
-      setShowAlert(true)
-      
-      // Auto-hide alert after 5 seconds
-      setTimeout(() => {
-        setShowAlert(false)
-      }, 5000)
     } finally {
       setUpdating(false)
     }
@@ -277,6 +244,7 @@ export default function ProfilePage() {
 
   const handleProviderSelection = (providerName: string, avatarUrl: string) => {
     setAvatarSource(`provider-${providerName}`)
+    setSelectedProvider(providerName)
     setSelectedProviderUrl(avatarUrl)
   }
 
@@ -314,28 +282,6 @@ export default function ProfilePage() {
   return (
     <div className="container mx-auto py-10">
       <h1 className="text-3xl font-bold mb-6">Your Profile</h1>
-      
-      {/* Display alert message */}
-      {showAlert && (
-        <Alert 
-          variant={alertStatus === 'error' ? 'destructive' : 'default'} 
-          className={`mb-4 ${alertStatus === 'success' ? 'border-green-500 bg-green-50 dark:bg-green-900/20 dark:border-green-900' : ''}`}
-        >
-          {alertStatus === 'success' ? (
-            <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
-          ) : (
-            <XCircle className="h-4 w-4" />
-          )}
-          <AlertTitle>
-            {alertStatus === 'success' ? 'Success!' : 'Error!'}
-          </AlertTitle>
-          <AlertDescription>
-            {alertStatus === 'success' 
-              ? 'Your profile has been updated successfully.'
-              : 'There was an error saving your profile. Please try again.'}
-          </AlertDescription>
-        </Alert>
-      )}
       
       <Card className="mb-6">
         <CardHeader>
