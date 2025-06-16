@@ -29,15 +29,20 @@ type User = SupabaseUser & {
 };
 
 type UserProfile = {
-  id: string;
-  name: string | null;
-  email: string | null;
-  avatarUrl?: string | null;
-  provider?: "github" | "google" | "email" | null;
-  providerAvatarUrl?: string | null;
-  avatarSource?: "upload" | "provider" | "url" | "default";
-  website?: string | null;
-};
+  id: string
+  name: string | null
+  email: string | null
+  avatarUrl?: string | null
+  provider?: "github" | "google" | "email" | null
+  providerAvatarUrl?: string | null
+  avatarSource?: 'upload' | 'provider' | 'url' | 'default'
+  website?: string | null
+  availableProviders?: Array<{
+    provider: string
+    avatarUrl: string | null
+    name: string | null
+  }>
+}
 
 type AuthContextType = {
   user: UserProfile | null;
@@ -81,52 +86,53 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Debug logging - remove this after testing
     console.log("Session user object:", sessionUser);
     console.log("User metadata:", sessionUser.user_metadata);
-    console.log("App metadata:", sessionUser.app_metadata);
     console.log("Identities:", (sessionUser as User).identities);
 
-    // Detect provider from multiple sources
     const identities = (sessionUser as User).identities || [];
 
-    // Try to get provider from identities first
-    let provider: "github" | "google" | "email" = "email";
-    let providerAvatarUrl: string | null = null;
+    // Filter out email provider and get OAuth providers
+    const oauthProviders = identities.filter(
+      (identity) =>
+        identity.provider !== "email" && identity.provider !== "phone"
+    );
 
-    if (identities.length > 0) {
-      provider = identities[0].provider as "github" | "google" | "email";
-    } else if (sessionUser.app_metadata?.provider) {
-      // Fallback to app_metadata
-      provider = sessionUser.app_metadata.provider as
-        | "github"
-        | "google"
-        | "email";
-    } else if (sessionUser.app_metadata?.providers?.length > 0) {
-      // Another fallback
-      provider = sessionUser.app_metadata.providers[0] as
-        | "github"
-        | "google"
-        | "email";
-    }
+    // Get the most recent OAuth provider (or first available)
+    const primaryProvider =
+      oauthProviders.length > 0
+        ? oauthProviders[oauthProviders.length - 1] // Most recent
+        : { provider: "email", identity_data: {} };
 
-    // Get provider-specific avatar URL with multiple fallbacks
-    if (provider !== "email") {
-      providerAvatarUrl =
-        sessionUser.user_metadata?.avatar_url ||
-        sessionUser.user_metadata?.picture ||
-        sessionUser.user_metadata?.avatar ||
-        identities[0]?.identity_data?.avatar_url ||
-        identities[0]?.identity_data?.picture ||
-        null;
-    }
+    const provider = primaryProvider.provider as "github" | "google" | "email";
 
-    console.log("Detected provider:", provider);
+    // Get provider-specific avatar URL
+    const providerAvatarUrl =
+      provider !== "email"
+        ? (primaryProvider.identity_data as Record<string, any> | undefined)?.avatar_url ||
+          sessionUser.user_metadata?.avatar_url ||
+          sessionUser.user_metadata?.picture ||
+          null
+        : null;
+
+    // Get all available provider avatars for selection
+    const availableProviders = oauthProviders.map((identity) => ({
+      provider: identity.provider,
+      avatarUrl: identity.identity_data?.avatar_url || null,
+      name: identity.identity_data?.full_name || null,
+    }));
+
+    console.log(
+      "OAuth providers found:",
+      oauthProviders.map((p) => p.provider)
+    );
+    console.log("Primary provider:", provider);
     console.log("Provider avatar URL:", providerAvatarUrl);
+    console.log("Available providers:", availableProviders);
 
     return {
       id: sessionUser.id,
       name:
         existingProfile?.full_name ||
         sessionUser.user_metadata?.full_name ||
-        sessionUser.user_metadata?.name ||
         null,
       email: sessionUser.email || null,
       avatarUrl: existingProfile?.avatar_url || null,
@@ -134,6 +140,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       providerAvatarUrl: providerAvatarUrl,
       avatarSource: existingProfile?.avatar_source || "upload",
       website: existingProfile?.website || null,
+      availableProviders: availableProviders, // Add this for multiple provider support
     };
   };
 
