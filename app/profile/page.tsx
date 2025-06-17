@@ -40,7 +40,7 @@ export default function ProfilePage() {
 
   // Check if user has OAuth providers
   const availableProviders = authUser?.availableProviders || []
-  const hasProviders = availableProviders.length > 0
+  const hasProviders = availableProviders && availableProviders.length > 0
 
   useEffect(() => {
     const fetchUserAndProfile = async () => {
@@ -84,11 +84,11 @@ export default function ProfilePage() {
         setAvatarSource(savedAvatarSource as 'upload' | 'provider' | 'url' | 'default')
         
         // If using provider source, try to determine which provider based on avatar_url
-        if (savedAvatarSource === 'provider' && profile?.avatar_url) {
+        if (savedAvatarSource === 'provider' && profile?.avatar_url && availableProviders?.length > 0) {
           const matchingProvider = availableProviders.find(p => p.avatarUrl === profile.avatar_url)
           if (matchingProvider) {
             setSelectedProvider(matchingProvider.provider)
-          } else if (availableProviders.length > 0) {
+          } else {
             // Default to first available provider if no match found
             setSelectedProvider(availableProviders[0].provider)
           }
@@ -131,7 +131,7 @@ export default function ProfilePage() {
           avatarUrl = '/default-profile-picture.jpg'
           break
         case 'provider':
-          if (selectedProvider) {
+          if (selectedProvider && availableProviders?.length > 0) {
             const matchingProvider = availableProviders.find(p => p.provider === selectedProvider)
             avatarUrl = matchingProvider?.avatarUrl || null
           }
@@ -289,7 +289,7 @@ export default function ProfilePage() {
       case 'default':
         return '/default-profile-picture.jpg'
       case 'provider':
-        if (selectedProvider) {
+        if (selectedProvider && availableProviders?.length > 0) {
           const matchingProvider = availableProviders.find(p => p.provider === selectedProvider)
           return matchingProvider?.avatarUrl || null
         }
@@ -420,16 +420,15 @@ export default function ProfilePage() {
                   ? 'Your profile has been updated successfully.'
                   : 'There was an error saving your profile. Please try again.'}
               </AlertDescription>
-            </Alert>
-          )}
+            </Alert>          )}
 
-      <Card className="mb-6 border border-border/40 shadow-sm">
-        <CardHeader className="border-b border-border/30">
-          <CardTitle className="text-xl">Account Settings</CardTitle>
-        </CardHeader>
-        
-        <CardContent className="pt-6">
-  <div className="flex flex-col lg:flex-row gap-8">
+          <Card className="mb-6 border border-border/40 shadow-sm">
+            <CardHeader className="border-b border-border/30">
+              <CardTitle className="text-xl">Account Settings</CardTitle>
+            </CardHeader>
+            
+            <CardContent className="pt-6">
+              <div className="flex flex-col lg:flex-row gap-8">
     {/* Left side - Avatar Preview Only */}
     <div className="flex flex-col items-center gap-4 lg:w-1/3">
       <div className="relative group">
@@ -622,17 +621,18 @@ export default function ProfilePage() {
         </Button>
       </div>
     </div>
-  </div>
-</CardContent>
+              </div>
+            </CardContent>
+          </Card>
       
-      {isImageModalOpen && imageToEdit && (
-        <ImageCropModal
-          isOpen={isImageModalOpen}
-          onClose={() => setIsImageModalOpen(false)}
-          onCropComplete={handleCropComplete}
-          imageSrc={imageToEdit}
-        />
-      )}
+          {isImageModalOpen && imageToEdit && (
+            <ImageCropModal
+              isOpen={isImageModalOpen}
+              onClose={() => setIsImageModalOpen(false)}
+              onCropComplete={handleCropComplete}
+              imageSrc={imageToEdit}
+            />
+          )}
         </div>
       </div>
     </div>
