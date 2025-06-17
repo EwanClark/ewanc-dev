@@ -59,6 +59,7 @@ type AuthContextType = {
   signInWithGithub: () => Promise<{ error: AuthError | null }>;
   signInWithGoogle: () => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error: Error | null }>;
   updateProfile: (data: {
     name?: string;
     avatarUrl?: string | null;
@@ -325,6 +326,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push("/");
   };
 
+  const resetPassword = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
+      return { error: null };
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      return { error: error as Error };
+    }
+  };
+
   const updateProfile = async (data: {
     name?: string;
     avatarUrl?: string | null;
@@ -421,6 +439,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signInWithGithub,
         signInWithGoogle,
         signOut,
+        resetPassword,
         updateProfile,
         uploadAvatar,
         getDisplayAvatarUrl,
