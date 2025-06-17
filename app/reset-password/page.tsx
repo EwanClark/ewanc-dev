@@ -20,6 +20,7 @@ export default function ResetPasswordPage() {
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   const [hashPresent, setHashPresent] = useState<boolean | null>(null) // null = still checking
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const supabase = createClient()
 
   // Check if the user is in a valid password recovery session
@@ -128,10 +129,25 @@ export default function ResetPasswordPage() {
         }
       } else {
         setSuccess(true)
-        // Redirect to login page after 3 seconds
-        setTimeout(() => {
-          router.push('/login')
-        }, 3000)
+        
+        // If we successfully reset the password, we should be logged in
+        // Get the updated session
+        const { data: { session: updatedSession } } = await supabase.auth.getSession()
+        
+        // Check if we're authenticated now
+        if (updatedSession) {
+          // We're logged in, redirect to profile page
+          setIsLoggedIn(true)
+          setTimeout(() => {
+            router.push('/profile')
+          }, 3000)
+        } else {
+          // Not automatically logged in, redirect to login page
+          setIsLoggedIn(false)
+          setTimeout(() => {
+            router.push('/login')
+          }, 3000)
+        }
       }
     } catch (err) {
       setError("An unexpected error occurred")
@@ -162,7 +178,10 @@ export default function ResetPasswordPage() {
             {success && (
               <Alert>
                 <AlertDescription>
-                  Your password has been reset successfully! You will be redirected to the login page.
+                  Your password has been reset successfully! 
+                  {isLoggedIn ? 
+                    " You are now logged in and will be redirected to your profile page." : 
+                    " You will be redirected to the login page to sign in with your new password."}
                 </AlertDescription>
               </Alert>
             )}
