@@ -423,7 +423,7 @@ export default function ProfilePage() {
             </Alert>          )}
 
           <Card className="mb-6 border border-border/40 shadow-sm">
-            <CardHeader className="border-b border-border/30">
+            <CardHeader className="border-b border-border/30">O
               <CardTitle className="text-xl">Account Settings</CardTitle>
             </CardHeader>
             
@@ -449,14 +449,44 @@ export default function ProfilePage() {
         <h3 className="font-medium">{fullName || user.email || 'User'}</h3>
         <p className="text-sm text-muted-foreground">{user.email}</p>
       </div>
-      
-      <div className="w-full bg-muted/30 rounded-lg p-3 text-xs text-center text-muted-foreground">
-        <p>Recommended size: 256x256px</p>
-        {avatarSource === 'upload' && <p>Max file size: 2MB</p>}
-      </div>
     </div>
     
     {/* Right side - Avatar Settings and Profile Information */}
+
+      {/* Profile Information Section */}
+      <div className="bg-card/50 p-6 rounded-lg border border-border/40">
+        <h3 className="text-base font-semibold mb-4">Profile Information</h3>
+      
+        <div className="space-y-5">
+          <div className="space-y-2">
+            <div className="flex justify-between items-end">
+              <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
+              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Verified</span>
+            </div>
+            <Input 
+              id="email" 
+              value={user.email || ''} 
+              disabled 
+              className="bg-background/70 border-border/30 text-muted-foreground"
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Your email address cannot be changed
+            </p>
+          </div>
+          
+          <div className="space-y-2 pt-2">
+            <Label htmlFor="fullName" className="text-sm font-medium">Full Name</Label>
+            <Input
+              id="fullName"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Enter your full name"
+              className="bg-background/70 border-border/30"
+            />
+          </div>
+        </div>
+      </div>
+      
     <div className="flex-1 space-y-6">
       {/* Avatar Settings Section */}
       <div className="bg-card/50 p-6 rounded-lg border border-border/40">
@@ -574,41 +604,6 @@ export default function ProfilePage() {
           )}
         </div>
       </div>
-
-      {/* Profile Information Section */}
-      <div className="bg-card/50 p-6 rounded-lg border border-border/40">
-        <h3 className="text-base font-semibold mb-4">Profile Information</h3>
-      
-        <div className="space-y-5">
-          <div className="space-y-2">
-            <div className="flex justify-between items-end">
-              <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
-              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Verified</span>
-            </div>
-            <Input 
-              id="email" 
-              value={user.email || ''} 
-              disabled 
-              className="bg-background/70 border-border/30 text-muted-foreground"
-            />
-            <p className="text-xs text-muted-foreground mt-1">
-              Your email address cannot be changed
-            </p>
-          </div>
-          
-          <div className="space-y-2 pt-2">
-            <Label htmlFor="fullName" className="text-sm font-medium">Full Name</Label>
-            <Input
-              id="fullName"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="Enter your full name"
-              className="bg-background/70 border-border/30"
-            />
-          </div>
-        </div>
-      </div>
-      
       {/* Save Button */}
       <div className="flex justify-end">
         <Button 
