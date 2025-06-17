@@ -451,11 +451,10 @@ export default function ProfilePage() {
                 <div className="space-y-6 w-full">
                   {/* Profile Information Section */}
                   <div className="bg-card/50 p-6 rounded-lg border border-border/40">
-                    <h3 className="text-base font-semibold mb-4">Profile Information</h3>
                     <div className="space-y-5">
                       <div className="space-y-2">
                         <div className="flex justify-between items-end">
-                          <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
+                          <Label htmlFor="email" className="text-sm font-semibold">Email Address</Label>
                           <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Verified</span>
                         </div>
                         <Input 
@@ -470,7 +469,7 @@ export default function ProfilePage() {
                       </div>
                       
                       <div className="space-y-2 pt-2">
-                        <Label htmlFor="fullName" className="text-sm font-medium">Full Name</Label>
+                        <Label htmlFor="fullName" className="text-sm font-semibold">Full Name</Label>
                         <Input
                           id="fullName"
                           value={fullName}
@@ -484,45 +483,55 @@ export default function ProfilePage() {
                   
                   {/* Avatar Settings Section */}
                   <div className="bg-card/50 p-6 rounded-lg border border-border/40">
-                    <h3 className="text-base font-semibold mb-4">Profile Picture Settings</h3>
-                    
                     <div className="space-y-4">
                       <div>
-                        <Label className="text-sm font-medium mb-3 block">Picture Source</Label>
+                        <Label className="text-sm font-semibold mb-3 block">Picture Source</Label>
                         <RadioGroup 
                           value={avatarSource} 
                           onValueChange={(value) => setAvatarSource(value as 'upload' | 'provider' | 'url' | 'default')}
                           className="grid grid-cols-2 gap-3"
                         >
-                          <div className="flex items-center space-x-2 rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors">
-                            <RadioGroupItem value="upload" id="upload" />
-                            <Label htmlFor="upload" className="cursor-pointer text-sm">
-                              Upload custom image
-                            </Label>
-                          </div>
+                          <Label 
+                            htmlFor="upload" 
+                            className="cursor-pointer rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors w-full"
+                          >
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="upload" id="upload" />
+                              <span className="text-sm">Upload custom image</span>
+                            </div>
+                          </Label>
                           
                           {hasProviders && (
-                            <div className="flex items-center space-x-2 rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors">
-                              <RadioGroupItem value="provider" id="provider" />
-                              <Label htmlFor="provider" className="cursor-pointer text-sm">
-                                OAuth provider picture
-                              </Label>
-                            </div>
+                            <Label 
+                              htmlFor="provider" 
+                              className="cursor-pointer rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors w-full"
+                            >
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="provider" id="provider" />
+                                <span className="text-sm">OAuth provider picture</span>
+                              </div>
+                            </Label>
                           )}
                           
-                          <div className="flex items-center space-x-2 rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors">
-                            <RadioGroupItem value="url" id="url" />
-                            <Label htmlFor="url" className="cursor-pointer text-sm">
-                              Use custom URL
-                            </Label>
-                          </div>
+                          <Label 
+                            htmlFor="url" 
+                            className="cursor-pointer rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors w-full"
+                          >
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="url" id="url" />
+                              <span className="text-sm">Use custom URL</span>
+                            </div>
+                          </Label>
                           
-                          <div className="flex items-center space-x-2 rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors">
-                            <RadioGroupItem value="default" id="default" />
-                            <Label htmlFor="default" className="cursor-pointer text-sm">
-                              Use default image
-                            </Label>
-                          </div>
+                          <Label 
+                            htmlFor="default" 
+                            className="cursor-pointer rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors w-full"
+                          >
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="default" id="default" />
+                              <span className="text-sm">Use default image</span>
+                            </div>
+                          </Label>
                         </RadioGroup>
                       </div>
 
@@ -530,29 +539,32 @@ export default function ProfilePage() {
                       {avatarSource === 'provider' && hasProviders && (
                         <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
                           <Label className="text-sm font-medium">Connected Accounts</Label>
-                          <RadioGroup value={selectedProvider} onValueChange={handleProviderSelection} className="space-y-2">
+                          <RadioGroup value={selectedProvider} onValueChange={handleProviderSelection} className="grid grid-cols-2 gap-2">
                             {availableProviders.map((providerOption) => (
-                              <div key={providerOption.provider} className="flex items-center justify-between p-3 rounded-md border border-border/20 hover:bg-background/50 transition-colors">
-                                <div className="flex items-center space-x-3">
-                                  <RadioGroupItem 
-                                    value={providerOption.provider} 
-                                    id={`sel-${providerOption.provider}`}
-                                  />
-                                  <Label 
-                                    htmlFor={`sel-${providerOption.provider}`}
-                                    className="cursor-pointer font-medium capitalize"
-                                  >
-                                    {providerOption.provider}
-                                  </Label>
+                              <Label 
+                                key={providerOption.provider}
+                                htmlFor={`sel-${providerOption.provider}`}
+                                className="cursor-pointer block p-3 rounded-md border border-border/20 hover:bg-background/50 transition-colors"
+                              >
+                                <div className="flex items-center justify-between w-full">
+                                  <div className="flex items-center space-x-3">
+                                    <RadioGroupItem 
+                                      value={providerOption.provider} 
+                                      id={`sel-${providerOption.provider}`}
+                                    />
+                                    <span className="font-medium capitalize">
+                                      {providerOption.provider}
+                                    </span>
+                                  </div>
+                                  {providerOption.avatarUrl && (
+                                    <img 
+                                      src={providerOption.avatarUrl || "/placeholder.svg"} 
+                                      alt={`${providerOption.provider} avatar`}
+                                      className="w-8 h-8 rounded-full border shadow-sm"
+                                    />
+                                  )}
                                 </div>
-                                {providerOption.avatarUrl && (
-                                  <img 
-                                    src={providerOption.avatarUrl || "/placeholder.svg"} 
-                                    alt={`${providerOption.provider} avatar`}
-                                    className="w-8 h-8 rounded-full border shadow-sm"
-                                  />
-                                )}
-                              </div>
+                              </Label>
                             ))}
                           </RadioGroup>
                         </div>
