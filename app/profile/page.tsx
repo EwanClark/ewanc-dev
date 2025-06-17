@@ -324,23 +324,20 @@ export default function ProfilePage() {
                 </div>
               </CardHeader>
               <CardContent className="pt-6">
-                <div className="flex flex-col md:flex-row gap-8">
-                  <div className="flex flex-col items-center md:w-1/3">
+                <div className="flex flex-col gap-8">
+                  <div className="flex flex-col items-center">
                     <div className="animate-pulse space-y-6 w-full">
                       <div className="flex justify-center">
                         <div className="rounded-full bg-muted h-40 w-40"></div>
                       </div>
-                      <div className="h-36 bg-muted rounded w-full"></div>
-                      <div className="h-24 bg-muted rounded w-full"></div>
+                      <div className="h-12 bg-muted rounded w-60 mx-auto"></div>
                     </div>
                   </div>
                   
-                  <div className="flex-1">
-                    <div className="animate-pulse space-y-6 w-full">
-                      <div className="h-40 bg-muted rounded w-full"></div>
-                      <div className="h-32 bg-muted rounded w-full"></div>
-                      <div className="h-10 bg-muted rounded w-1/3 ml-auto"></div>
-                    </div>
+                  <div className="animate-pulse space-y-6 w-full">
+                    <div className="h-40 bg-muted rounded w-full"></div>
+                    <div className="h-64 bg-muted rounded w-full"></div>
+                    <div className="h-10 bg-muted rounded w-1/3 ml-auto"></div>
                   </div>
                 </div>
               </CardContent>
@@ -423,199 +420,197 @@ export default function ProfilePage() {
             </Alert>          )}
 
           <Card className="mb-6 border border-border/40 shadow-sm">
-            <CardHeader className="border-b border-border/30">O
+            <CardHeader className="border-b border-border/30">
               <CardTitle className="text-xl">Account Settings</CardTitle>
             </CardHeader>
             
             <CardContent className="pt-6">
-              <div className="flex flex-col lg:flex-row gap-8">
-    {/* Left side - Avatar Preview Only */}
-    <div className="flex flex-col items-center gap-4 lg:w-1/3">
-      <div className="relative group">
-        <Avatar className="w-40 h-40 border-2 border-border shadow-md transition-all group-hover:shadow-lg">
-          <AvatarImage src={getPreviewAvatarUrl() || ''} alt={fullName || 'User'} />
-          <AvatarFallback className="text-2xl font-medium">{(fullName || user.email || 'User').substring(0, 2).toUpperCase()}</AvatarFallback>
-        </Avatar>
-        <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-          {avatarSource === 'upload' && (
-            <Button size="sm" variant="secondary" className="text-xs font-medium shadow-sm" onClick={handleImageSelect}>
-              Edit Image
-            </Button>
-          )}
-        </div>
-      </div>
-      
-      <div className="text-center">
-        <h3 className="font-medium">{fullName || user.email || 'User'}</h3>
-        <p className="text-sm text-muted-foreground">{user.email}</p>
-      </div>
-    </div>
-    
-    {/* Right side - Avatar Settings and Profile Information */}
-
-      {/* Profile Information Section */}
-      <div className="bg-card/50 p-6 rounded-lg border border-border/40">
-        <h3 className="text-base font-semibold mb-4">Profile Information</h3>
-      
-        <div className="space-y-5">
-          <div className="space-y-2">
-            <div className="flex justify-between items-end">
-              <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
-              <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Verified</span>
-            </div>
-            <Input 
-              id="email" 
-              value={user.email || ''} 
-              disabled 
-              className="bg-background/70 border-border/30 text-muted-foreground"
-            />
-            <p className="text-xs text-muted-foreground mt-1">
-              Your email address cannot be changed
-            </p>
-          </div>
-          
-          <div className="space-y-2 pt-2">
-            <Label htmlFor="fullName" className="text-sm font-medium">Full Name</Label>
-            <Input
-              id="fullName"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="Enter your full name"
-              className="bg-background/70 border-border/30"
-            />
-          </div>
-        </div>
-      </div>
-      
-    <div className="flex-1 space-y-6">
-      {/* Avatar Settings Section */}
-      <div className="bg-card/50 p-6 rounded-lg border border-border/40">
-        <h3 className="text-base font-semibold mb-4">Profile Picture Settings</h3>
-        
-        <div className="space-y-4">
-          <div>
-            <Label className="text-sm font-medium mb-3 block">Picture Source</Label>
-            <RadioGroup 
-              value={avatarSource} 
-              onValueChange={(value) => setAvatarSource(value as 'upload' | 'provider' | 'url' | 'default')}
-              className="grid grid-cols-2 gap-3"
-            >
-              <div className="flex items-center space-x-2 rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors">
-                <RadioGroupItem value="upload" id="upload" />
-                <Label htmlFor="upload" className="cursor-pointer text-sm">
-                  Upload custom image
-                </Label>
-              </div>
-              
-              {hasProviders && (
-                <div className="flex items-center space-x-2 rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors">
-                  <RadioGroupItem value="provider" id="provider" />
-                  <Label htmlFor="provider" className="cursor-pointer text-sm">
-                    OAuth provider picture
-                  </Label>
-                </div>
-              )}
-              
-              <div className="flex items-center space-x-2 rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors">
-                <RadioGroupItem value="url" id="url" />
-                <Label htmlFor="url" className="cursor-pointer text-sm">
-                  Use custom URL
-                </Label>
-              </div>
-              
-              <div className="flex items-center space-x-2 rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors">
-                <RadioGroupItem value="default" id="default" />
-                <Label htmlFor="default" className="cursor-pointer text-sm">
-                  Use default image
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          {/* Provider selection - show when provider is selected */}
-          {avatarSource === 'provider' && hasProviders && (
-            <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
-              <Label className="text-sm font-medium">Connected Accounts</Label>
-              <RadioGroup value={selectedProvider} onValueChange={handleProviderSelection} className="space-y-2">
-                {availableProviders.map((providerOption) => (
-                  <div key={providerOption.provider} className="flex items-center justify-between p-3 rounded-md border border-border/20 hover:bg-background/50 transition-colors">
-                    <div className="flex items-center space-x-3">
-                      <RadioGroupItem 
-                        value={providerOption.provider} 
-                        id={`sel-${providerOption.provider}`}
-                      />
-                      <Label 
-                        htmlFor={`sel-${providerOption.provider}`}
-                        className="cursor-pointer font-medium capitalize"
-                      >
-                        {providerOption.provider}
-                      </Label>
+              <div className="flex flex-col gap-8">
+                {/* Left side - Avatar Preview Only */}
+                <div className="flex flex-col items-center gap-4 w-full">
+                  <div className="relative group">
+                    <Avatar className="w-40 h-40 border-2 border-border shadow-md transition-all group-hover:shadow-lg">
+                      <AvatarImage src={getPreviewAvatarUrl() || ''} alt={fullName || 'User'} />
+                      <AvatarFallback className="text-2xl font-medium">{(fullName || user.email || 'User').substring(0, 2).toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {avatarSource === 'upload' && (
+                        <Button size="sm" variant="secondary" className="text-xs font-medium shadow-sm" onClick={handleImageSelect}>
+                          Edit Image
+                        </Button>
+                      )}
                     </div>
-                    {providerOption.avatarUrl && (
-                      <img 
-                        src={providerOption.avatarUrl || "/placeholder.svg"} 
-                        alt={`${providerOption.provider} avatar`}
-                        className="w-8 h-8 rounded-full border shadow-sm"
-                      />
-                    )}
                   </div>
-                ))}
-              </RadioGroup>
-            </div>
-          )}
+                  
+                  <div className="text-center">
+                    <h3 className="font-medium">{fullName || user.email || 'User'}</h3>
+                    <p className="text-sm text-muted-foreground">{user.email}</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-6 w-full">
+                  {/* Profile Information Section */}
+                  <div className="bg-card/50 p-6 rounded-lg border border-border/40">
+                    <h3 className="text-base font-semibold mb-4">Profile Information</h3>
+                    <div className="space-y-5">
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-end">
+                          <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
+                          <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Verified</span>
+                        </div>
+                        <Input 
+                          id="email" 
+                          value={user.email || ''} 
+                          disabled 
+                          className="bg-background/70 border-border/30 text-muted-foreground"
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Your email address cannot be changed
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-2 pt-2">
+                        <Label htmlFor="fullName" className="text-sm font-medium">Full Name</Label>
+                        <Input
+                          id="fullName"
+                          value={fullName}
+                          onChange={(e) => setFullName(e.target.value)}
+                          placeholder="Enter your full name"
+                          className="bg-background/70 border-border/30"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Avatar Settings Section */}
+                  <div className="bg-card/50 p-6 rounded-lg border border-border/40">
+                    <h3 className="text-base font-semibold mb-4">Profile Picture Settings</h3>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <Label className="text-sm font-medium mb-3 block">Picture Source</Label>
+                        <RadioGroup 
+                          value={avatarSource} 
+                          onValueChange={(value) => setAvatarSource(value as 'upload' | 'provider' | 'url' | 'default')}
+                          className="grid grid-cols-2 gap-3"
+                        >
+                          <div className="flex items-center space-x-2 rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors">
+                            <RadioGroupItem value="upload" id="upload" />
+                            <Label htmlFor="upload" className="cursor-pointer text-sm">
+                              Upload custom image
+                            </Label>
+                          </div>
+                          
+                          {hasProviders && (
+                            <div className="flex items-center space-x-2 rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors">
+                              <RadioGroupItem value="provider" id="provider" />
+                              <Label htmlFor="provider" className="cursor-pointer text-sm">
+                                OAuth provider picture
+                              </Label>
+                            </div>
+                          )}
+                          
+                          <div className="flex items-center space-x-2 rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors">
+                            <RadioGroupItem value="url" id="url" />
+                            <Label htmlFor="url" className="cursor-pointer text-sm">
+                              Use custom URL
+                            </Label>
+                          </div>
+                          
+                          <div className="flex items-center space-x-2 rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors">
+                            <RadioGroupItem value="default" id="default" />
+                            <Label htmlFor="default" className="cursor-pointer text-sm">
+                              Use default image
+                            </Label>
+                          </div>
+                        </RadioGroup>
+                      </div>
 
-          {/* Upload options - show when upload is selected */}
-          {avatarSource === 'upload' && (
-            <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
-              <Label className="text-sm font-medium">Upload Options</Label>
-              <div className="flex gap-3">
-                <Button 
-                  variant="secondary" 
-                  onClick={handleUploadClick} 
-                  className="flex-1 font-medium"
-                >
-                  Upload New Image
-                </Button>
-                {uploadedAvatarUrl && (
-                  <Button 
-                    variant="outline" 
-                    onClick={handleImageSelect} 
-                    className="flex-1 font-medium"
-                  >
-                    Edit Current Image
-                  </Button>
-                )}
-              </div>
-            </div>
-          )}
+                      {/* Provider selection - show when provider is selected */}
+                      {avatarSource === 'provider' && hasProviders && (
+                        <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
+                          <Label className="text-sm font-medium">Connected Accounts</Label>
+                          <RadioGroup value={selectedProvider} onValueChange={handleProviderSelection} className="space-y-2">
+                            {availableProviders.map((providerOption) => (
+                              <div key={providerOption.provider} className="flex items-center justify-between p-3 rounded-md border border-border/20 hover:bg-background/50 transition-colors">
+                                <div className="flex items-center space-x-3">
+                                  <RadioGroupItem 
+                                    value={providerOption.provider} 
+                                    id={`sel-${providerOption.provider}`}
+                                  />
+                                  <Label 
+                                    htmlFor={`sel-${providerOption.provider}`}
+                                    className="cursor-pointer font-medium capitalize"
+                                  >
+                                    {providerOption.provider}
+                                  </Label>
+                                </div>
+                                {providerOption.avatarUrl && (
+                                  <img 
+                                    src={providerOption.avatarUrl || "/placeholder.svg"} 
+                                    alt={`${providerOption.provider} avatar`}
+                                    className="w-8 h-8 rounded-full border shadow-sm"
+                                  />
+                                )}
+                              </div>
+                            ))}
+                          </RadioGroup>
+                        </div>
+                      )}
 
-          {/* URL input - show when URL is selected */}
-          {avatarSource === 'url' && (
-            <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
-              <Label htmlFor="customUrl" className="text-sm font-medium">External Image URL</Label>
-              <Input
-                id="customUrl"
-                value={customAvatarUrl}
-                onChange={(e) => setCustomAvatarUrl(e.target.value)}
-                placeholder="https://example.com/avatar.jpg"
-                className="bg-background/70 border-border/30"
-              />
-            </div>
-          )}
-        </div>
-      </div>
-      {/* Save Button */}
-      <div className="flex justify-end">
-        <Button 
-          onClick={handleSaveChanges} 
-          disabled={updating}
-          size="lg"
-          className="font-medium px-8"
-        >
-          {updating ? 'Saving...' : 'Save Changes'}
-        </Button>
-      </div>
-    </div>
+                      {/* Upload options - show when upload is selected */}
+                      {avatarSource === 'upload' && (
+                        <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
+                          <Label className="text-sm font-medium">Upload Options</Label>
+                          <div className="flex gap-3">
+                            <Button 
+                              variant="secondary" 
+                              onClick={handleUploadClick} 
+                              className="flex-1 font-medium"
+                            >
+                              Upload New Image
+                            </Button>
+                            {uploadedAvatarUrl && (
+                              <Button 
+                                variant="outline" 
+                                onClick={handleImageSelect} 
+                                className="flex-1 font-medium"
+                              >
+                                Edit Current Image
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* URL input - show when URL is selected */}
+                      {avatarSource === 'url' && (
+                        <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
+                          <Label htmlFor="customUrl" className="text-sm font-medium">External Image URL</Label>
+                          <Input
+                            id="customUrl"
+                            value={customAvatarUrl}
+                            onChange={(e) => setCustomAvatarUrl(e.target.value)}
+                            placeholder="https://example.com/avatar.jpg"
+                            className="bg-background/70 border-border/30"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Save Button */}
+                  <div className="flex justify-end">
+                    <Button 
+                      onClick={handleSaveChanges} 
+                      disabled={updating}
+                      size="lg"
+                      className="font-medium px-8"
+                    >
+                      {updating ? 'Saving...' : 'Save Changes'}
+                    </Button>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
