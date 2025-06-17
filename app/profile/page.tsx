@@ -420,11 +420,17 @@ export default function ProfilePage() {
             </Alert>          )}
 
           <Card className="mb-6 border border-border/40 shadow-sm">
-            <CardHeader className="border-b border-border/30">
-              <CardTitle className="text-xl">Account Settings</CardTitle>
-            </CardHeader>
-            
-            <CardContent className="pt-6">
+            <CardContent className="pt-6 relative">
+              <div className="absolute right-6 top-6">
+                <Button 
+                  onClick={handleSaveChanges} 
+                  disabled={updating}
+                  size="default"
+                  className="font-medium"
+                >
+                  {updating ? 'Saving...' : 'Save Changes'}
+                </Button>
+              </div>
               <div className="flex flex-col gap-8">
                 {/* Left side - Avatar Preview Only */}
                 <div className="flex flex-col items-center gap-4 w-full">
@@ -611,17 +617,7 @@ export default function ProfilePage() {
                     </div>
                   </div>
                   
-                  {/* Save Button */}
-                  <div className="flex justify-end">
-                    <Button 
-                      onClick={handleSaveChanges} 
-                      disabled={updating}
-                      size="lg"
-                      className="font-medium px-8"
-                    >
-                      {updating ? 'Saving...' : 'Save Changes'}
-                    </Button>
-                  </div>
+                  {/* Save Button removed from here and moved to top */}
                 </div>
               </div>
             </CardContent>
