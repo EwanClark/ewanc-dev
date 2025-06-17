@@ -138,15 +138,11 @@ export default function ResetPasswordPage() {
         if (updatedSession) {
           // We're logged in, redirect to profile page
           setIsLoggedIn(true)
-          setTimeout(() => {
-            router.push('/profile')
-          }, 3000)
+          router.push('/')
         } else {
           // Not automatically logged in, redirect to login page
           setIsLoggedIn(false)
-          setTimeout(() => {
             router.push('/login')
-          }, 3000)
         }
       }
     } catch (err) {
