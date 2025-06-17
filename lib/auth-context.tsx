@@ -140,7 +140,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       case "url":
         return user.avatarUrl ?? null;
       case "default":
-        return "/default-profile-picture.jpg";
+        // Return null to trigger the AvatarFallback which will show initials
+        return null;
       case "upload":
       default:
         return user.avatarUrl ?? null;

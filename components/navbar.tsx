@@ -92,9 +92,9 @@ export function Navbar() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.avatarUrl || "/placeholder.svg"} alt={user.name ?? undefined} />
-                    <AvatarFallback>
-                      <Code className="h-4 w-4" />
+                    <AvatarImage src={user.avatarSource === "default" ? undefined : (user.avatarUrl || undefined)} alt={user.name ?? undefined} />
+                    <AvatarFallback className="bg-[#121212] text-white">
+                      {(user.name || user.email || 'User').split(' ').map(part => part[0] || '').join('').substring(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </Button>

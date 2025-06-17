@@ -13,7 +13,6 @@ import { useToast } from "@/components/ui/use-toast"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { CheckCircle2, XCircle, UserIcon } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
-import { generateInitialsAvatar, getInitials } from "@/lib/avatar-generator"
 import type { User } from "@supabase/supabase-js"
 import type { Database } from "@/types/supabase"
 import { Navbar } from "@/components/navbar"
@@ -129,9 +128,8 @@ export default function ProfilePage() {
           avatarUrl = customAvatarUrl || null
           break
         case 'default':
-          // For the "initials" option, we use the uploaded avatar URL from our automatic generation
-          // We treat it as an upload but store it with 'default' as the source for the database
-          avatarUrl = uploadedAvatarUrl || null
+          // For the "initials" option, set the URL to null so the initials will be shown via AvatarFallback
+          avatarUrl = null
           break
         case 'provider':
           if (selectedProvider && availableProviders?.length > 0) {
@@ -228,44 +226,7 @@ export default function ProfilePage() {
     fileInput.click()
   }
 
-  const handleInitialsAvatar = async () => {
-    if (!user) return
-    
-    try {
-      setUpdating(true)
-      
-      // Generate initials from the user's name or email
-      const name = fullName || user.email || 'User'
-      const initials = getInitials(name)
-      
-      // Generate the avatar with initials
-      const avatarBlob = await generateInitialsAvatar(initials)
-      
-      // Upload the generated avatar like a regular avatar upload
-      const { url, error } = await uploadAvatar(new File([avatarBlob], `avatar-${user.id}.png`, { type: 'image/png' }))
-      
-      if (error) {
-        throw error
-      }
-      
-      if (url) {
-        // Set the URL, but keep the source as 'default' for UI consistency
-        setUploadedAvatarUrl(url)
-      }
-    } catch (error) {
-      console.error('Error generating initials avatar:', error)
-      
-      // Only show a toast on error, not for successful generation
-      // since this is supposed to be "behind the scenes"
-      toast({
-        title: 'Avatar generation failed',
-        description: error instanceof Error ? error.message : 'There was an error creating your initials avatar.',
-        variant: 'destructive',
-      })
-    } finally {
-      setUpdating(false)
-    }
-  }
+  // No longer needed as we're using the built-in AvatarFallback component
 
   const handleCropComplete = async (croppedImageBlob: Blob) => {
     if (!user) return
@@ -329,9 +290,8 @@ export default function ProfilePage() {
       case 'url':
         return customAvatarUrl || null
       case 'default':
-        // For the "initials" option, we either show the generated avatar 
-        // or let it fall back to the AvatarFallback component which will show the initials
-        return uploadedAvatarUrl || null
+        // Return null for the "initials" option to trigger the AvatarFallback component
+        return null
       case 'provider':
         if (selectedProvider && availableProviders?.length > 0) {
           const matchingProvider = availableProviders.find(p => p.provider === selectedProvider)
@@ -480,8 +440,12 @@ export default function ProfilePage() {
                 <div className="flex flex-col items-center gap-4 w-full">
                   <div className="relative group">
                     <Avatar className="w-40 h-40 border-2 border-border shadow-md transition-all group-hover:shadow-lg">
-                      <AvatarImage src={getPreviewAvatarUrl() || ''} alt={fullName || 'User'} />
-                      <AvatarFallback className="text-2xl font-medium">{getInitials(fullName || user.email || 'User')}</AvatarFallback>
+                      <AvatarImage src={avatarSource === 'default' ? undefined : (getPreviewAvatarUrl() || undefined)} alt={fullName || 'User'} />
+                      <AvatarFallback 
+                        className="text-2xl font-medium bg-[#121212] text-white"
+                      >
+                        {(fullName || user.email || 'User').split(' ').map(part => part[0] || '').join('').substring(0, 2).toUpperCase()}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
                       {avatarSource === 'upload' && (
@@ -541,11 +505,6 @@ export default function ProfilePage() {
                           onValueChange={(value) => {
                             const newValue = value as 'upload' | 'provider' | 'url' | 'default';
                             setAvatarSource(newValue);
-                            
-                            // If selecting the initials option, generate the avatar automatically
-                            if (newValue === 'default') {
-                              handleInitialsAvatar();
-                            }
                           }}
                           className="grid grid-cols-2 gap-3"
                         >
