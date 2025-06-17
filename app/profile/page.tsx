@@ -13,6 +13,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { CheckCircle2, XCircle, UserIcon } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
+import { generateInitialsAvatar, getInitials } from "@/lib/avatar-generator"
 import type { User } from "@supabase/supabase-js"
 import type { Database } from "@/types/supabase"
 import { Navbar } from "@/components/navbar"
@@ -128,7 +129,22 @@ export default function ProfilePage() {
           avatarUrl = customAvatarUrl || null
           break
         case 'default':
-          avatarUrl = '/default-profile-picture.jpg'
+          // For "default" (initials), we now use the uploaded avatar if it exists,
+          // otherwise we'll generate one on the fly
+          if (uploadedAvatarUrl) {
+            avatarUrl = uploadedAvatarUrl
+          } else {
+            // If no avatar was generated yet, use the default image for now
+            // The user should ideally click "Generate Initials Avatar" first
+            avatarUrl = '/default-profile-picture.jpg'
+            
+            // Show a toast suggesting they should generate an avatar
+            toast({
+              title: 'Tip',
+              description: 'For best results, generate an initials avatar before saving.',
+              variant: 'default',
+            })
+          }
           break
         case 'provider':
           if (selectedProvider && availableProviders?.length > 0) {
@@ -225,6 +241,69 @@ export default function ProfilePage() {
     fileInput.click()
   }
 
+  const handleInitialsAvatar = async () => {
+    if (!user) return
+    
+    try {
+      setUpdating(true)
+      setShowAlert(false)
+      
+      // Generate initials from the user's name or email
+      const name = fullName || user.email || 'User'
+      const initials = getInitials(name)
+      
+      // Generate the avatar with initials
+      const avatarBlob = await generateInitialsAvatar(initials)
+      
+      // Upload the generated avatar like a regular avatar upload
+      const { url, error } = await uploadAvatar(new File([avatarBlob], `avatar-${user.id}.png`, { type: 'image/png' }))
+      
+      if (error) {
+        throw error
+      }
+      
+      if (url) {
+        setUploadedAvatarUrl(url)
+        setAvatarSource('upload') // Still using 'upload' as the source since we're uploading the generated image
+        
+        // Show toast notification
+        toast({
+          title: 'Initials avatar created',
+          description: 'Your initials avatar has been created successfully. Click "Save changes" to apply.',
+        })
+        
+        // Show persistent success alert
+        setAlertStatus('success')
+        setShowAlert(true)
+        
+        // Auto-hide alert after 5 seconds
+        setTimeout(() => {
+          setShowAlert(false)
+        }, 5000)
+      }
+    } catch (error) {
+      console.error('Error generating initials avatar:', error)
+      
+      // Show toast notification
+      toast({
+        title: 'Avatar generation failed',
+        description: error instanceof Error ? error.message : 'There was an error creating your initials avatar.',
+        variant: 'destructive',
+      })
+      
+      // Show persistent error alert
+      setAlertStatus('error')
+      setShowAlert(true)
+      
+      // Auto-hide alert after 5 seconds
+      setTimeout(() => {
+        setShowAlert(false)
+      }, 5000)
+    } finally {
+      setUpdating(false)
+    }
+  }
+
   const handleCropComplete = async (croppedImageBlob: Blob) => {
     if (!user) return
     
@@ -287,7 +366,9 @@ export default function ProfilePage() {
       case 'url':
         return customAvatarUrl || null
       case 'default':
-        return '/default-profile-picture.jpg'
+        // For "default" (initials), use the uploaded avatar if available
+        // This ensures we show the generated initials avatar after creation
+        return uploadedAvatarUrl || '/default-profile-picture.jpg'
       case 'provider':
         if (selectedProvider && availableProviders?.length > 0) {
           const matchingProvider = availableProviders.find(p => p.provider === selectedProvider)
@@ -437,7 +518,7 @@ export default function ProfilePage() {
                   <div className="relative group">
                     <Avatar className="w-40 h-40 border-2 border-border shadow-md transition-all group-hover:shadow-lg">
                       <AvatarImage src={getPreviewAvatarUrl() || ''} alt={fullName || 'User'} />
-                      <AvatarFallback className="text-2xl font-medium">{(fullName || user.email || 'User').substring(0, 2).toUpperCase()}</AvatarFallback>
+                      <AvatarFallback className="text-2xl font-medium">{getInitials(fullName || user.email || 'User')}</AvatarFallback>
                     </Avatar>
                     <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
                       {avatarSource === 'upload' && (
@@ -535,11 +616,31 @@ export default function ProfilePage() {
                           >
                             <div className="flex items-center space-x-2">
                               <RadioGroupItem value="default" id="default" />
-                              <span className="text-sm">Initials</span>
+                              <span className="text-sm">Generated Initials</span>
                             </div>
                           </Label>
                         </RadioGroup>
                       </div>
+
+                      {/* Initials options - show when initials is selected */}
+                      {avatarSource === 'default' && (
+                        <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
+                          <Label className="text-sm font-medium">Initials Avatar</Label>
+                          <div className="flex gap-3">
+                            <Button 
+                              variant="secondary" 
+                              onClick={handleInitialsAvatar} 
+                              className="flex-1 font-medium"
+                              disabled={updating}
+                            >
+                              {updating ? 'Generating...' : 'Generate Initials Avatar'}
+                            </Button>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            This will create an avatar with your initials based on your name.
+                          </p>
+                        </div>
+                      )}
 
                       {/* Provider selection - show when provider is selected */}
                       {avatarSource === 'provider' && hasProviders && (
