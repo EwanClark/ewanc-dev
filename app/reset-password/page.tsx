@@ -19,19 +19,22 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [hashPresent, setHashPresent] = useState(false)
+  const [hashPresent, setHashPresent] = useState<boolean | null>(null) // null = still checking
   const supabase = createClient()
 
   // Check if the user is in a valid password recovery session
   useEffect(() => {
     const checkSession = async () => {
       try {
+        // Create a variable to track if we've found a valid session
+        let validSession = false;
+        
         // Listen for auth state changes
         const { data: authListener } = supabase.auth.onAuthStateChange(
           (event, session) => {
-            console.log("Auth event:", event);
             // PASSWORD_RECOVERY event is triggered when the recovery link is used
             if (event === 'PASSWORD_RECOVERY') {
+              validSession = true;
               setHashPresent(true);
             }
           }
@@ -39,12 +42,34 @@ export default function ResetPasswordPage() {
 
         // Also check if we already have a session
         const { data: { session } } = await supabase.auth.getSession();
+        
         if (session) {
+          validSession = true;
           setHashPresent(true);
-        } else if (window.location.hash && window.location.hash.length > 1) {
-          // We have a hash in the URL which might be the recovery token
-          setHashPresent(true);
+        } else {
+          // Check the URL for recovery tokens
+          // Supabase may include the token in the hash or as a query parameter
+          const hasRecoveryToken = 
+            // Check hash for token
+            (window.location.hash && 
+             (window.location.hash.includes('access_token=') || 
+              window.location.hash.includes('type=recovery'))) ||
+            // Check URL for token parameter
+            new URLSearchParams(window.location.search).has('token');
+          
+          if (hasRecoveryToken) {
+            validSession = true;
+            setHashPresent(true);
+          }
         }
+        
+        // If we haven't found a valid session after all checks, set to false
+        // Small delay to avoid immediate state change
+        setTimeout(() => {
+          if (!validSession) {
+            setHashPresent(false);
+          }
+        }, 100);
 
         // Clean up listener on unmount
         return () => {
@@ -52,6 +77,8 @@ export default function ResetPasswordPage() {
         };
       } catch (error) {
         console.error("Error checking auth session:", error);
+        // In case of error, show the form anyway to avoid blocking the user
+        setHashPresent(true);
       }
     };
     
@@ -139,8 +166,21 @@ export default function ResetPasswordPage() {
                 </AlertDescription>
               </Alert>
             )}
+            
+            {/* Show loading state while checking session */}
+            {hashPresent === null && !success && (
+              <div className="flex justify-center py-4">
+                <div className="animate-pulse flex space-x-2 items-center">
+                  <div className="h-2 w-2 bg-primary rounded-full"></div>
+                  <div className="h-2 w-2 bg-primary rounded-full"></div>
+                  <div className="h-2 w-2 bg-primary rounded-full"></div>
+                  <span className="text-sm text-muted-foreground ml-2">Verifying reset link...</span>
+                </div>
+              </div>
+            )}
 
-            {!hashPresent && !success && (
+            {/* Only show error when we've confirmed the session is not valid */}
+            {hashPresent === false && !success && (
               <div className="space-y-4">
                 <Alert variant="destructive">
                   <AlertDescription>
@@ -155,7 +195,7 @@ export default function ResetPasswordPage() {
               </div>
             )}
 
-            {hashPresent && !success && (
+            {hashPresent === true && !success && (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="password">New Password</Label>
