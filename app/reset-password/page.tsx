@@ -22,11 +22,40 @@ export default function ResetPasswordPage() {
   const [hashPresent, setHashPresent] = useState(false)
   const supabase = createClient()
 
-  // Check if the URL contains the hash parameter needed for password reset
+  // Check if the user is in a valid password recovery session
   useEffect(() => {
-    // Supabase appends #access_token=... to the URL after password reset
-    const hash = window.location.hash
-    setHashPresent(hash.includes('access_token='))
+    const checkSession = async () => {
+      try {
+        // Listen for auth state changes
+        const { data: authListener } = supabase.auth.onAuthStateChange(
+          (event, session) => {
+            console.log("Auth event:", event);
+            // PASSWORD_RECOVERY event is triggered when the recovery link is used
+            if (event === 'PASSWORD_RECOVERY') {
+              setHashPresent(true);
+            }
+          }
+        );
+
+        // Also check if we already have a session
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          setHashPresent(true);
+        } else if (window.location.hash && window.location.hash.length > 1) {
+          // We have a hash in the URL which might be the recovery token
+          setHashPresent(true);
+        }
+
+        // Clean up listener on unmount
+        return () => {
+          authListener.subscription.unsubscribe();
+        };
+      } catch (error) {
+        console.error("Error checking auth session:", error);
+      }
+    };
+    
+    checkSession();
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,10 +76,29 @@ export default function ResetPasswordPage() {
     }
 
     try {
+      // Get the current session
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      // Try to update the password directly
       const { error } = await supabase.auth.updateUser({ password })
 
       if (error) {
-        setError(error.message)
+        // If there's an error, it might be because we don't have a valid session
+        // Check if we can extract a token from the URL or hash
+        const hash = window.location.hash
+        
+        if (hash && hash.length > 1) {
+          // We have a hash, try to parse it
+          try {
+            // The hash can be complex, so we attempt to handle different formats
+            // Supabase usually includes type=recovery in the hash for password reset flows
+            setError("Unable to reset password with the provided link. Please request a new password reset link.")
+          } catch (parseErr) {
+            setError("Invalid password reset link format. Please request a new reset link.")
+          }
+        } else {
+          setError(error.message)
+        }
       } else {
         setSuccess(true)
         // Redirect to login page after 3 seconds
@@ -93,11 +141,18 @@ export default function ResetPasswordPage() {
             )}
 
             {!hashPresent && !success && (
-              <Alert variant="destructive">
-                <AlertDescription>
-                  Invalid or expired password reset link. Please try again by requesting a new password reset.
-                </AlertDescription>
-              </Alert>
+              <div className="space-y-4">
+                <Alert variant="destructive">
+                  <AlertDescription>
+                    Invalid or expired password reset link. Please try again by requesting a new password reset.
+                  </AlertDescription>
+                </Alert>
+                <div className="flex justify-center">
+                  <Button asChild>
+                    <Link href="/forgot-password">Request New Reset Link</Link>
+                  </Button>
+                </div>
+              </div>
             )}
 
             {hashPresent && !success && (
