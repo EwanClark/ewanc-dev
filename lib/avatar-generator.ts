@@ -11,8 +11,8 @@
  */
 export async function generateInitialsAvatar(
   initials: string,
-  backgroundColor: string = '#f3f4f6', // Match the default avatar fallback background
-  textColor: string = '#6b7280'
+  backgroundColor: string = '#121212', // Black background matching the image
+  textColor: string = '#ffffff'        // White text matching the image
 ): Promise<Blob> {
   return new Promise((resolve, reject) => {
     try {
@@ -35,8 +35,8 @@ export async function generateInitialsAvatar(
       
       // Add text
       context.fillStyle = textColor;
-      // Use system fonts to match the default fallback style
-      context.font = `bold ${size / 2.5}px Inter, system-ui, -apple-system, sans-serif`;
+      // Match the font in the image - medium weight, not too large
+      context.font = `500 ${size / 3}px Inter, system-ui, -apple-system, sans-serif`;
       context.textAlign = 'center';
       context.textBaseline = 'middle';
       context.fillText(initials.toUpperCase(), size/2, size/2);
