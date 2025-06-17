@@ -129,22 +129,9 @@ export default function ProfilePage() {
           avatarUrl = customAvatarUrl || null
           break
         case 'default':
-          // For "default" (initials), we now use the uploaded avatar if it exists,
-          // otherwise we'll generate one on the fly
-          if (uploadedAvatarUrl) {
-            avatarUrl = uploadedAvatarUrl
-          } else {
-            // If no avatar was generated yet, use the default image for now
-            // The user should ideally click "Generate Initials Avatar" first
-            avatarUrl = '/default-profile-picture.jpg'
-            
-            // Show a toast suggesting they should generate an avatar
-            toast({
-              title: 'Tip',
-              description: 'For best results, generate an initials avatar before saving.',
-              variant: 'default',
-            })
-          }
+          // For the "initials" option, we use the uploaded avatar URL from our automatic generation
+          // We treat it as an upload but store it with 'default' as the source for the database
+          avatarUrl = uploadedAvatarUrl || null
           break
         case 'provider':
           if (selectedProvider && availableProviders?.length > 0) {
@@ -246,7 +233,6 @@ export default function ProfilePage() {
     
     try {
       setUpdating(true)
-      setShowAlert(false)
       
       // Generate initials from the user's name or email
       const name = fullName || user.email || 'User'
@@ -263,42 +249,19 @@ export default function ProfilePage() {
       }
       
       if (url) {
+        // Set the URL, but keep the source as 'default' for UI consistency
         setUploadedAvatarUrl(url)
-        setAvatarSource('upload') // Still using 'upload' as the source since we're uploading the generated image
-        
-        // Show toast notification
-        toast({
-          title: 'Initials avatar created',
-          description: 'Your initials avatar has been created successfully. Click "Save changes" to apply.',
-        })
-        
-        // Show persistent success alert
-        setAlertStatus('success')
-        setShowAlert(true)
-        
-        // Auto-hide alert after 5 seconds
-        setTimeout(() => {
-          setShowAlert(false)
-        }, 5000)
       }
     } catch (error) {
       console.error('Error generating initials avatar:', error)
       
-      // Show toast notification
+      // Only show a toast on error, not for successful generation
+      // since this is supposed to be "behind the scenes"
       toast({
         title: 'Avatar generation failed',
         description: error instanceof Error ? error.message : 'There was an error creating your initials avatar.',
         variant: 'destructive',
       })
-      
-      // Show persistent error alert
-      setAlertStatus('error')
-      setShowAlert(true)
-      
-      // Auto-hide alert after 5 seconds
-      setTimeout(() => {
-        setShowAlert(false)
-      }, 5000)
     } finally {
       setUpdating(false)
     }
@@ -366,9 +329,9 @@ export default function ProfilePage() {
       case 'url':
         return customAvatarUrl || null
       case 'default':
-        // For "default" (initials), use the uploaded avatar if available
-        // This ensures we show the generated initials avatar after creation
-        return uploadedAvatarUrl || '/default-profile-picture.jpg'
+        // For the "initials" option, we either show the generated avatar 
+        // or let it fall back to the AvatarFallback component which will show the initials
+        return uploadedAvatarUrl || null
       case 'provider':
         if (selectedProvider && availableProviders?.length > 0) {
           const matchingProvider = availableProviders.find(p => p.provider === selectedProvider)
@@ -575,7 +538,15 @@ export default function ProfilePage() {
                         <Label className="text-sm font-semibold mb-3 block">Profile Picture</Label>
                         <RadioGroup 
                           value={avatarSource} 
-                          onValueChange={(value) => setAvatarSource(value as 'upload' | 'provider' | 'url' | 'default')}
+                          onValueChange={(value) => {
+                            const newValue = value as 'upload' | 'provider' | 'url' | 'default';
+                            setAvatarSource(newValue);
+                            
+                            // If selecting the initials option, generate the avatar automatically
+                            if (newValue === 'default') {
+                              handleInitialsAvatar();
+                            }
+                          }}
                           className="grid grid-cols-2 gap-3"
                         >
                           <Label 
@@ -616,31 +587,13 @@ export default function ProfilePage() {
                           >
                             <div className="flex items-center space-x-2">
                               <RadioGroupItem value="default" id="default" />
-                              <span className="text-sm">Generated Initials</span>
+                              <span className="text-sm">Initials</span>
                             </div>
                           </Label>
                         </RadioGroup>
                       </div>
 
-                      {/* Initials options - show when initials is selected */}
-                      {avatarSource === 'default' && (
-                        <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
-                          <Label className="text-sm font-medium">Initials Avatar</Label>
-                          <div className="flex gap-3">
-                            <Button 
-                              variant="secondary" 
-                              onClick={handleInitialsAvatar} 
-                              className="flex-1 font-medium"
-                              disabled={updating}
-                            >
-                              {updating ? 'Generating...' : 'Generate Initials Avatar'}
-                            </Button>
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            This will create an avatar with your initials based on your name.
-                          </p>
-                        </div>
-                      )}
+                      {/* No additional UI for initials - it's handled automatically behind the scenes */}
 
                       {/* Provider selection - show when provider is selected */}
                       {avatarSource === 'provider' && hasProviders && (
