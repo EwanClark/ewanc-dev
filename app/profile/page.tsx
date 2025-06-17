@@ -460,7 +460,7 @@ export default function ProfilePage() {
                     <div className="space-y-5">
                       <div className="space-y-2">
                         <div className="flex justify-between items-end">
-                          <Label htmlFor="email" className="text-sm font-semibold">Email Address</Label>
+                          <Label htmlFor="email" className="text-sm font-semibold">Email</Label>
                           <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Verified</span>
                         </div>
                         <Input 
@@ -475,7 +475,7 @@ export default function ProfilePage() {
                       </div>
                       
                       <div className="space-y-2 pt-2">
-                        <Label htmlFor="fullName" className="text-sm font-semibold">Full Name</Label>
+                        <Label htmlFor="fullName" className="text-sm font-semibold">Name</Label>
                         <Input
                           id="fullName"
                           value={fullName}
@@ -491,7 +491,7 @@ export default function ProfilePage() {
                   <div className="bg-card/50 p-6 rounded-lg border border-border/40">
                     <div className="space-y-4">
                       <div>
-                        <Label className="text-sm font-semibold mb-3 block">Picture Source</Label>
+                        <Label className="text-sm font-semibold mb-3 block">Profile Picture</Label>
                         <RadioGroup 
                           value={avatarSource} 
                           onValueChange={(value) => setAvatarSource(value as 'upload' | 'provider' | 'url' | 'default')}
@@ -514,7 +514,7 @@ export default function ProfilePage() {
                             >
                               <div className="flex items-center space-x-2">
                                 <RadioGroupItem value="provider" id="provider" />
-                                <span className="text-sm">OAuth provider picture</span>
+                                <span className="text-sm">Login provider</span>
                               </div>
                             </Label>
                           )}
@@ -525,7 +525,7 @@ export default function ProfilePage() {
                           >
                             <div className="flex items-center space-x-2">
                               <RadioGroupItem value="url" id="url" />
-                              <span className="text-sm">Use custom URL</span>
+                              <span className="text-sm">Custom URL</span>
                             </div>
                           </Label>
                           
@@ -535,7 +535,7 @@ export default function ProfilePage() {
                           >
                             <div className="flex items-center space-x-2">
                               <RadioGroupItem value="default" id="default" />
-                              <span className="text-sm">Use default image</span>
+                              <span className="text-sm">Initials</span>
                             </div>
                           </Label>
                         </RadioGroup>
@@ -616,8 +616,6 @@ export default function ProfilePage() {
                       )}
                     </div>
                   </div>
-                  
-                  {/* Save Button removed from here and moved to top */}
                 </div>
               </div>
             </CardContent>
