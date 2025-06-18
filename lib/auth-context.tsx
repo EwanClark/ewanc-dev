@@ -60,6 +60,7 @@ type AuthContextType = {
   signInWithGoogle: () => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<{ error: Error | null }>;
   updateProfile: (data: {
     name?: string;
     avatarUrl?: string | null;
@@ -346,6 +347,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const changePassword = async (currentPassword: string, newPassword: string) => {
+    try {
+      // Verify the current password by attempting to sign in
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user?.email || "",
+        password: currentPassword,
+      });
+      
+      if (signInError) {
+        throw new Error("Current password is incorrect");
+      }
+      
+      // Current password is correct, update to new password
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      
+      if (error) {
+        throw error;
+      }
+      
+      return { error: null };
+    } catch (error) {
+      console.error("Error changing password:", error);
+      return { error: error as Error };
+    }
+  };
+
   const updateProfile = async (data: {
     name?: string;
     avatarUrl?: string | null;
@@ -443,6 +470,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signInWithGoogle,
         signOut,
         resetPassword,
+        changePassword,
         updateProfile,
         uploadAvatar,
         getDisplayAvatarUrl,
