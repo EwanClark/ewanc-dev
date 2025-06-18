@@ -34,11 +34,41 @@ export async function POST(req: NextRequest) {
     // Add more table cleanups as needed
     // e.g. delete user's posts, comments, etc.
 
-    // In a production environment, you would use Supabase Admin APIs 
-    // or a server-side function to actually delete the user account
-    // This would typically require setting up a server with admin credentials
+    // Call the Supabase Edge Function to delete the user's authentication record
+    try {
+      const supabaseAuthToken = req.headers.get('authorization')?.split(' ')[1] || '';
+      
+      const deleteResponse = await fetch(
+        'https://rzemkbfqoqpwpouyafkp.supabase.co/functions/v1/delete-account',
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${supabaseAuthToken}` // Pass the user's token for security
+          },
+          body: JSON.stringify({ userId })
+        }
+      );
+      
+      const responseData = await deleteResponse.json();
+      
+      if (!deleteResponse.ok) {
+        console.error('Error calling delete user function:', responseData.error);
+        return NextResponse.json(
+          { error: 'Failed to delete user authentication record: ' + responseData.error },
+          { status: 500 }
+        );
+      }
+      
+      console.log('User authentication record deleted successfully');
+    } catch (error) {
+      console.error('Error calling delete user function:', error);
+      return NextResponse.json(
+        { error: 'Failed to delete user authentication record' },
+        { status: 500 }
+      );
+    }
     
-    // For now, we'll just return success and let the client handle signout
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error in delete account route:', error)
