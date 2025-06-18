@@ -11,7 +11,15 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useToast } from "@/components/ui/use-toast"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { CheckCircle2, XCircle, UserIcon } from "lucide-react"
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle 
+} from "@/components/ui/dialog"
+import { CheckCircle2, XCircle, UserIcon, AlertTriangle } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import type { User } from "@supabase/supabase-js"
 import type { Database } from "@/types/supabase"
@@ -20,7 +28,7 @@ import { Navbar } from "@/components/navbar"
 type Profile = Database["public"]["Tables"]["profiles"]["Row"]
 
 export default function ProfilePage() {
-  const { user: authUser, updateProfile, uploadAvatar, getDisplayAvatarUrl, changePassword } = useAuth()
+  const { user: authUser, updateProfile, uploadAvatar, getDisplayAvatarUrl, changePassword, deleteAccount } = useAuth()
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [fullName, setFullName] = useState('')
@@ -30,6 +38,8 @@ export default function ProfilePage() {
   const [uploadedAvatarUrl, setUploadedAvatarUrl] = useState('')
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
   const [imageToEdit, setImageToEdit] = useState<string | null>(null)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
   const [alertStatus, setAlertStatus] = useState<'success' | 'error' | null>(null)
@@ -359,6 +369,36 @@ export default function ProfilePage() {
       console.error(err)
     } finally {
       setPasswordLoading(false)
+    }
+  }
+
+  const handleDeleteAccount = async () => {
+    setDeleteLoading(true);
+    try {
+      const { error } = await deleteAccount();
+      
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Account deleted",
+          description: "Your account has been successfully deleted.",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred while deleting your account.",
+        variant: "destructive",
+      });
+    } finally {
+      setDeleteLoading(false);
+      setShowDeleteDialog(false);
     }
   }
 
@@ -767,6 +807,64 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
       
+          {/* Danger Zone - Delete Account */}
+          <Card className="border-red-200 dark:border-red-900/40 shadow-sm">
+            <CardContent className="pt-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-lg font-semibold text-red-600 dark:text-red-500">Danger Zone</h2>
+                    <p className="text-sm text-muted-foreground">
+                      Once you delete your account, there is no going back. This action is permanent.
+                    </p>
+                  </div>
+                  <Button 
+                    variant="destructive" 
+                    onClick={() => setShowDeleteDialog(true)}
+                  >
+                    Delete Account
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Delete Account Confirmation Dialog */}
+          <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-red-500" />
+                  Delete Account
+                </DialogTitle>
+                <DialogDescription>
+                  This action cannot be undone. This will permanently delete your account 
+                  and remove all your data from our servers.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="py-4">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Are you absolutely sure you want to delete your account? 
+                </p>
+              </div>
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowDeleteDialog(false)}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  variant="destructive" 
+                  onClick={handleDeleteAccount}
+                  disabled={deleteLoading}
+                >
+                  {deleteLoading ? "Deleting..." : "Yes, Delete My Account"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
           {isImageModalOpen && imageToEdit && (
             <ImageCropModal
               isOpen={isImageModalOpen}

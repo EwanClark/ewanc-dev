@@ -61,6 +61,7 @@ type AuthContextType = {
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<{ error: Error | null }>;
+  deleteAccount: () => Promise<{ error: Error | null }>;
   updateProfile: (data: {
     name?: string;
     avatarUrl?: string | null;
@@ -373,6 +374,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const deleteAccount = async () => {
+    try {
+      if (!user || !session) {
+        throw new Error("No authenticated user found");
+      }
+
+      // Call the server-side API to handle account deletion
+      const response = await fetch("/api/delete-account", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to delete account");
+      }
+
+      // Sign out after successful deletion
+      await supabase.auth.signOut();
+      
+      // Redirect to home page
+      router.push("/");
+      
+      return { error: null };
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      return { error: error as Error };
+    }
+  };
+
   const updateProfile = async (data: {
     name?: string;
     avatarUrl?: string | null;
@@ -471,6 +504,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signOut,
         resetPassword,
         changePassword,
+        deleteAccount,
         updateProfile,
         uploadAvatar,
         getDisplayAvatarUrl,
