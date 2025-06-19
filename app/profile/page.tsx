@@ -199,12 +199,12 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen">
         <Navbar />
-        <div className="container py-16">
+        <div className="container py-8 sm:py-16">
           <div className="max-w-4xl mx-auto">
-            <div className="flex items-center justify-between mb-8">
-              <div className="animate-pulse w-60">
-                <div className="h-8 bg-muted rounded w-full mb-2"></div>
-                <div className="h-4 bg-muted rounded w-3/4"></div>
+            <div className="flex items-center justify-between mb-6 sm:mb-8">
+              <div className="animate-pulse w-48 sm:w-60">
+                <div className="h-6 sm:h-8 bg-muted rounded w-full mb-2"></div>
+                <div className="h-3 sm:h-4 bg-muted rounded w-3/4"></div>
               </div>
             </div>
             
@@ -238,11 +238,11 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen">
         <Navbar />
-        <div className="container py-16">
+        <div className="container py-8 sm:py-16">
           <div className="max-w-4xl mx-auto">
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center justify-between mb-6 sm:mb-8">
               <div>
-                <h1 className="text-4xl font-bold tracking-tight">Profile Settings</h1>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">Profile Settings</h1>
               </div>
             </div>
             
@@ -276,11 +276,11 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen">
       <Navbar />
-      <div className="container py-16">
+      <div className="container py-8 sm:py-16">
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6 sm:mb-8">
             <div>
-              <h1 className="text-4xl font-bold tracking-tight">Profile Settings</h1>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">Profile Settings</h1>
             </div>
           </div>
           
@@ -307,12 +307,12 @@ export default function ProfilePage() {
 
           <Card className="mb-6 border border-border/40 shadow-sm">
             <CardContent className="pt-6 relative">
-              <div className="absolute right-6 top-6">
+              <div className="absolute right-4 top-4 sm:right-6 sm:top-6">
                 <Button 
                   onClick={handleSaveChanges} 
                   disabled={updating}
-                  size="default"
-                  className="font-medium"
+                  size="sm"
+                  className="font-medium sm:px-6"
                 >
                   {updating ? 'Saving...' : 'Save Changes'}
                 </Button>

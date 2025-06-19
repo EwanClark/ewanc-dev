@@ -95,14 +95,14 @@ export default function ShortUrlPage() {
   return (
     <div className="min-h-screen">
       <Navbar />
-      <div className="container py-8">
+      <div className="container py-6 sm:py-8">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">URL Shortener</h1>
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">URL Shortener</h1>
             <p className="text-muted-foreground">Create short, memorable links for your URLs</p>
           </div>
 
-          <Card className="mb-8">
+          <Card className="mb-6 sm:mb-8">
             <CardHeader>
               <CardTitle>Shorten a URL</CardTitle>
               <CardDescription>Enter a long URL to create a shortened version</CardDescription>
@@ -129,7 +129,7 @@ export default function ShortUrlPage() {
                     required
                   />
                 </div>
-                <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                   <div className="flex-1">
                     <Input
                       placeholder="Custom alias (optional)"
@@ -137,7 +137,7 @@ export default function ShortUrlPage() {
                       onChange={(e) => setCustomAlias(e.target.value)}
                     />
                   </div>
-                  <Button type="submit" disabled={loading}>
+                  <Button type="submit" disabled={loading} className="w-full sm:w-auto">
                     {loading ? "Shortening..." : "Shorten URL"}
                   </Button>
                 </div>
@@ -164,50 +164,61 @@ export default function ShortUrlPage() {
             </CardHeader>
             <CardContent>
               {urls.length > 0 ? (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Short URL</TableHead>
-                      <TableHead className="hidden md:table-cell">Original URL</TableHead>
-                      <TableHead className="hidden md:table-cell">Created</TableHead>
-                      <TableHead>Clicks</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {urls.map((url) => (
-                      <TableRow key={url.id}>
-                        <TableCell className="font-medium">short.url/{url.shortCode}</TableCell>
-                        <TableCell className="hidden md:table-cell max-w-[200px] truncate">{url.originalUrl}</TableCell>
-                        <TableCell className="hidden md:table-cell">{url.createdAt.toLocaleDateString()}</TableCell>
-                        <TableCell>{url.clicks}</TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => copyToClipboard(url.shortCode)}
-                              title="Copy short URL"
-                            >
-                              <Copy className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => window.open(url.originalUrl, "_blank")}
-                              title="Visit original URL"
-                            >
-                              <ExternalLink className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="min-w-[120px]">Short URL</TableHead>
+                        <TableHead className="hidden md:table-cell">Original URL</TableHead>
+                        <TableHead className="hidden md:table-cell">Created</TableHead>
+                        <TableHead className="text-center">Clicks</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {urls.map((url) => (
+                        <TableRow key={url.id}>
+                          <TableCell className="font-medium">
+                            <div className="break-all">short.url/{url.shortCode}</div>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell max-w-[200px]">
+                            <div className="truncate" title={url.originalUrl}>
+                              {url.originalUrl}
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">{url.createdAt.toLocaleDateString()}</TableCell>
+                          <TableCell className="text-center">{url.clicks}</TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-1 sm:gap-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => copyToClipboard(url.shortCode)}
+                                title="Copy short URL"
+                                className="h-8 w-8"
+                              >
+                                <Copy className="h-3 w-3 sm:h-4 sm:w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => window.open(url.originalUrl, "_blank")}
+                                title="Visit original URL"
+                                className="h-8 w-8"
+                              >
+                                <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
-                  No shortened URLs yet. Create one above to get started.
+                  <p>No URLs shortened yet.</p>
+                  <p className="text-sm mt-1">Create your first short URL above!</p>
                 </div>
               )}
             </CardContent>

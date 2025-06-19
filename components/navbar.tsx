@@ -14,7 +14,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Github, Code, ChevronDown, LogOut, User } from "lucide-react"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Github, Code, ChevronDown, LogOut, User, Menu } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { ThemeToggle } from "@/components/theme-toggle"
 
@@ -22,6 +23,7 @@ export function Navbar() {
   const pathname = usePathname()
   const { user, signOut } = useAuth()
   const [open, setOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Determine if we're in a specific project section
   const isInChat = pathname.startsWith("/projects/chat")
@@ -35,6 +37,10 @@ export function Navbar() {
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
   ]
+
+  const handleMobileNavClick = () => {
+    setMobileMenuOpen(false)
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -77,6 +83,80 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Mobile Navigation */}
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden h-9 w-9">
+                <Menu className="h-4 w-4" />
+                <span className="sr-only">Toggle navigation menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+              <nav className="flex flex-col gap-4 mt-8">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={handleMobileNavClick}
+                    className={cn(
+                      "text-lg font-medium transition-colors hover:text-foreground/80 px-4 py-2 rounded-md hover:bg-accent",
+                      pathname === item.href ? "text-foreground bg-accent" : "text-foreground/60",
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+                
+                {/* Mobile Auth Section */}
+                {user ? (
+                  <div className="border-t pt-4 mt-4">
+                    <div className="flex items-center gap-3 px-4 py-2 mb-4">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user.avatarSource === "default" ? undefined : (user.avatarUrl || undefined)} alt={user.name ?? undefined} />
+                        <AvatarFallback className="bg-[#121212] text-white">
+                          {(user.name || user.email || 'User').split(' ').map(part => part[0] || '').join('').substring(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium">{user.name}</span>
+                        <span className="text-xs text-muted-foreground">{user.email}</span>
+                      </div>
+                    </div>
+                    <Link
+                      href="/profile"
+                      onClick={handleMobileNavClick}
+                      className="flex items-center gap-3 px-4 py-2 text-sm font-medium transition-colors hover:text-foreground/80 hover:bg-accent rounded-md"
+                    >
+                      <User className="h-4 w-4" />
+                      Profile
+                    </Link>
+                    <button
+                      onClick={() => {
+                        signOut()
+                        handleMobileNavClick()
+                      }}
+                      className="flex items-center gap-3 px-4 py-2 text-sm font-medium transition-colors hover:text-foreground/80 hover:bg-accent rounded-md w-full text-left"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Sign out
+                    </button>
+                  </div>
+                ) : (
+                  <div className="border-t pt-4 mt-4 space-y-2">
+                    <Link href="/login" onClick={handleMobileNavClick}>
+                      <Button variant="ghost" className="w-full justify-start">
+                        Log in
+                      </Button>
+                    </Link>
+                    <Link href="/signup" onClick={handleMobileNavClick}>
+                      <Button className="w-full">Sign up</Button>
+                    </Link>
+                  </div>
+                )}
+              </nav>
+            </SheetContent>
+          </Sheet>
+
           {/* Theme Toggle */}
           <ThemeToggle />
 
@@ -90,51 +170,53 @@ export function Navbar() {
             </Link>
           )}
 
-          {/* User authentication */}
-          {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.avatarSource === "default" ? undefined : (user.avatarUrl || undefined)} alt={user.name ?? undefined} />
-                    <AvatarFallback className="bg-[#121212] text-white">
-                      {(user.name || user.email || 'User').split(' ').map(part => part[0] || '').join('').substring(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>
-                  <div className="flex flex-col">
-                    <span>{user.name}</span>
-                    <span className="text-xs text-muted-foreground">{user.email}</span>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/profile">
-                    <User className="mr-2 h-4 w-4" />
-                    Profile
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={signOut}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Link href="/login">
-                <Button variant="ghost" size="sm">
-                  Log in
-                </Button>
-              </Link>
-              <Link href="/signup">
-                <Button size="sm">Sign up</Button>
-              </Link>
-            </div>
-          )}
+          {/* Desktop User authentication */}
+          <div className="hidden md:block">
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.avatarSource === "default" ? undefined : (user.avatarUrl || undefined)} alt={user.name ?? undefined} />
+                      <AvatarFallback className="bg-[#121212] text-white">
+                        {(user.name || user.email || 'User').split(' ').map(part => part[0] || '').join('').substring(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col">
+                      <span>{user.name}</span>
+                      <span className="text-xs text-muted-foreground">{user.email}</span>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile">
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={signOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link href="/login">
+                  <Button variant="ghost" size="sm">
+                    Log in
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button size="sm">Sign up</Button>
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </header>

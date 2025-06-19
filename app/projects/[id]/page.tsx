@@ -137,7 +137,7 @@ export default function ProjectPage({
   return (
     <div className="min-h-screen">
       <Navbar />
-      <div className="container py-16">
+      <div className="container py-8 sm:py-16">
         <div className="mb-8">
           <Link
             href="/projects"
@@ -147,18 +147,18 @@ export default function ProjectPage({
             Back to projects
           </Link>
 
-          <div className="flex items-start gap-4 mb-6">
-            <div className="text-muted-foreground">{project.icon}</div>
+          <div className="flex flex-col sm:flex-row sm:items-start gap-4 mb-6">
+            <div className="text-muted-foreground flex-shrink-0">{project.icon}</div>
             <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl font-bold">{project.title}</h1>
-                <Badge variant="outline">{project.status}</Badge>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                <h1 className="text-2xl sm:text-3xl font-bold">{project.title}</h1>
+                <Badge variant="outline" className="self-start">{project.status}</Badge>
               </div>
-              <p className="text-muted-foreground text-lg leading-relaxed">{project.description}</p>
+              <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">{project.description}</p>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-8">
+          <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
             {project.tags.map((tag) => (
               <Badge key={tag} variant="secondary">
                 {tag}
@@ -166,15 +166,15 @@ export default function ProjectPage({
             ))}
           </div>
 
-          <div className="flex gap-4">
-            <Link href={project.github} target="_blank" rel="noopener noreferrer">
-              <Button variant="outline" className="gap-2">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <Link href={project.github} target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none">
+              <Button variant="outline" className="w-full sm:w-auto gap-2">
                 <Github className="h-4 w-4" />
                 View Code
               </Button>
             </Link>
-            <Link href={project.demo} target="_blank" rel="noopener noreferrer">
-              <Button className="gap-2">
+            <Link href={project.demo} target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none">
+              <Button className="w-full sm:w-auto gap-2">
                 <ExternalLink className="h-4 w-4" />
                 Live Demo
               </Button>
@@ -182,7 +182,7 @@ export default function ProjectPage({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           <Card>
             <CardHeader>
               <CardTitle>Key Features</CardTitle>

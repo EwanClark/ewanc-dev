@@ -7,15 +7,15 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen">
       <Navbar />
-      <div className="container py-16">
+      <div className="container py-8 sm:py-16">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8">About Me</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">About Me</h1>
 
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-start gap-4">
-                  <div className="text-muted-foreground">
+                  <div className="text-muted-foreground flex-shrink-0">
                     <GraduationCap className="h-6 w-6" />
                   </div>
                   <div className="flex-1">
@@ -30,7 +30,7 @@ export default function AboutPage() {
                       work, leading me to dive deep into server-side
                       technologies and database management.
                     </p>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
                         <span>Started programming in 2020</span>
@@ -48,7 +48,7 @@ export default function AboutPage() {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-start gap-4">
-                  <div className="text-muted-foreground">
+                  <div className="text-muted-foreground flex-shrink-0">
                     <Code className="h-6 w-6" />
                   </div>
                   <div className="flex-1">
@@ -71,7 +71,7 @@ export default function AboutPage() {
               </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <Card>
                 <CardContent className="pt-6">
                   <h3 className="font-semibold mb-3">Current Learning</h3>
