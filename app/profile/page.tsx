@@ -4,31 +4,23 @@ import { useState, useEffect } from "react"
 import { createClient } from "@/utils/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ImageCropModal } from "@/components/image-crop-modal"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useToast } from "@/components/ui/use-toast"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogFooter, 
-  DialogHeader, 
-  DialogTitle 
-} from "@/components/ui/dialog"
-import { CheckCircle2, XCircle, UserIcon, AlertTriangle } from "lucide-react"
+import { CheckCircle2, XCircle, UserIcon } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import type { User } from "@supabase/supabase-js"
 import type { Database } from "@/types/supabase"
 import { Navbar } from "@/components/navbar"
+import { ProfileAvatarSection } from "@/components/profile-avatar-section"
+import { ProfilePasswordSection } from "@/components/profile-password-section"
+import { ProfileDangerZone } from "@/components/profile-danger-zone"
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"]
 
 export default function ProfilePage() {
-  const { user: authUser, updateProfile, uploadAvatar, getDisplayAvatarUrl, changePassword, deleteAccount } = useAuth()
+  const { user: authUser, updateProfile, uploadAvatar, changePassword, deleteAccount } = useAuth()
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [fullName, setFullName] = useState('')
@@ -36,20 +28,10 @@ export default function ProfilePage() {
   const [selectedProvider, setSelectedProvider] = useState<string>('')
   const [customAvatarUrl, setCustomAvatarUrl] = useState('')
   const [uploadedAvatarUrl, setUploadedAvatarUrl] = useState('')
-  const [isImageModalOpen, setIsImageModalOpen] = useState(false)
-  const [imageToEdit, setImageToEdit] = useState<string | null>(null)
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-  const [deleteLoading, setDeleteLoading] = useState(false)
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
   const [alertStatus, setAlertStatus] = useState<'success' | 'error' | null>(null)
   const [showAlert, setShowAlert] = useState(false)
-  const [currentPassword, setCurrentPassword] = useState('')
-  const [newPassword, setNewPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [passwordError, setPasswordError] = useState<string | null>(null)
-  const [passwordSuccess, setPasswordSuccess] = useState(false)
-  const [passwordLoading, setPasswordLoading] = useState(false)
   const { toast } = useToast()
 
   const supabase = createClient()
@@ -144,7 +126,6 @@ export default function ProfilePage() {
           avatarUrl = customAvatarUrl || null
           break
         case 'default':
-          // For the "initials" option, set the URL to null so the initials will be shown via AvatarFallback
           avatarUrl = null
           break
         case 'provider':
@@ -157,12 +138,6 @@ export default function ProfilePage() {
           avatarUrl = null
       }
       
-      console.log('Saving profile with:', {
-        name: fullName,
-        avatarUrl,
-        avatarSource,
-      })
-      
       const { error } = await updateProfile({
         name: fullName,
         avatarUrl,
@@ -173,22 +148,18 @@ export default function ProfilePage() {
         throw error
       }
       
-      // Show toast notification
       toast({
         title: 'Profile updated',
         description: 'Your profile information has been updated successfully.',
       })
       
-      // Show persistent success alert
       setAlertStatus('success')
       setShowAlert(true)
       
-      // Auto-hide alert after 5 seconds
       setTimeout(() => {
         setShowAlert(false)
       }, 5000)
       
-      // Update local profile state
       setProfile(prev => prev ? { 
         ...prev, 
         full_name: fullName,
@@ -199,18 +170,15 @@ export default function ProfilePage() {
     } catch (error) {
       console.error('Error updating profile:', error)
       
-      // Show toast notification
       toast({
         title: 'Update failed',
         description: error instanceof Error ? error.message : 'There was an error updating your profile.',
         variant: 'destructive',
       })
       
-      // Show persistent error alert
       setAlertStatus('error')
       setShowAlert(true)
       
-      // Auto-hide alert after 5 seconds
       setTimeout(() => {
         setShowAlert(false)
       }, 5000)
@@ -219,187 +187,12 @@ export default function ProfilePage() {
     }
   }
 
-  const handleImageSelect = () => {
-    const currentUrl = getPreviewAvatarUrl()
-    setImageToEdit(currentUrl || '')
-    setIsImageModalOpen(true)
-  }
-
-  const handleUploadClick = () => {
-    const fileInput = document.createElement('input')
-    fileInput.type = 'file'
-    fileInput.accept = 'image/*'
-    
-    fileInput.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0]
-      if (!file) return
-      
-      const imageUrl = URL.createObjectURL(file)
-      setImageToEdit(imageUrl)
-      setIsImageModalOpen(true)
-    }
-    
-    fileInput.click()
-  }
-
-  // No longer needed as we're using the built-in AvatarFallback component
-
-  const handleCropComplete = async (croppedImageBlob: Blob) => {
-    if (!user) return
-    
-    try {
-      setUpdating(true)
+  const handleShowAlert = (status: 'success' | 'error') => {
+    setAlertStatus(status)
+    setShowAlert(true)
+    setTimeout(() => {
       setShowAlert(false)
-      
-      const { url, error } = await uploadAvatar(new File([croppedImageBlob], `avatar-${user.id}.jpg`, { type: 'image/jpeg' }))
-      
-      if (error) {
-        throw error
-      }
-      
-      if (url) {
-        setUploadedAvatarUrl(url)
-        setAvatarSource('upload')
-        
-        // Show toast notification
-        toast({
-          title: 'Avatar uploaded',
-          description: 'Your profile picture has been uploaded successfully. Click "Save changes" to apply.',
-        })
-        
-        // Show persistent success alert
-        setAlertStatus('success')
-        setShowAlert(true)
-        
-        // Auto-hide alert after 5 seconds
-        setTimeout(() => {
-          setShowAlert(false)
-        }, 5000)
-      }
-    } catch (error) {
-      console.error('Error uploading avatar:', error)
-      
-      // Show toast notification
-      toast({
-        title: 'Upload failed',
-        description: error instanceof Error ? error.message : 'There was an error uploading your profile picture.',
-        variant: 'destructive',
-      })
-      
-      // Show persistent error alert
-      setAlertStatus('error')
-      setShowAlert(true)
-      
-      // Auto-hide alert after 5 seconds
-      setTimeout(() => {
-        setShowAlert(false)
-      }, 5000)
-    } finally {
-      setUpdating(false)
-    }
-  }
-
-  const getPreviewAvatarUrl = () => {
-    switch (avatarSource) {
-      case 'upload':
-        return uploadedAvatarUrl || null
-      case 'url':
-        return customAvatarUrl || null
-      case 'default':
-        // Return null for the "initials" option to trigger the AvatarFallback component
-        return null
-      case 'provider':
-        if (selectedProvider && availableProviders?.length > 0) {
-          const matchingProvider = availableProviders.find(p => p.provider === selectedProvider)
-          return matchingProvider?.avatarUrl || null
-        }
-        return null
-      default:
-        return null
-    }
-  }
-
-  const handleProviderSelection = (providerName: string) => {
-    setSelectedProvider(providerName)
-  }
-
-  const handlePasswordChange = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setPasswordError(null)
-    setPasswordSuccess(false)
-    setPasswordLoading(true)
-    
-    // Validate passwords
-    if (newPassword.length < 8) {
-      setPasswordError("New password must be at least 8 characters long")
-      setPasswordLoading(false)
-      return
-    }
-    
-    if (newPassword !== confirmPassword) {
-      setPasswordError("New password and confirmation do not match")
-      setPasswordLoading(false)
-      return
-    }
-    
-    try {
-      const { error } = await changePassword(currentPassword, newPassword)
-      
-      if (error) {
-        setPasswordError(error.message)
-      } else {
-        setPasswordSuccess(true)
-        setCurrentPassword('')
-        setNewPassword('')
-        setConfirmPassword('')
-        
-        // Show toast notification
-        toast({
-          title: 'Password updated',
-          description: 'Your password has been changed successfully.',
-        })
-        
-        // Reset success message after 5 seconds
-        setTimeout(() => {
-          setPasswordSuccess(false)
-        }, 5000)
-      }
-    } catch (err) {
-      setPasswordError("An unexpected error occurred")
-      console.error(err)
-    } finally {
-      setPasswordLoading(false)
-    }
-  }
-
-  const handleDeleteAccount = async () => {
-    setDeleteLoading(true);
-    try {
-      const { error } = await deleteAccount();
-      
-      if (error) {
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Account deleted",
-          description: "Your account has been successfully deleted.",
-        });
-      }
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred while deleting your account.",
-        variant: "destructive",
-      });
-    } finally {
-      setDeleteLoading(false);
-      setShowDeleteDialog(false);
-    }
+    }, 5000)
   }
 
   if (loading) {
@@ -416,12 +209,6 @@ export default function ProfilePage() {
             </div>
             
             <Card className="border border-border/40 shadow-sm">
-              <CardHeader className="border-b border-border/30">
-                <div className="animate-pulse w-full">
-                  <div className="h-6 bg-muted rounded w-1/3 mb-2"></div>
-                  <div className="h-4 bg-muted rounded w-2/3"></div>
-                </div>
-              </CardHeader>
               <CardContent className="pt-6">
                 <div className="flex flex-col gap-8">
                   <div className="flex flex-col items-center">
@@ -531,31 +318,24 @@ export default function ProfilePage() {
                 </Button>
               </div>
               <div className="flex flex-col gap-8">
-                {/* Left side - Avatar Preview Only */}
-                <div className="flex flex-col items-center gap-4 w-full">
-                  <div className="relative group">
-                    <Avatar className="w-40 h-40 border-2 border-border shadow-md transition-all group-hover:shadow-lg">
-                      <AvatarImage src={avatarSource === 'default' ? undefined : (getPreviewAvatarUrl() || undefined)} alt={fullName || 'User'} />
-                      <AvatarFallback 
-                        className="text-2xl font-medium bg-[#121212] text-white"
-                      >
-                        {(fullName || user.email || 'User').split(' ').map(part => part[0] || '').join('').substring(0, 2).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      {avatarSource === 'upload' && (
-                        <Button size="sm" variant="secondary" className="text-xs font-medium shadow-sm" onClick={handleImageSelect}>
-                          Edit Image
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="text-center">
-                    <h3 className="font-medium">{fullName || user.email || 'User'}</h3>
-                    <p className="text-sm text-muted-foreground">{user.email}</p>
-                  </div>
-                </div>
+                <ProfileAvatarSection
+                  fullName={fullName}
+                  userEmail={user.email || ''}
+                  avatarSource={avatarSource}
+                  setAvatarSource={setAvatarSource}
+                  selectedProvider={selectedProvider}
+                  setSelectedProvider={setSelectedProvider}
+                  customAvatarUrl={customAvatarUrl}
+                  setCustomAvatarUrl={setCustomAvatarUrl}
+                  uploadedAvatarUrl={uploadedAvatarUrl}
+                  setUploadedAvatarUrl={setUploadedAvatarUrl}
+                  availableProviders={availableProviders}
+                  hasProviders={hasProviders}
+                  onUploadAvatar={uploadAvatar}
+                  onShowAlert={handleShowAlert}
+                  updating={updating}
+                  setUpdating={setUpdating}
+                />
                 
                 <div className="space-y-6 w-full">
                   {/* Profile Information Section */}
@@ -589,290 +369,16 @@ export default function ProfilePage() {
                       </div>
                     </div>
                   </div>
-                  
-                  {/* Avatar Settings Section */}
-                  <div className="bg-card/50 p-6 rounded-lg border border-border/40">
-                    <div className="space-y-4">
-                      <div>
-                        <Label className="text-sm font-semibold mb-3 block">Profile Picture</Label>
-                        <RadioGroup 
-                          value={avatarSource} 
-                          onValueChange={(value) => {
-                            const newValue = value as 'upload' | 'provider' | 'url' | 'default';
-                            setAvatarSource(newValue);
-                          }}
-                          className="grid grid-cols-2 gap-3"
-                        >
-                          <Label 
-                            htmlFor="upload" 
-                            className="cursor-pointer rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors w-full"
-                          >
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="upload" id="upload" />
-                              <span className="text-sm">Upload custom image</span>
-                            </div>
-                          </Label>
-                          
-                          {hasProviders && (
-                            <Label 
-                              htmlFor="provider" 
-                              className="cursor-pointer rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors w-full"
-                            >
-                              <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="provider" id="provider" />
-                                <span className="text-sm">Login provider</span>
-                              </div>
-                            </Label>
-                          )}
-                          
-                          <Label 
-                            htmlFor="url" 
-                            className="cursor-pointer rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors w-full"
-                          >
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="url" id="url" />
-                              <span className="text-sm">Custom URL</span>
-                            </div>
-                          </Label>
-                          
-                          <Label 
-                            htmlFor="default" 
-                            className="cursor-pointer rounded-md p-3 border border-border/20 hover:bg-muted/50 transition-colors w-full"
-                          >
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="default" id="default" />
-                              <span className="text-sm">Initials</span>
-                            </div>
-                          </Label>
-                        </RadioGroup>
-                      </div>
-
-                      {/* No additional UI for initials - it's handled automatically behind the scenes */}
-
-                      {/* Provider selection - show when provider is selected */}
-                      {avatarSource === 'provider' && hasProviders && (
-                        <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
-                          <Label className="text-sm font-medium">Connected Accounts</Label>
-                          <RadioGroup value={selectedProvider} onValueChange={handleProviderSelection} className="grid grid-cols-2 gap-2">
-                            {availableProviders.map((providerOption) => (
-                              <Label 
-                                key={providerOption.provider}
-                                htmlFor={`sel-${providerOption.provider}`}
-                                className="cursor-pointer block p-3 rounded-md border border-border/20 hover:bg-background/50 transition-colors"
-                              >
-                                <div className="flex items-center justify-between w-full">
-                                  <div className="flex items-center space-x-3">
-                                    <RadioGroupItem 
-                                      value={providerOption.provider} 
-                                      id={`sel-${providerOption.provider}`}
-                                    />
-                                    <span className="font-medium capitalize">
-                                      {providerOption.provider}
-                                    </span>
-                                  </div>
-                                  {providerOption.avatarUrl && (
-                                    <img 
-                                      src={providerOption.avatarUrl || "/placeholder.svg"} 
-                                      alt={`${providerOption.provider} avatar`}
-                                      className="w-8 h-8 rounded-full border shadow-sm"
-                                    />
-                                  )}
-                                </div>
-                              </Label>
-                            ))}
-                          </RadioGroup>
-                        </div>
-                      )}
-
-                      {/* Upload options - show when upload is selected */}
-                      {avatarSource === 'upload' && (
-                        <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
-                          <Label className="text-sm font-medium">Upload Options</Label>
-                          <div className="flex gap-3">
-                            <Button 
-                              variant="secondary" 
-                              onClick={handleUploadClick} 
-                              className="flex-1 font-medium"
-                            >
-                              Upload New Image
-                            </Button>
-                            {uploadedAvatarUrl && (
-                              <Button 
-                                variant="outline" 
-                                onClick={handleImageSelect} 
-                                className="flex-1 font-medium"
-                              >
-                                Edit Current Image
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* URL input - show when URL is selected */}
-                      {avatarSource === 'url' && (
-                        <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
-                          <Label htmlFor="customUrl" className="text-sm font-medium">External Image URL</Label>
-                          <Input
-                            id="customUrl"
-                            value={customAvatarUrl}
-                            onChange={(e) => setCustomAvatarUrl(e.target.value)}
-                            placeholder="https://example.com/avatar.jpg"
-                            className="bg-background/70 border-border/30"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </div>
                 </div>
               </div>
             </CardContent>
           </Card>
       
           {/* Password Change Section */}
-          <Card className="mb-6 border border-border/40 shadow-sm">
-            <CardContent className="pt-6">
-              <div className="space-y-4">
-                <h2 className="text-lg font-semibold">Change Password</h2>
-                
-                {passwordError && (
-                  <Alert variant="destructive">
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>{passwordError}</AlertDescription>
-                  </Alert>
-                )}
-                
-                {passwordSuccess && (
-                  <Alert className="bg-green-50 dark:bg-green-900/20 border-green-500 dark:border-green-900">
-                    <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
-                    <AlertTitle>Success</AlertTitle>
-                    <AlertDescription>Your password has been changed successfully.</AlertDescription>
-                  </Alert>
-                )}
-                
-                <form onSubmit={handlePasswordChange} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="currentPassword" className="text-sm font-semibold">Current Password</Label>
-                    <Input
-                      id="currentPassword"
-                      type="password"
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                      placeholder="Enter your current password"
-                      className="bg-background/70 border-border/30"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="newPassword" className="text-sm font-semibold">New Password</Label>
-                    <Input
-                      id="newPassword"
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="Enter a new password"
-                      className="bg-background/70 border-border/30"
-                      required
-                      minLength={8}
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Password must be at least 8 characters long
-                    </p>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="text-sm font-semibold">Confirm New Password</Label>
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Confirm your new password"
-                      className="bg-background/70 border-border/30"
-                      required
-                    />
-                  </div>
-                  
-                  <Button 
-                    type="submit"
-                    disabled={passwordLoading || newPassword !== confirmPassword || newPassword.length < 8}
-                    size="default"
-                    className="font-medium"
-                  >
-                    {passwordLoading ? 'Changing...' : 'Change Password'}
-                  </Button>
-                </form>
-              </div>
-            </CardContent>
-          </Card>
+          <ProfilePasswordSection onChangePassword={changePassword} />
       
           {/* Danger Zone - Delete Account */}
-          <Card className="border-red-200 dark:border-red-900/40 shadow-sm">
-            <CardContent className="pt-6">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-lg font-semibold text-red-600 dark:text-red-500">Danger Zone</h2>
-                    <p className="text-sm text-muted-foreground">
-                      Once you delete your account, there is no going back. This action is permanent.
-                    </p>
-                  </div>
-                  <Button 
-                    variant="destructive" 
-                    onClick={() => setShowDeleteDialog(true)}
-                  >
-                    Delete Account
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Delete Account Confirmation Dialog */}
-          <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5 text-red-500" />
-                  Delete Account
-                </DialogTitle>
-                <DialogDescription>
-                  This action cannot be undone. This will permanently delete your account 
-                  and remove all your data from our servers.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="py-4">
-                <p className="text-sm text-muted-foreground mb-4">
-                  Are you absolutely sure you want to delete your account? 
-                </p>
-              </div>
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  onClick={() => setShowDeleteDialog(false)}
-                >
-                  Cancel
-                </Button>
-                <Button 
-                  variant="destructive" 
-                  onClick={handleDeleteAccount}
-                  disabled={deleteLoading}
-                >
-                  {deleteLoading ? "Deleting..." : "Yes, Delete My Account"}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-
-          {isImageModalOpen && imageToEdit && (
-            <ImageCropModal
-              isOpen={isImageModalOpen}
-              onClose={() => setIsImageModalOpen(false)}
-              onCropComplete={handleCropComplete}
-              imageSrc={imageToEdit}
-            />
-          )}
+          <ProfileDangerZone onDeleteAccount={deleteAccount} />
         </div>
       </div>
     </div>
