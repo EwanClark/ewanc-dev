@@ -15,14 +15,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Github, Code, ChevronDown, LogOut, User, Menu } from "lucide-react"
+import { Github, ChevronDown, LogOut, User, Menu } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { ThemeToggle } from "@/components/theme-toggle"
 
 export function Navbar() {
   const pathname = usePathname()
   const { user, signOut } = useAuth()
-  const [open, setOpen] = useState(false)
+  // const [, setOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Determine if we're in a specific project section

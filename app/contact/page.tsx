@@ -42,7 +42,7 @@ export default function ContactPage() {
                     <Code className="h-8 w-8 sm:h-10 sm:w-10 mb-3 sm:mb-4 text-primary" />
                     <h3 className="font-semibold mb-2">Recruiters</h3>
                     <p className="text-sm text-muted-foreground">
-                      Interested in discussing job opportunities or potential roles? Let's connect!
+                      Interested in discussing job opportunities or potential roles? Let&apos;s connect!
                     </p>
                   </div>
                 </CardContent>
@@ -54,7 +54,7 @@ export default function ContactPage() {
                     <Github className="h-8 w-8 sm:h-10 sm:w-10 mb-3 sm:mb-4 text-primary" />
                     <h3 className="font-semibold mb-2">Developers</h3>
                     <p className="text-sm text-muted-foreground">
-                      Want to collaborate, pair program, or discuss tech? I'm open to developer connections.
+                      Want to collaborate, pair program, or discuss tech? I&apos;m open to developer connections.
                     </p>
                   </div>
                 </CardContent>

@@ -20,7 +20,7 @@ type User = SupabaseUser & {
   identities?: Array<{
     id: string;
     user_id: string;
-    identity_data?: Record<string, any>;
+    identity_data?: Record<string, unknown>;
     provider: string;
     created_at?: string;
     last_sign_in_at?: string;
@@ -82,7 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const createUserProfile = (
     sessionUser: SupabaseUser,
-    existingProfile?: any
+    existingProfile?: Record<string, unknown>
   ) => {
 
     const identities = (sessionUser as User).identities || [];
@@ -104,7 +104,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Get provider-specific avatar URL
     const providerAvatarUrl =
       provider !== "email"
-        ? (primaryProvider.identity_data as Record<string, any> | undefined)?.avatar_url ||
+        ? (primaryProvider.identity_data as Record<string, unknown> | undefined)?.avatar_url as string || 
           sessionUser.user_metadata?.avatar_url ||
           sessionUser.user_metadata?.picture ||
           null
@@ -113,22 +113,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Get all available provider avatars for selection
     const availableProviders = oauthProviders.map((identity) => ({
       provider: identity.provider,
-      avatarUrl: identity.identity_data?.avatar_url || null,
-      name: identity.identity_data?.full_name || null,
+      avatarUrl: (identity.identity_data?.avatar_url as string) || null,
+      name: (identity.identity_data?.full_name as string) || null,
     }));
 
     return {
       id: sessionUser.id,
-      name:
-        existingProfile?.full_name ||
+      name: (existingProfile?.full_name as string) ||
         sessionUser.user_metadata?.full_name ||
         null,
       email: sessionUser.email || null,
-      avatarUrl: existingProfile?.avatar_url || null,
+      avatarUrl: (existingProfile?.avatar_url as string) || null,
       provider: provider,
       providerAvatarUrl: providerAvatarUrl,
-      avatarSource: existingProfile?.avatar_source || "upload",
-      website: existingProfile?.website || null,
+      avatarSource: (existingProfile?.avatar_source as 'upload' | 'provider' | 'url' | 'default') || "upload",
       availableProviders: availableProviders,
     };
   };
@@ -245,7 +243,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signIn = async (email: string, password: string) => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+              const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -295,7 +293,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signInWithGithub = async () => {
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: "github",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
@@ -310,7 +308,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signInWithGoogle = async () => {
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
@@ -418,7 +416,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       // Update profile in database
-      const updates: any = {
+      const updates: Record<string, unknown> = {
         updated_at: new Date().toISOString(),
       };
 
@@ -464,7 +462,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const filePath = `avatars/${fileName}`;
 
       // Upload file to Supabase storage
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from("avatars")
         .upload(filePath, file, {
           cacheControl: "3600",

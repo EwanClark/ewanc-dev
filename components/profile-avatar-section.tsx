@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ImageCropModal } from "@/components/image-crop-modal"
+import Image from "next/image"
 
 type AvatarSource = 'upload' | 'provider' | 'url' | 'default'
 
@@ -50,7 +51,7 @@ export function ProfileAvatarSection({
   hasProviders,
   onUploadAvatar,
   onShowAlert,
-  updating,
+  // updating: _,
   setUpdating
 }: ProfileAvatarSectionProps) {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
@@ -232,9 +233,11 @@ export function ProfileAvatarSection({
                         </span>
                       </div>
                       {providerOption.avatarUrl && (
-                        <img 
+                        <Image 
                           src={providerOption.avatarUrl || "/placeholder.svg"} 
                           alt={`${providerOption.provider} avatar`}
+                          width={32}
+                          height={32}
                           className="w-8 h-8 rounded-full border shadow-sm"
                         />
                       )}

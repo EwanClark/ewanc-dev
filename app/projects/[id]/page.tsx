@@ -117,16 +117,14 @@ type Params = {
   id: string
 }
 
-type SearchParams = {
-  [key: string]: string | string[] | undefined
-}
+// type SearchParams = {
+//   [key: string]: string | string[] | undefined
+// }
 
 export default function ProjectPage({ 
-  params,
-  searchParams
+  params
 }: {
   params: Params
-  searchParams?: SearchParams
 }) {
   const project = projects[params.id as keyof typeof projects]
 

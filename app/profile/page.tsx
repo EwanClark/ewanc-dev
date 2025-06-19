@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { createClient } from "@/utils/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -22,7 +22,7 @@ type Profile = Database["public"]["Tables"]["profiles"]["Row"]
 export default function ProfilePage() {
   const { user: authUser, updateProfile, uploadAvatar, changePassword, deleteAccount } = useAuth()
   const [user, setUser] = useState<User | null>(null)
-  const [profile, setProfile] = useState<Profile | null>(null)
+  const [, setProfile] = useState<Profile | null>(null)
   const [fullName, setFullName] = useState('')
   const [avatarSource, setAvatarSource] = useState<'upload' | 'provider' | 'url' | 'default'>('upload')
   const [selectedProvider, setSelectedProvider] = useState<string>('')
@@ -37,7 +37,7 @@ export default function ProfilePage() {
   const supabase = createClient()
 
   // Check if user has OAuth providers
-  const availableProviders = authUser?.availableProviders || []
+  const availableProviders = useMemo(() => authUser?.availableProviders || [], [authUser?.availableProviders])
   const hasProviders = availableProviders && availableProviders.length > 0
 
   useEffect(() => {
@@ -106,7 +106,7 @@ export default function ProfilePage() {
     }
 
     fetchUserAndProfile()
-  }, [availableProviders])
+  }, [availableProviders, supabase])
 
   const handleSaveChanges = async () => {
     if (!user) return

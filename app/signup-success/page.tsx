@@ -21,7 +21,7 @@ export default function SignupSuccessPage() {
           </CardHeader>
           <CardContent className="text-center text-muted-foreground">
             <p>
-              We've sent a verification link to your email address. Please click on the link to verify your account and
+              We&apos;ve sent a verification link to your email address. Please click on the link to verify your account and
               complete the registration process.
             </p>
           </CardContent>

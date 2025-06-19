@@ -32,7 +32,7 @@ export default function ResetPasswordPage() {
         
         // Listen for auth state changes
         const { data: authListener } = supabase.auth.onAuthStateChange(
-          (event, session) => {
+          (event) => {
             // PASSWORD_RECOVERY event is triggered when the recovery link is used
             if (event === 'PASSWORD_RECOVERY') {
               validSession = true;
@@ -84,7 +84,7 @@ export default function ResetPasswordPage() {
     };
     
     checkSession();
-  }, [])
+  }, [supabase.auth])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -104,9 +104,6 @@ export default function ResetPasswordPage() {
     }
 
     try {
-      // Get the current session
-      const { data: { session } } = await supabase.auth.getSession()
-      
       // Try to update the password directly
       const { error } = await supabase.auth.updateUser({ password })
 
@@ -121,7 +118,7 @@ export default function ResetPasswordPage() {
             // The hash can be complex, so we attempt to handle different formats
             // Supabase usually includes type=recovery in the hash for password reset flows
             setError("Unable to reset password with the provided link. Please request a new password reset link.")
-          } catch (parseErr) {
+          } catch {
             setError("Invalid password reset link format. Please request a new reset link.")
           }
         } else {

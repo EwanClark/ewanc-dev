@@ -37,7 +37,7 @@ export function ImageCropModal({ isOpen, onClose, onCropComplete, imageSrc }: Im
   const [scale, setScale] = useState(1)
   const [rotation, setRotation] = useState(0)
   const imgRef = useRef<HTMLImageElement>(null)
-  const previewCanvasRef = useRef<HTMLCanvasElement>(null)
+  // const previewCanvasRef = useRef<HTMLCanvasElement | null>(null)
 
   function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
     const { width, height } = e.currentTarget
@@ -139,6 +139,7 @@ export function ImageCropModal({ isOpen, onClose, onCropComplete, imageSrc }: Im
               minHeight={100}
               circularCrop
             >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 ref={imgRef}
                 alt="Crop me"

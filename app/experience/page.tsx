@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card"
 import { Navbar } from "@/components/navbar"
-import { Briefcase, Award, GraduationCap, Code, Lightbulb, Star, BookOpen, Globe, Coffee } from "lucide-react"
+import { Briefcase, GraduationCap, Code, Lightbulb, Star, BookOpen, Globe, Coffee } from "lucide-react"
 import { notFound } from 'next/navigation'
 
 // Set this to true when you want to enable the experience page

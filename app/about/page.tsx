@@ -23,7 +23,7 @@ export default function AboutPage() {
                       Self-Taught Developer
                     </h3>
                     <p className="text-muted-foreground mb-4">
-                      Currently in Year 8, I've been successfully building
+                      Currently in Year 8, I&apos;ve been successfully building
                       applications since 2020, focusing primarily on backend
                       development and full-stack applications. My journey
                       started with curiosity about how complex technologies

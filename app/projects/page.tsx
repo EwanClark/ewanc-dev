@@ -9,7 +9,7 @@ export default function ProjectsPage() {
         <div className="mb-12">
           <h1 className="text-3xl font-bold mb-4">All Projects</h1>
           <p className="text-muted-foreground">
-            A collection of full-stack applications and backend services I've built.
+            A collection of full-stack applications and backend services I&apos;ve built.
           </p>
         </div>
         <ProjectsGrid />

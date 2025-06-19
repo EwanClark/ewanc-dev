@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card"
-import { Briefcase, Award, GraduationCap, Code, Lightbulb } from "lucide-react"
+import { Briefcase, GraduationCap, Code, Lightbulb } from "lucide-react"
 
 // NOTE: This component is currently disabled in the home page.
 // To enable it:

@@ -53,7 +53,7 @@ export default function ShortUrlPage() {
     // Validate URL
     try {
       new URL(url)
-    } catch (err) {
+    } catch {
       setError("Please enter a valid URL including http:// or https://")
       setLoading(false)
       return
