@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Github, Code, ChevronDown, LogOut, User } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export function Navbar() {
   const pathname = usePathname()
@@ -57,6 +58,9 @@ export function Navbar() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {/* Theme Toggle */}
+          <ThemeToggle />
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
