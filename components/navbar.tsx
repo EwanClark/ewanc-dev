@@ -59,9 +59,6 @@ export function Navbar() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Theme Toggle */}
-          <ThemeToggle />
-
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
             {navItems.map((item) => (
@@ -80,6 +77,9 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Theme Toggle */}
+          <ThemeToggle />
+
           {/* Only show GitHub link on main portfolio pages */}
           {!currentProject && (
             <Link href="https://github.com/ewanclark/" target="_blank" rel="noopener noreferrer">
