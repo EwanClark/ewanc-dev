@@ -651,7 +651,7 @@ export default function ProfilePage() {
 
                       {/* Provider selection - show when provider is selected */}
                       {avatarSource === 'provider' && hasProviders && (
-                        <div className="space-y-3 p-4 bg-card/50 rounded-lg border border-border/40">
+                        <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
                           <Label className="text-sm font-medium">Connected Accounts</Label>
                           <RadioGroup value={selectedProvider} onValueChange={handleProviderSelection} className="grid grid-cols-2 gap-2">
                             {availableProviders.map((providerOption) => (
@@ -686,7 +686,7 @@ export default function ProfilePage() {
 
                       {/* Upload options - show when upload is selected */}
                       {avatarSource === 'upload' && (
-                        <div className="space-y-3 p-4 bg-card/50 rounded-lg border border-border/40">
+                        <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
                           <Label className="text-sm font-medium">Upload Options</Label>
                           <div className="flex gap-3">
                             <Button 
@@ -711,7 +711,7 @@ export default function ProfilePage() {
 
                       {/* URL input - show when URL is selected */}
                       {avatarSource === 'url' && (
-                        <div className="space-y-3 p-4 bg-card/50 rounded-lg border border-border/40">
+                        <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
                           <Label htmlFor="customUrl" className="text-sm font-medium">External Image URL</Label>
                           <Input
                             id="customUrl"
