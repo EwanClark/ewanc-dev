@@ -213,7 +213,7 @@ export function ProfileAvatarSection({
 
           {/* Provider selection */}
           {avatarSource === 'provider' && hasProviders && (
-            <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
+            <div className="space-y-3 p-4 bg-card/50 rounded-lg border border-border/10">
               <Label className="text-sm font-medium">Connected Accounts</Label>
               <RadioGroup value={selectedProvider} onValueChange={handleProviderSelection} className="grid grid-cols-2 gap-2">
                 {availableProviders.map((providerOption) => (
