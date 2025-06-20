@@ -1,7 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { FaMoon, FaSun, FaDesktop } from "react-icons/fa"
+import { FaMoon, FaDesktop } from "react-icons/fa"
+import { IoSunny } from "react-icons/io5";
 import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"
@@ -32,7 +33,7 @@ export function ThemeToggle() {
     
     switch (theme) {
       case "light":
-        return <FaSun className="h-4 w-4" />
+        return <IoSunny className="h-4 w-4" />
       case "dark":
         return <FaMoon className="h-4 w-4" />
       case "system":
