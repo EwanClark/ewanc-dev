@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Moon, Sun, Monitor } from "lucide-react"
+import { FaMoon, FaSun, FaDesktop } from "react-icons/fa"
 import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"
@@ -27,18 +27,18 @@ export function ThemeToggle() {
 
   const getIcon = () => {
     if (!mounted) {
-      return <Monitor className="h-4 w-4" />
+      return <FaDesktop className="h-4 w-4" />
     }
     
     switch (theme) {
       case "light":
-        return <Sun className="h-4 w-4" />
+        return <FaSun className="h-4 w-4" />
       case "dark":
-        return <Moon className="h-4 w-4" />
+        return <FaMoon className="h-4 w-4" />
       case "system":
-        return <Monitor className="h-4 w-4" />
+        return <FaDesktop className="h-4 w-4" />
       default:
-        return <Monitor className="h-4 w-4" />
+        return <FaDesktop className="h-4 w-4" />
     }
   }
 
