@@ -7,7 +7,13 @@ import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 
 export function ThemeToggle() {
-  const { setTheme, theme } = useTheme()
+  const { setTheme, theme, resolvedTheme } = useTheme()
+  const [mounted, setMounted] = React.useState(false)
+
+  // Avoid hydration mismatch
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const cycleTheme = () => {
     if (theme === "light") {
@@ -20,6 +26,10 @@ export function ThemeToggle() {
   }
 
   const getIcon = () => {
+    if (!mounted) {
+      return <Monitor className="h-4 w-4" />
+    }
+    
     switch (theme) {
       case "light":
         return <Sun className="h-4 w-4" />
@@ -33,6 +43,10 @@ export function ThemeToggle() {
   }
 
   const getTooltipText = () => {
+    if (!mounted) {
+      return "Toggle theme"
+    }
+    
     switch (theme) {
       case "light":
         return "Switch to dark mode"
