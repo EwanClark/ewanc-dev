@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
+import { FaArrowLeft } from "react-icons/fa"
 
 export default function NotFound() {
   return (
@@ -10,7 +10,7 @@ export default function NotFound() {
         <p className="text-muted-foreground mb-8">The page you&apos;re looking for doesn&apos;t exist.</p>
         <Link href="/">
           <Button className="gap-2">
-            <ArrowLeft className="h-4 w-4" />
+            <FaArrowLeft className="h-4 w-4" />
             Back to Home
           </Button>
         </Link>

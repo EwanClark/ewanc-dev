@@ -1,5 +1,7 @@
 import { Card } from "@/components/ui/card"
-import { Briefcase, GraduationCap, Code, Lightbulb } from "lucide-react"
+import { IoBriefcaseOutline, IoSchoolOutline } from "react-icons/io5";
+import { FaCode } from "react-icons/fa6";
+import { LuLightbulb } from "react-icons/lu";
 
 // NOTE: This component is currently disabled in the home page.
 // To enable it:
@@ -16,7 +18,7 @@ const timelineEvents = [
 		date: "2023 - Present",
 		description:
 			"Leading frontend development for enterprise SaaS products, focusing on React, TypeScript, and Next.js.",
-		icon: <Briefcase className="h-5 w-5" />,
+		icon: <IoBriefcaseOutline className="h-5 w-5" />,
 	},
 	{
 		title: "Full Stack Developer",
@@ -24,7 +26,7 @@ const timelineEvents = [
 		date: "2020 - 2023",
 		description:
 			"Built and maintained scalable web applications using React, Node.js, and PostgreSQL.",
-		icon: <Code className="h-5 w-5" />,
+		icon: <FaCode className="h-5 w-5" />,
 	},
 	{
 		title: "Open Source Contribution",
@@ -32,7 +34,7 @@ const timelineEvents = [
 		date: "2019",
 		description:
 			"Contributed to several popular React libraries and maintained personal open source projects.",
-		icon: <Lightbulb className="h-5 w-5" />,
+		icon: <LuLightbulb className="h-5 w-5" />,
 	},
 	{
 		title: "Junior Web Developer",
@@ -40,7 +42,7 @@ const timelineEvents = [
 		date: "2018 - 2020",
 		description:
 			"Started career working with JavaScript, HTML/CSS, and basic backend systems.",
-		icon: <Code className="h-5 w-5" />,
+		icon: <FaCode className="h-5 w-5" />,
 	},
 	{
 		title: "Computer Science Degree",
@@ -48,7 +50,7 @@ const timelineEvents = [
 		date: "2014 - 2018",
 		description:
 			"Bachelor's degree with focus on software engineering and web technologies.",
-		icon: <GraduationCap className="h-5 w-5" />,
+		icon: <IoSchoolOutline className="h-5 w-5" />,
 	},
 ]
 

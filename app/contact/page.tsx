@@ -1,7 +1,10 @@
 import { Navbar } from "@/components/navbar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Mail, Code, Github, Laptop } from "lucide-react"
 import { EmailButton } from "@/components/email-button"
+import { CiLaptop } from "react-icons/ci";
+import { FaWpforms, FaGithub } from "react-icons/fa6"
+import { MdMailOutline } from "react-icons/md";
+
 
 export default function ContactPage() {
   return (
@@ -19,7 +22,7 @@ export default function ContactPage() {
             <Card className="border border-border">
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-2">
-                  <Mail className="h-5 w-5 text-primary" />
+                  <MdMailOutline className="h-5 w-5 text-primary" />
                   <CardTitle>Get in Touch</CardTitle>
                 </div>
               </CardHeader>
@@ -39,7 +42,7 @@ export default function ContactPage() {
               <Card className="border border-border">
                 <CardContent className="pt-6">
                   <div className="flex flex-col items-center text-center">
-                    <Code className="h-8 w-8 sm:h-10 sm:w-10 mb-3 sm:mb-4 text-primary" />
+                    <FaWpforms className="h-8 w-8 sm:h-10 sm:w-10 mb-3 sm:mb-4 text-primary" />
                     <h3 className="font-semibold mb-2">Recruiters</h3>
                     <p className="text-sm text-muted-foreground">
                       Interested in discussing job opportunities or potential roles? Let&apos;s connect!
@@ -51,7 +54,7 @@ export default function ContactPage() {
               <Card className="border border-border">
                 <CardContent className="pt-6">
                   <div className="flex flex-col items-center text-center">
-                    <Github className="h-8 w-8 sm:h-10 sm:w-10 mb-3 sm:mb-4 text-primary" />
+                    <FaGithub className="h-8 w-8 sm:h-10 sm:w-10 mb-3 sm:mb-4 text-primary" />
                     <h3 className="font-semibold mb-2">Developers</h3>
                     <p className="text-sm text-muted-foreground">
                       Want to collaborate, pair program, or discuss tech? I&apos;m open to developer connections.
@@ -63,7 +66,7 @@ export default function ContactPage() {
               <Card className="border border-border sm:col-span-2 lg:col-span-1">
                 <CardContent className="pt-6">
                   <div className="flex flex-col items-center text-center">
-                    <Laptop className="h-8 w-8 sm:h-10 sm:w-10 mb-3 sm:mb-4 text-primary" />
+                    <CiLaptop className="h-8 w-8 sm:h-10 sm:w-10 mb-3 sm:mb-4 text-primary" />
                     <h3 className="font-semibold mb-2">Project Requests</h3>
                     <p className="text-sm text-muted-foreground">
                       Need a website or app built? Reach out to discuss your project requirements.

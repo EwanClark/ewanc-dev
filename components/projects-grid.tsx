@@ -1,14 +1,15 @@
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Database, Globe, MessageSquare, LinkIcon } from "lucide-react"
+import { FaDatabase, FaComments, FaLink } from "react-icons/fa"
+import { CiGlobe } from "react-icons/ci";
 
 const projects = [
   {
     id: "task-manager",
     title: "Task Manager API",
     description: "RESTful API for task management with user authentication and real-time updates.",
-    icon: <Database className="h-6 w-6" />,
+    icon: <FaDatabase className="h-6 w-6" />,
     tags: ["Node.js", "Express", "PostgreSQL", "JWT"],
     status: "Completed",
   },
@@ -16,7 +17,7 @@ const projects = [
     id: "chat-app",
     title: "Real-time Chat",
     description: "Full-stack chat application with WebSocket connections and message persistence.",
-    icon: <MessageSquare className="h-6 w-6" />,
+    icon: <FaComments className="h-6 w-6" />,
     tags: ["Next.js", "Socket.io", "Supabase", "TypeScript"],
     status: "In Progress",
   },
@@ -24,7 +25,7 @@ const projects = [
     id: "url-shortener",
     title: "URL Shortener",
     description: "Custom URL shortening service with analytics and click tracking.",
-    icon: <LinkIcon className="h-6 w-6" />,
+    icon: <FaLink className="h-6 w-6" />,
     tags: ["React", "Node.js", "MongoDB", "Redis"],
     status: "Completed",
   },
@@ -32,7 +33,7 @@ const projects = [
     id: "portfolio-site",
     title: "Portfolio Website",
     description: "Modern portfolio website built with Next.js and deployed on Vercel.",
-    icon: <Globe className="h-6 w-6" />,
+    icon: <CiGlobe className="h-6 w-6" />,
     tags: ["Next.js", "Tailwind CSS", "Vercel", "shadcn/ui"],
     status: "Live",
   },

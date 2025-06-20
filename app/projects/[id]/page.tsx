@@ -3,7 +3,7 @@ import { Navbar } from "@/components/navbar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Github, ExternalLink, Database, MessageSquare, LinkIcon, Globe } from "lucide-react"
+import { FaArrowLeft, FaGithub, FaExternalLinkAlt, FaDatabase, FaLink, FaGlobe, FaComments } from "react-icons/fa"
 import Link from "next/link"
 
 const projects = {
@@ -11,7 +11,7 @@ const projects = {
     title: "Task Manager API",
     description:
       "A comprehensive RESTful API for task management with user authentication, role-based permissions, and real-time updates. Built with Node.js and Express, featuring JWT authentication and PostgreSQL database integration.",
-    icon: <Database className="h-8 w-8" />,
+    icon: <FaDatabase className="h-8 w-8" />,
     tags: ["Node.js", "Express", "PostgreSQL", "JWT", "REST API", "Authentication"],
     status: "Completed",
     github: "https://github.com/username/task-manager-api",
@@ -37,7 +37,7 @@ const projects = {
     title: "Real-time Chat Application",
     description:
       "A full-stack real-time chat application featuring WebSocket connections, message persistence, and user presence indicators. Built with Next.js frontend and Socket.io for real-time communication.",
-    icon: <MessageSquare className="h-8 w-8" />,
+    icon: <FaComments className="h-8 w-8" />,
     tags: ["Next.js", "Socket.io", "Supabase", "TypeScript", "Real-time", "WebSocket"],
     status: "In Progress",
     github: "https://github.com/username/chat-app",
@@ -63,7 +63,7 @@ const projects = {
     title: "URL Shortener Service",
     description:
       "A custom URL shortening service with comprehensive analytics, click tracking, and custom alias support. Features Redis caching for high performance and MongoDB for data persistence.",
-    icon: <LinkIcon className="h-8 w-8" />,
+    icon: <FaLink className="h-8 w-8" />,
     tags: ["React", "Node.js", "MongoDB", "Redis", "Analytics", "Caching"],
     status: "Completed",
     github: "https://github.com/username/url-shortener",
@@ -89,7 +89,7 @@ const projects = {
     title: "Portfolio Website",
     description:
       "A modern, responsive portfolio website built with Next.js and deployed on Vercel. Features a clean design, project showcase, and optimized performance with static generation.",
-    icon: <Globe className="h-8 w-8" />,
+    icon: <FaGlobe className="h-8 w-8" />,
     tags: ["Next.js", "Tailwind CSS", "Vercel", "shadcn/ui", "Responsive", "SEO"],
     status: "Live",
     github: "https://github.com/username/portfolio",
@@ -141,7 +141,7 @@ export default function ProjectPage({
             href="/projects"
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <FaArrowLeft className="h-4 w-4" />
             Back to projects
           </Link>
 
@@ -167,13 +167,13 @@ export default function ProjectPage({
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <Link href={project.github} target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none">
               <Button variant="outline" className="w-full sm:w-auto gap-2">
-                <Github className="h-4 w-4" />
+                <FaGithub className="h-4 w-4" />
                 View Code
               </Button>
             </Link>
             <Link href={project.demo} target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none">
               <Button className="w-full sm:w-auto gap-2">
-                <ExternalLink className="h-4 w-4" />
+                <FaExternalLinkAlt className="h-4 w-4" />
                 Live Demo
               </Button>
             </Link>

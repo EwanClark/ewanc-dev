@@ -5,7 +5,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ArrowUpRight, Github } from "lucide-react"
+import { FiArrowUpRight } from "react-icons/fi";
+import { FaGithub } from "react-icons/fa6";
 import Link from "next/link"
 
 const projects = {
@@ -13,7 +14,6 @@ const projects = {
     {
       title: "ShortURL",
       description: "A URL shortener with analytics and custom links.",
-      image: "/placeholder.svg?height=300&width=600",
       tags: ["Next.js", "Prisma", "PostgreSQL"],
       github: "https://github.com",
       demo: "https://example.com",
@@ -21,7 +21,6 @@ const projects = {
     {
       title: "DevChat",
       description: "Real-time chat application for developer teams.",
-      image: "/placeholder.svg?height=300&width=600",
       tags: ["React", "Socket.io", "Express", "MongoDB"],
       github: "https://github.com",
       demo: "https://example.com",
@@ -31,7 +30,6 @@ const projects = {
     {
       title: "TaskMaster",
       description: "A productivity app for managing tasks and projects.",
-      image: "/placeholder.svg?height=300&width=600",
       tags: ["React Native", "Redux", "Firebase"],
       github: "https://github.com",
       demo: "https://example.com",
@@ -41,7 +39,6 @@ const projects = {
     {
       title: "ReactComponents",
       description: "A collection of reusable React components.",
-      image: "/placeholder.svg?height=300&width=600",
       tags: ["React", "TypeScript", "Storybook"],
       github: "https://github.com",
       demo: "https://example.com",
@@ -72,14 +69,6 @@ export function ProjectShowcase() {
           <TabsContent key={category} value={category} className="space-y-6">
             {projectList.map((project, index) => (
               <Card key={index} className="overflow-hidden border border-border/50 bg-card/50 backdrop-blur">
-                <div className="aspect-video bg-muted relative overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={project.image || "/placeholder.svg"}
-                    alt={project.title}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
                 <CardContent className="p-6">
                   <div className="space-y-4">
                     <div>
@@ -96,12 +85,12 @@ export function ProjectShowcase() {
                     <div className="flex gap-4 pt-2">
                       <Link href={project.github} target="_blank" rel="noopener noreferrer">
                         <Button variant="outline" size="sm" className="gap-2">
-                          <Github className="h-4 w-4" /> GitHub
+                          <FaGithub className="h-4 w-4" /> GitHub
                         </Button>
                       </Link>
                       <Link href={project.demo} target="_blank" rel="noopener noreferrer">
                         <Button size="sm" className="gap-2">
-                          Live Demo <ArrowUpRight className="h-4 w-4" />
+                          Live Demo <FiArrowUpRight className="h-4 w-4" />
                         </Button>
                       </Link>
                     </div>

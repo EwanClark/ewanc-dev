@@ -1,5 +1,5 @@
 import { Navbar } from "@/components/navbar"
-import { MapPin } from "lucide-react"
+import { FiMapPin } from "react-icons/fi";
 import Image from "next/image"
 
 export function HeroSection() {
@@ -32,7 +32,7 @@ export function HeroSection() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6 text-sm text-muted-foreground mb-4">
               <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
+                <FiMapPin className="h-4 w-4" />
                 <span>London, UK</span>
               </div>
               <div className="flex items-center gap-2">

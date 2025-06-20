@@ -1,7 +1,12 @@
 import { Card } from "@/components/ui/card"
 import { Navbar } from "@/components/navbar"
-import { Briefcase, GraduationCap, Code, Lightbulb, Star, BookOpen, Globe, Coffee } from "lucide-react"
 import { notFound } from 'next/navigation'
+import { IoBriefcaseOutline, IoSchoolOutline } from "react-icons/io5";
+import { FaCode } from "react-icons/fa6";
+import { LuLightbulb } from "react-icons/lu";
+import { IoIosStarOutline } from "react-icons/io";
+import { FiBookOpen, FiCoffee } from "react-icons/fi";
+import { CiGlobe } from "react-icons/ci";
 
 // Set this to true when you want to enable the experience page
 // and remove the notFound() call in the ExperiencePage component
@@ -22,7 +27,7 @@ const detailedExperience = [
 			"Mentored junior developers and established coding standards for the team",
 		],
 		technologies: ["React", "TypeScript", "Next.js", "GraphQL", "Tailwind CSS"],
-		icon: <Briefcase className="h-6 w-6" />,
+		icon: <IoBriefcaseOutline className="h-6 w-6" />,
 	},
 	{
 		title: "Full Stack Developer",
@@ -38,7 +43,7 @@ const detailedExperience = [
 			"Created RESTful APIs consumed by web and mobile applications",
 		],
 		technologies: ["React", "Node.js", "Express", "PostgreSQL", "Redis", "Docker"],
-		icon: <Code className="h-6 w-6" />,
+		icon: <FaCode className="h-6 w-6" />,
 	},
 	{
 		title: "Open Source Contribution",
@@ -54,7 +59,7 @@ const detailedExperience = [
 			"Spoke at 3 regional JavaScript conferences on React performance",
 		],
 		technologies: ["React", "JavaScript", "Open Source", "Git"],
-		icon: <Lightbulb className="h-6 w-6" />,
+		icon: <LuLightbulb className="h-6 w-6" />,
 	},
 	{
 		title: "Junior Web Developer",
@@ -70,7 +75,7 @@ const detailedExperience = [
 			"Collaborated with designers to implement pixel-perfect UIs",
 		],
 		technologies: ["JavaScript", "HTML/CSS", "PHP", "WordPress", "jQuery"],
-		icon: <Code className="h-6 w-6" />,
+		icon: <FaCode className="h-6 w-6" />,
 	},
 	{
 		title: "Tech Conference Speaker",
@@ -84,7 +89,7 @@ const detailedExperience = [
 			"Featured in conference highlights video",
 		],
 		technologies: ["Public Speaking", "React", "Accessibility"],
-		icon: <Star className="h-6 w-6" />,
+		icon: <IoIosStarOutline className="h-6 w-6" />,
 	},
 	{
 		title: "Computer Science Degree",
@@ -100,7 +105,7 @@ const detailedExperience = [
 			"President of campus Coding Club for 2 years",
 		],
 		technologies: ["Computer Science", "JavaScript", "Python", "Java", "Algorithms"],
-		icon: <GraduationCap className="h-6 w-6" />,
+		icon: <IoSchoolOutline className="h-6 w-6" />,
 	},
 	{
 		title: "Self-taught Programming",
@@ -116,7 +121,7 @@ const detailedExperience = [
 			"Participated in first hackathon with no prior formal training",
 		],
 		technologies: ["HTML", "CSS", "JavaScript", "Self-learning"],
-		icon: <BookOpen className="h-6 w-6" />,
+		icon: <FiBookOpen className="h-6 w-6" />,
 	},
 	{
 		title: "First Blog Post",
@@ -132,7 +137,7 @@ const detailedExperience = [
 			"Grew subscriber base to 500+ developers in first year",
 		],
 		technologies: ["Technical Writing", "Web Development"],
-		icon: <Coffee className="h-6 w-6" />,
+		icon: <FiCoffee className="h-6 w-6" />,
 	},
 ]
 
@@ -190,7 +195,7 @@ export default function ExperiencePage() {
 									</div>
 
 									<div className="flex items-center text-sm text-muted-foreground group-hover:text-foreground/80 transition-colors mb-4">
-										<Globe className="h-4 w-4 mr-1 group-hover:text-primary/80 transition-colors" />
+										<CiGlobe className="h-4 w-4 mr-1 group-hover:text-primary/80 transition-colors" />
 										{item.location}
 									</div>
 
@@ -251,7 +256,7 @@ export default function ExperiencePage() {
 								</div>
 
 								<div className="flex items-center text-sm text-muted-foreground group-hover:text-foreground/80 transition-colors mb-4">
-									<Globe className="h-4 w-4 mr-1 group-hover:text-primary/80 transition-colors" />
+									<CiGlobe className="h-4 w-4 mr-1 group-hover:text-primary/80 transition-colors" />
 									{item.location}
 								</div>
 

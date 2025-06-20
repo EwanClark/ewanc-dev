@@ -6,9 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { CheckCircle2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
-
+import { FaRegCheckCircle} from "react-icons/fa";
 interface ProfilePasswordSectionProps {
   onChangePassword: (currentPassword: string, newPassword: string) => Promise<{ error: Error | null }>
 }
@@ -86,7 +85,7 @@ export function ProfilePasswordSection({ onChangePassword }: ProfilePasswordSect
           
           {passwordSuccess && (
             <Alert className="bg-green-50 dark:bg-green-900/20 border-green-500 dark:border-green-900">
-              <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
+              <FaRegCheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
               <AlertTitle>Success</AlertTitle>
               <AlertDescription>Your password has been changed successfully.</AlertDescription>
             </Alert>

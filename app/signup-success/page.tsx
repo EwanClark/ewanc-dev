@@ -2,7 +2,7 @@ import Link from "next/link"
 import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle } from "lucide-react"
+import { FaRegCheckCircle } from "react-icons/fa"
 
 export default function SignupSuccessPage() {
   return (
@@ -12,7 +12,7 @@ export default function SignupSuccessPage() {
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
             <div className="flex justify-center mb-4">
-              <CheckCircle className="h-12 w-12 text-green-500" />
+              <FaRegCheckCircle className="h-12 w-12 text-green-500" />
             </div>
             <CardTitle className="text-2xl text-center">Account Created</CardTitle>
             <CardDescription className="text-center">

@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Copy, ExternalLink } from "lucide-react"
+import { FaRegCopy } from "react-icons/fa";
+import { FiExternalLink } from "react-icons/fi";
 import { useAuth } from "@/lib/auth-context"
 
 type ShortenedUrl = {
@@ -197,7 +198,7 @@ export default function ShortUrlPage() {
                                 title="Copy short URL"
                                 className="h-8 w-8"
                               >
-                                <Copy className="h-3 w-3 sm:h-4 sm:w-4" />
+                                <FaRegCopy className="h-3 w-3 sm:h-4 sm:w-4" />
                               </Button>
                               <Button
                                 variant="ghost"
@@ -206,7 +207,7 @@ export default function ShortUrlPage() {
                                 title="Visit original URL"
                                 className="h-8 w-8"
                               >
-                                <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />
+                                <FiExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />
                               </Button>
                             </div>
                           </TableCell>

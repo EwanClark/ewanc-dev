@@ -11,8 +11,8 @@ import {
   DialogHeader, 
   DialogTitle 
 } from "@/components/ui/dialog"
-import { AlertTriangle } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
+import { FiAlertTriangle } from "react-icons/fi";
 
 interface ProfileDangerZoneProps {
   onDeleteAccount: () => Promise<{ error: Error | null }>
@@ -81,7 +81,7 @@ export function ProfileDangerZone({ onDeleteAccount }: ProfileDangerZoneProps) {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-red-500" />
+              <FiAlertTriangle className="h-5 w-5 text-red-500" />
               Delete Account
             </DialogTitle>
             <DialogDescription>

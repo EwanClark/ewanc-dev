@@ -8,7 +8,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/components/ui/use-toast"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { CheckCircle2, XCircle, UserIcon } from "lucide-react"
+import { FaRegUser, FaRegCheckCircle} from "react-icons/fa";
+import { FaRegCircleXmark } from "react-icons/fa6";
 import { useAuth } from "@/lib/auth-context"
 import type { User } from "@supabase/supabase-js"
 import type { Database } from "@/types/supabase"
@@ -252,7 +253,7 @@ export default function ProfilePage() {
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-background z-0"></div>
                   <div className="text-center z-10 p-8">
                     <div className="w-20 h-20 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-6">
-                      <UserIcon className="h-10 w-10 text-primary/70" />
+                      <FaRegUser className="h-10 w-10 text-primary/70" />
                     </div>
                     <h2 className="text-2xl font-semibold mb-6">Authentication Required</h2>
                     <div className="flex gap-4 justify-center">
@@ -291,9 +292,9 @@ export default function ProfilePage() {
               className={`mb-6 ${alertStatus === 'success' ? 'border-green-500 bg-green-50 dark:bg-green-900/20 dark:border-green-900' : ''}`}
             >
               {alertStatus === 'success' ? (
-                <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
+                <FaRegCheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
               ) : (
-                <XCircle className="h-4 w-4" />
+                <FaRegCircleXmark className="h-4 w-4" />
               )}
               <AlertTitle>
                 {alertStatus === 'success' ? 'Success!' : 'Error!'}

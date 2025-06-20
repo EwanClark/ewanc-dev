@@ -234,7 +234,7 @@ export function ProfileAvatarSection({
                       </div>
                       {providerOption.avatarUrl && (
                         <Image 
-                          src={providerOption.avatarUrl || "/placeholder.svg"} 
+                          src={providerOption.avatarUrl} 
                           alt={`${providerOption.provider} avatar`}
                           width={32}
                           height={32}

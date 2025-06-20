@@ -1,7 +1,11 @@
 import { Navbar } from "@/components/navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, GraduationCap, Code } from "lucide-react";
+import { IoSchoolOutline } from "react-icons/io5";
+import { FaCode } from "react-icons/fa6";
+import { FiMapPin } from "react-icons/fi";
+import { LuCalendar } from "react-icons/lu";
+
 
 export default function AboutPage() {
   return (
@@ -16,7 +20,7 @@ export default function AboutPage() {
               <CardContent className="pt-6">
                 <div className="flex items-start gap-4">
                   <div className="text-muted-foreground flex-shrink-0">
-                    <GraduationCap className="h-6 w-6" />
+                    <IoSchoolOutline className="h-6 w-6" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold mb-2">
@@ -32,11 +36,11 @@ export default function AboutPage() {
                     </p>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
+                        <LuCalendar className="h-4 w-4" />
                         <span>Started programming in 2020</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <MapPin className="h-4 w-4" />
+                        <FiMapPin className="h-4 w-4" />
                         <span>London, UK</span>
                       </div>
                     </div>
@@ -49,7 +53,7 @@ export default function AboutPage() {
               <CardContent className="pt-6">
                 <div className="flex items-start gap-4">
                   <div className="text-muted-foreground flex-shrink-0">
-                    <Code className="h-6 w-6" />
+                    <FaCode className="h-6 w-6" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold mb-2">Development Focus</h3>

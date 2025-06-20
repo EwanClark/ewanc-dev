@@ -15,7 +15,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Github, ChevronDown, LogOut, User, Menu } from "lucide-react"
+import { FaGithub, FaChevronDown } from "react-icons/fa6"
+import { MdLogout } from "react-icons/md";
+import { FaRegUser, FaBars } from "react-icons/fa";
 import { useAuth } from "@/lib/auth-context"
 import { ThemeToggle } from "@/components/theme-toggle"
 
@@ -49,7 +51,7 @@ export function Navbar() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-1 font-semibold text-lg hover:text-foreground/80 transition-colors">
-                {currentProject ? `${currentProject} Project` : "Dev Portfolio"} <ChevronDown className="h-4 w-4" />
+                {currentProject ? `${currentProject} Project` : "Dev Portfolio"} <FaChevronDown className="h-4 w-4" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
@@ -87,7 +89,7 @@ export function Navbar() {
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden h-9 w-9">
-                <Menu className="h-4 w-4" />
+                <FaBars className="h-4 w-4" />
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
             </SheetTrigger>
@@ -127,7 +129,7 @@ export function Navbar() {
                       onClick={handleMobileNavClick}
                       className="flex items-center gap-3 px-4 py-2 text-sm font-medium transition-colors hover:text-foreground/80 hover:bg-accent rounded-md"
                     >
-                      <User className="h-4 w-4" />
+                      <FaRegUser className="h-4 w-4" />
                       Profile
                     </Link>
                     <button
@@ -137,7 +139,7 @@ export function Navbar() {
                       }}
                       className="flex items-center gap-3 px-4 py-2 text-sm font-medium transition-colors hover:text-foreground/80 hover:bg-accent rounded-md w-full text-left"
                     >
-                      <LogOut className="h-4 w-4" />
+                      <MdLogout className="h-4 w-4" />
                       Sign out
                     </button>
                   </div>
@@ -164,7 +166,7 @@ export function Navbar() {
           {!currentProject && (
             <Link href="https://github.com/ewanclark/" target="_blank" rel="noopener noreferrer">
               <Button variant="ghost" size="icon" className="h-9 w-9">
-                <Github className="h-4 w-4" />
+                <FaGithub className="h-4 w-4" />
                 <span className="sr-only">GitHub</span>
               </Button>
             </Link>
@@ -194,12 +196,12 @@ export function Navbar() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <Link href="/profile">
-                      <User className="mr-2 h-4 w-4" />
+                      <FaRegUser className="mr-2 h-4 w-4" />
                       Profile
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={signOut}>
-                    <LogOut className="mr-2 h-4 w-4" />
+                    <MdLogout className="mr-2 h-4 w-4" />
                     Sign out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
