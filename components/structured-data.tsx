@@ -38,13 +38,13 @@ export function generateArticleStructuredData({
     url,
     author: {
       '@type': 'Person',
-      name: 'Ewan C',
-      url: 'https://ewanc-dev.vercel.app',
+      name: 'Ewan Clark',
+      url: 'https://ewanc.dev',
     },
     publisher: {
       '@type': 'Person',
-      name: 'Ewan C',
-      url: 'https://ewanc-dev.vercel.app',
+      name: 'Ewan Clark',
+      url: 'https://ewanc.dev',
     },
     ...(publishedTime && { datePublished: publishedTime }),
     ...(modifiedTime && { dateModified: modifiedTime }),
@@ -88,8 +88,8 @@ export function generateProjectStructuredData({
     operatingSystem: 'Any',
     author: {
       '@type': 'Person',
-      name: 'Ewan C',
-      url: 'https://ewanc-dev.vercel.app',
+      name: 'Ewan Clark',
+      url: 'https://ewanc.dev',
     },
     ...(image && { image }),
     ...(technologies && { keywords: technologies.join(', ') }),

@@ -1,9 +1,9 @@
 import { Metadata } from 'next'
 
-const baseUrl = 'https://ewanc-dev.vercel.app'
-const siteName = 'Ewan C - Full-Stack Developer'
-const defaultTitle = 'Ewan C - Full-Stack Developer Portfolio'
-const defaultDescription = 'Year 8 self-taught developer from London, UK. Specializing in backend development, full-stack applications, and modern web technologies. View my projects and experience.'
+const baseUrl = 'https://ewanc.dev'
+const siteName = 'Ewan Clark - Full-Stack Developer'
+const defaultTitle = 'Ewan Clark - Full-Stack Developer Portfolio'
+const defaultDescription = 'Ewan Clark - Year 8 programmer and full-stack developer from London. Self-taught coder specializing in backend development, full-stack applications, and modern web technologies.'
 
 export function generateMetadata({
   title,
@@ -29,20 +29,25 @@ export function generateMetadata({
   const url = `${baseUrl}${path}`
 
   const defaultKeywords = [
-    'full-stack developer',
-    'backend developer',
-    'web developer',
-    'self-taught programmer',
-    'London developer',
-    'Python developer',
-    'JavaScript developer',
-    'TypeScript developer',
-    'Next.js developer',
-    'React developer',
-    'Node.js developer',
-    'API development',
-    'database design',
-    'web applications'
+    'Ewan Clark',
+    'Programmer',
+    'Coder',
+    'Portfolio',
+    'Developer',
+    'Full Stack Developer',
+    'Backend Developer',
+    'Year 8',
+    'London',
+    'Self-Taught Programmer',
+    'Web Developer',
+    'Python Developer',
+    'JavaScript Developer',
+    'TypeScript Developer',
+    'Next.js Developer',
+    'React Developer',
+    'Backend',
+    'Data Analysis',
+    'Computer Science'
   ]
 
   const allKeywords = [...defaultKeywords, ...keywords].join(', ')
@@ -51,9 +56,9 @@ export function generateMetadata({
     title: fullTitle,
     description: finalDescription,
     keywords: allKeywords,
-    authors: [{ name: 'Ewan C', url: baseUrl }],
-    creator: 'Ewan C',
-    publisher: 'Ewan C',
+    authors: [{ name: 'Ewan Clark', url: baseUrl }],
+    creator: 'Ewan Clark',
+    publisher: 'Ewan Clark',
     metadataBase: new URL(baseUrl),
     alternates: {
       canonical: url,
@@ -67,10 +72,10 @@ export function generateMetadata({
       locale: 'en_GB',
       images: [
         {
-          url: `${baseUrl}/profile-picture-optimized.jpg`,
-          width: 1200,
-          height: 630,
-          alt: 'Ewan C - Full-Stack Developer',
+          url: `${baseUrl}/favicon.ico`,
+          width: 512,
+          height: 512,
+          alt: 'Ewan Clark - Full-Stack Developer',
         },
       ],
       ...(publishedTime && { publishedTime }),
@@ -80,8 +85,7 @@ export function generateMetadata({
       card: 'summary_large_image',
       title: fullTitle,
       description: finalDescription,
-      images: [`${baseUrl}/profile-picture-optimized.jpg`],
-      creator: '@ewanc_dev',
+      images: [`${baseUrl}/favicon.ico`],
     },
     robots: {
       index: !noIndex,
@@ -94,11 +98,7 @@ export function generateMetadata({
         'max-snippet': -1,
       },
     },
-    // verification: {
-    //   google: 'your-google-verification-code', // Replace with actual verification code when you get it
-    // },
   }
-
   return metadata
 }
 
@@ -106,21 +106,18 @@ export function generatePersonStructuredData() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: 'Ewan C',
+    name: 'Ewan Clark',
     jobTitle: 'Full-Stack Developer',
-    description: 'Year 8 self-taught developer from London, UK, specializing in backend development and full-stack applications.',
+    description: 'Year 8 self-taught programmer and full-stack developer from London, UK, specializing in backend development and modern web applications.',
     url: baseUrl,
-    image: `${baseUrl}/profile-picture-optimized.jpg`,
+    image: `${baseUrl}/favicon.ico`,
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'London',
       addressCountry: 'GB',
     },
     sameAs: [
-      // Add your social media profiles here
-      // 'https://github.com/yourusername',
-      // 'https://linkedin.com/in/yourusername',
-      // 'https://twitter.com/yourusername',
+      'https://github.com/ewanclark',
     ],
     knowsAbout: [
       'Backend Development',
@@ -137,8 +134,6 @@ export function generatePersonStructuredData() {
       'Supabase',
       'Web Development',
       'Software Engineering',
-      'Artificial Intelligence',
-      'Machine Learning',
     ],
     alumniOf: {
       '@type': 'EducationalOrganization',
@@ -156,7 +151,7 @@ export function generateWebsiteStructuredData() {
     description: defaultDescription,
     author: {
       '@type': 'Person',
-      name: 'Ewan C',
+      name: 'Ewan Clark',
     },
     potentialAction: {
       '@type': 'SearchAction',

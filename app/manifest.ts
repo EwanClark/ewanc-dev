@@ -2,9 +2,9 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Ewan C - Full-Stack Developer Portfolio',
-    short_name: 'Ewan C Dev',
-    description: 'Year 8 self-taught developer from London, UK. Specializing in backend development, full-stack applications, and modern web technologies.',
+    name: 'Ewan Clark - Full-Stack Developer Portfolio',
+    short_name: 'Ewan Clark Dev',
+    description: 'Ewan Clark - Year 8 Full-Stack Developer from London. Self-taught developer specializing in backend development, full-stack applications, and modern web technologies.',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',
@@ -16,7 +16,7 @@ export default function manifest(): MetadataRoute.Manifest {
         type: 'image/x-icon',
       },
     ],
-    categories: ['developer', 'portfolio', 'technology', 'programming'],
+    categories: ['developer', 'programmer', 'coder', 'portfolio', 'full stack', 'backend'],
     lang: 'en-GB',
     orientation: 'portrait-primary',
   }
