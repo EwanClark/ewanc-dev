@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/navbar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { FaRegCopy } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
 import { BiBarChartAlt2 } from "react-icons/bi";
+import { Trash2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 
@@ -32,7 +33,10 @@ type ShortenedUrl = {
   originalUrl: string;
   shortCode: string;
   createdAt: Date;
-  clicks: number;
+  totalClicks: number;
+  uniqueClicks: number;
+  isPasswordProtected: boolean;
+  isActive: boolean;
 };
 
 export default function ShortUrlPage() {
@@ -44,35 +48,52 @@ export default function ShortUrlPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [urls, setUrls] = useState<ShortenedUrl[]>([
-    {
-      id: "1",
-      originalUrl: "https://github.com/your-username/awesome-project",
-      shortCode: "gh-proj",
-      createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
-      clicks: 142,
-    },
-    {
-      id: "2",
-      originalUrl: "https://docs.google.com/document/d/1234567890/edit",
-      shortCode: "doc-share",
-      createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000), // 12 days ago
-      clicks: 87,
-    },
-    {
-      id: "3",
-      originalUrl: "https://example.com/very/long/url/with/many/parameters?utm_source=email&utm_medium=newsletter",
-      shortCode: "news-link",
-      createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000), // 20 days ago
-      clicks: 23,
-    },
-  ]);
+  const [urlsLoading, setUrlsLoading] = useState(true);
+  const [urls, setUrls] = useState<ShortenedUrl[]>([]);
   const [urlValid, setUrlValid] = useState<boolean | null>(null);
 
   const setPassword = (password: string) => {
     console.log("Password:", password);
     setPasswordState(password);
   };
+
+  // Fetch user's URLs from API
+  const fetchUrls = async () => {
+    if (!user) return;
+    
+    try {
+      setUrlsLoading(true);
+      const response = await fetch('/api/short-url/user');
+      const data = await response.json();
+      
+      if (data.success) {
+        // Convert date strings to Date objects
+        const formattedUrls = data.urls.map((url: any) => ({
+          ...url,
+          createdAt: new Date(url.createdAt)
+        }));
+        setUrls(formattedUrls);
+      } else {
+        setError(data.error || 'Failed to fetch URLs');
+        setTimeout(() => setError(null), 5000);
+      }
+    } catch (error) {
+      console.error('Error fetching URLs:', error);
+      setError('Failed to fetch URLs');
+      setTimeout(() => setError(null), 5000);
+    } finally {
+      setUrlsLoading(false);
+    }
+  };
+
+  // Fetch URLs when component mounts and user is available
+  useEffect(() => {
+    if (user) {
+      fetchUrls();
+    } else {
+      setUrlsLoading(false);
+    }
+  }, [user]);
 
   const validateUrl = (inputUrl: string) => {
     if (!inputUrl) {
@@ -87,7 +108,7 @@ export default function ShortUrlPage() {
     }
   };
 
-  const handleCreateShortUrl = (e: React.FormEvent) => {
+  const handleCreateShortUrl = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -103,45 +124,54 @@ export default function ShortUrlPage() {
       return;
     }
 
-    // Check if custom alias is available
-    if (customAlias && urls.some((u) => u.shortCode === customAlias)) {
-      setError(
-        "This custom alias is already taken. Please choose another one."
-      );
+    try {
+      const response = await fetch('/api/short-url/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          originalUrl: url,
+          customAlias: customAlias || undefined,
+          password: password || undefined,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Add new URL to the list
+        const newUrl: ShortenedUrl = {
+          ...data.shortUrl,
+          createdAt: new Date(data.shortUrl.createdAt)
+        };
+        setUrls([newUrl, ...urls]);
+        setSuccess(data.message);
+        setTimeout(() => setSuccess(null), 5000);
+        
+        // Clear form
+        setUrl("");
+        setCustomAlias("");
+        setPasswordState("");
+        setUrlValid(null);
+      } else {
+        setError(data.error || 'Failed to create short URL');
+        setTimeout(() => setError(null), 5000);
+      }
+    } catch (error) {
+      console.error('Error creating short URL:', error);
+      setError('Failed to create short URL');
       setTimeout(() => setError(null), 5000);
+    } finally {
       setLoading(false);
-      return;
     }
-
-    // Generate short code if not provided
-    const shortCode = customAlias || Math.random().toString(36).substring(2, 7);
-
-    // Create new shortened URL
-    setTimeout(() => {
-      const newUrl: ShortenedUrl = {
-        id: Date.now().toString(),
-        originalUrl: url,
-        shortCode,
-        createdAt: new Date(),
-        clicks: 0,
-      };
-
-      setUrls([newUrl, ...urls]);
-      setSuccess(
-        `URL shortened successfully! Your short URL is: short.url/${shortCode}`
-      );
-      setTimeout(() => setSuccess(null), 5000);
-      setUrl("");
-      setCustomAlias("");
-      setPasswordState("");
-      setLoading(false);
-    }, 1000);
   };
 
   const copyToClipboard = async (shortCode: string) => {
     try {
-      await navigator.clipboard.writeText(`https://short.url/${shortCode}`);
-      setSuccess(`Copied short.url/${shortCode} to clipboard!`);
+      const baseUrl = window.location.origin;
+      await navigator.clipboard.writeText(`${baseUrl}/${shortCode}`);
+      setSuccess(`Copied ${baseUrl}/${shortCode} to clipboard!`);
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError("Failed to copy to clipboard");
@@ -151,6 +181,34 @@ export default function ShortUrlPage() {
 
   const viewAnalytics = (shortCode: string) => {
     router.push(`/projects/short-url/${shortCode}/analytics`);
+  };
+
+  const deleteUrl = async (id: string, shortCode: string) => {
+    if (!window.confirm(`Are you sure you want to delete the short URL "${shortCode}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/short-url/${shortCode}`, {
+        method: 'DELETE',
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Remove URL from the list
+        setUrls(urls.filter(url => url.id !== id));
+        setSuccess(data.message);
+        setTimeout(() => setSuccess(null), 3000);
+      } else {
+        setError(data.error || 'Failed to delete URL');
+        setTimeout(() => setError(null), 3000);
+      }
+    } catch (error) {
+      console.error('Error deleting URL:', error);
+      setError('Failed to delete URL');
+      setTimeout(() => setError(null), 3000);
+    }
   };
 
   return (
@@ -268,7 +326,12 @@ export default function ShortUrlPage() {
                 <CardTitle>Your Shortened URLs</CardTitle>
               </CardHeader>
               <CardContent>
-                {urls.length > 0 ? (
+                {urlsLoading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p className="text-muted-foreground">Loading your URLs...</p>
+                  </div>
+                ) : urls.length > 0 ? (
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
@@ -291,7 +354,7 @@ export default function ShortUrlPage() {
                           <TableRow key={url.id}>
                             <TableCell className="font-medium">
                               <div className="break-all">
-                                short.url/{url.shortCode}
+                                {window.location.origin.replace(/^https?:\/\//, '')}/{url.shortCode}
                               </div>
                             </TableCell>
                             <TableCell className="hidden md:table-cell max-w-[200px]">
@@ -302,9 +365,9 @@ export default function ShortUrlPage() {
                             <TableCell className="hidden md:table-cell">
                               {url.createdAt.toLocaleDateString()}
                             </TableCell>
-                            <TableCell className="text-center">
-                              {url.clicks}
-                            </TableCell>
+                                                    <TableCell className="text-center">
+                          {url.totalClicks}
+                        </TableCell>
                             <TableCell className="text-right">
                               <div className="flex justify-end gap-1 sm:gap-2">
                                 <Button
@@ -338,6 +401,16 @@ export default function ShortUrlPage() {
                                   disabled={!user}
                                 >
                                   <FiExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => deleteUrl(url.id, url.shortCode)}
+                                  title="Delete short URL"
+                                  className="h-8 w-8"
+                                  disabled={!user}
+                                >
+                                  <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                                 </Button>
                               </div>
                             </TableCell>
