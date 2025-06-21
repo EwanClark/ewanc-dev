@@ -12,9 +12,9 @@ import Link from "next/link"
 const projects = {
   "Web Apps": [
     {
-      title: "ShortURL",
-      description: "A URL shortener with analytics and custom links.",
-      tags: ["Next.js", "Prisma", "PostgreSQL"],
+      title: "Short URL Tool",
+      description: "Advanced URL shortening service with analytics, password protection, and custom aliases integrated into my developer platform.",
+      tags: ["Next.js", "Supabase", "TypeScript", "Analytics"],
       github: "https://github.com",
       demo: "https://example.com",
     },
@@ -70,7 +70,7 @@ export function ProjectShowcase() {
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {project.tags.map((tag, i) => (
-                        <Badge key={i} variant="secondary" className="transition-colors group-hover:bg-primary/10">
+                        <Badge key={i} variant="secondary">
                           {tag}
                         </Badge>
                       ))}

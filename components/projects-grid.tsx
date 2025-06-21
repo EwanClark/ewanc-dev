@@ -1,32 +1,23 @@
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { FaDatabase, FaLink } from "react-icons/fa"
-import { CiGlobe } from "react-icons/ci";
+import { FaLink, FaGlobe } from "react-icons/fa"
 
 const projects = [
   {
-    id: "task-manager",
-    title: "Task Manager API",
-    description: "RESTful API for task management with user authentication and real-time updates.",
-    icon: <FaDatabase className="h-6 w-6" />,
-    tags: ["Node.js", "Express", "PostgreSQL", "JWT"],
-    status: "Completed",
-  },
-  {
     id: "url-shortener",
-    title: "URL Shortener",
-    description: "Custom URL shortening service with analytics and click tracking.",
+    title: "Short URL Tool",
+    description: "Advanced URL shortening service with analytics, password protection, and custom aliases. A full-featured project built within my portfolio site.",
     icon: <FaLink className="h-6 w-6" />,
-    tags: ["React", "Node.js", "MongoDB", "Redis"],
-    status: "Completed",
+    tags: ["Next.js", "Supabase", "TypeScript", "Analytics"],
+    status: "Live",
   },
   {
     id: "portfolio-site",
     title: "Portfolio Website",
-    description: "Modern portfolio website built with Next.js and deployed on Vercel.",
-    icon: <CiGlobe className="h-6 w-6" />,
-    tags: ["Next.js", "Tailwind CSS", "Vercel", "shadcn/ui"],
+    description: "Modern responsive portfolio website showcasing my projects and skills. Built with Next.js, featuring authentication and integrated project tools.",
+    icon: <FaGlobe className="h-6 w-6" />,
+    tags: ["Next.js", "Supabase", "Tailwind CSS", "shadcn/ui"],
     status: "Live",
   },
 ]
