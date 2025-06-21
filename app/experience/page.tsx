@@ -13,8 +13,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = generateMetadata({
   title: "Experience",
   description: "Explore my professional journey and timeline as a full-stack developer. From self-taught beginnings to building modern web applications.",
-  path: "/experience",
-  keywords: ["experience", "career", "professional timeline", "work history", "developer experience"]
+  path: "/experience"
 });
 
 // Set this to true when you want to enable the experience page

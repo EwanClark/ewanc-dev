@@ -7,8 +7,7 @@ import { Metadata } from "next"
 
 export const metadata: Metadata = generateMetadata({
   title: "Full-Stack Developer Portfolio",
-  description: "Year 8 self-taught developer from London, UK. Specializing in backend development, full-stack applications, and modern web technologies. View my projects and tech stack.",
-  keywords: ["portfolio", "homepage", "web developer", "projects", "tech stack"]
+  description: "Year 8 self-taught developer from London, UK. Specializing in backend development, full-stack applications, and modern web technologies. View my projects and tech stack."
 })
 
 export default function Home() {

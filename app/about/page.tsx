@@ -11,9 +11,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = generateMetadata({
   title: "About Me",
   description: "Learn about my journey as a self-taught full-stack developer from London. Discover my background, skills, current learning goals, and passion for backend development and AI.",
-  path: "/about",
-  keywords: ["about", "developer story", "self-taught", "programming journey", "skills", "experience"],
-  type: "profile"
+  path: "/about"
 });
 
 

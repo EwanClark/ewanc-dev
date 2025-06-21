@@ -2,8 +2,8 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Ewan C - Full-Stack Developer Portfolio',
-    short_name: 'Ewan C Dev',
+    name: 'Ewan Clark - Full-Stack Developer Portfolio',
+    short_name: 'Ewan Clark Dev',
     description: 'Year 8 self-taught developer from London, UK. Specializing in backend development, full-stack applications, and modern web technologies.',
     start_url: '/',
     display: 'standalone',

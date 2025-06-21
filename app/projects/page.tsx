@@ -6,8 +6,7 @@ import { Metadata } from "next"
 export const metadata: Metadata = generateMetadata({
   title: "Projects",
   description: "Explore my portfolio of full-stack applications and backend services. Built with modern technologies including Python, JavaScript, TypeScript, Next.js, and more.",
-  path: "/projects",
-  keywords: ["projects", "portfolio", "web applications", "full-stack", "backend services", "programming projects"]
+  path: "/projects"
 })
 
 export default function ProjectsPage() {
