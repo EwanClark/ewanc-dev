@@ -222,6 +222,13 @@ export default function ShortUrlPage() {
     setDeleteDialogOpen(true);
   };
 
+  const handleDeleteDialogChange = (open: boolean) => {
+    setDeleteDialogOpen(open);
+    if (!open) {
+      setUrlToDelete(null);
+    }
+  };
+
   const deleteUrl = async () => {
     if (!urlToDelete) return;
 
@@ -483,7 +490,7 @@ export default function ShortUrlPage() {
         </div>
       </div>
 
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+      <AlertDialog open={deleteDialogOpen} onOpenChange={handleDeleteDialogChange}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Short URL</AlertDialogTitle>
