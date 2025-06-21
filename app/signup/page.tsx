@@ -14,7 +14,17 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Separator } from "@/components/ui/separator"
 import { FaGithub } from "react-icons/fa"
 import { useAuth } from "@/lib/auth-context"
+import { generateMetadata } from "@/lib/seo"
+import { Metadata } from "next"
 import Image from "next/image"
+
+export const metadata: Metadata = generateMetadata({
+  title: "Create Account",
+  description: "Join Ewan Clark's developer platform. Create your account to access project tools, URL shortener, and connect with a Year 8 full-stack developer from London.",
+  path: "/signup",
+  keywords: ["signup", "create account", "join", "register", "new user", "developer platform"],
+  type: "website"
+});
 
 export default function SignupPage() {
   const router = useRouter()

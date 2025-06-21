@@ -36,6 +36,16 @@ import { BiBarChartAlt2 } from "react-icons/bi";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
+import { generateMetadata } from "@/lib/seo";
+import { Metadata } from "next";
+
+export const metadata: Metadata = generateMetadata({
+  title: "URL Shortener Tool",
+  description: "Free URL shortener with analytics, password protection, and custom aliases. Create short links, track clicks, and manage your URLs with this full-stack web application.",
+  path: "/projects/short-url",
+  keywords: ["url shortener", "link shortener", "analytics", "custom links", "web tool", "free tool"],
+  type: "website"
+});
 
 type ShortenedUrl = {
   id: string;

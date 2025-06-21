@@ -17,6 +17,17 @@ import { Navbar } from "@/components/navbar"
 import { ProfileAvatarSection } from "@/components/profile-avatar-section"
 import { ProfilePasswordSection } from "@/components/profile-password-section"
 import { ProfileDangerZone } from "@/components/profile-danger-zone"
+import { generateMetadata } from "@/lib/seo"
+import { Metadata } from "next"
+
+export const metadata: Metadata = generateMetadata({
+  title: "Profile Settings",
+  description: "Manage your account settings, profile information, avatar, and security preferences. Update your developer profile and account details.",
+  path: "/profile",
+  keywords: ["profile", "account settings", "user settings", "avatar", "account management"],
+  type: "profile",
+  noIndex: true // Profile pages shouldn't be indexed for privacy
+});
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"]
 
