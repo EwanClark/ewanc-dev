@@ -53,7 +53,6 @@ export default function ShortUrlPage() {
   const [urlValid, setUrlValid] = useState<boolean | null>(null);
 
   const setPassword = (password: string) => {
-    console.log("Password:", password);
     setPasswordState(password);
   };
 
