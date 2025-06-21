@@ -22,10 +22,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { CiGlobe } from "react-icons/ci";
 import { FaArrowLeft } from "react-icons/fa6";
-import { FaRegUser, FaRegClock } from "react-icons/fa";
+import { FaRegUser, FaRegClock, FaDesktop } from "react-icons/fa";
 import { IoShield } from "react-icons/io5";
 import { FiMapPin, FiExternalLink } from "react-icons/fi";
-import { CiLaptop } from "react-icons/ci";
 import { ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Area, AreaChart, ReferenceLine } from "recharts";
 
 type ClickData = {
@@ -430,7 +429,7 @@ export default function AnalyticsPage() {
                           <span className="text-xs">{click.city}, {click.region}, {click.country}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <CiLaptop className="w-3 h-3 text-muted-foreground" />
+                          <FaDesktop className="w-3 h-3 text-muted-foreground" />
                           <div className="flex gap-2 flex-wrap">
                             <Badge variant="outline" className="text-xs py-0">{click.device}</Badge>
                             <Badge variant="outline" className="text-xs py-0">{click.browser}</Badge>
