@@ -21,6 +21,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { FaRegCopy } from "react-icons/fa";
 import { BiBarChartAlt2 } from "react-icons/bi";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -53,6 +63,8 @@ export default function ShortUrlPage() {
   const [urls, setUrls] = useState<ShortenedUrl[]>([]);
   const [urlValid, setUrlValid] = useState<boolean | null>(null);
   const [baseUrl, setBaseUrl] = useState<string>("");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [urlToDelete, setUrlToDelete] = useState<{ id: string; shortCode: string } | null>(null);
 
   const setPassword = (password: string) => {
     setPasswordState(password);
@@ -205,13 +217,16 @@ export default function ShortUrlPage() {
     router.push(`/projects/short-url/${shortCode}/analytics`);
   };
 
-  const deleteUrl = async (id: string, shortCode: string) => {
-    if (!window.confirm(`Are you sure you want to delete the short URL "${shortCode}"? This action cannot be undone.`)) {
-      return;
-    }
+  const handleDeleteClick = (id: string, shortCode: string) => {
+    setUrlToDelete({ id, shortCode });
+    setDeleteDialogOpen(true);
+  };
+
+  const deleteUrl = async () => {
+    if (!urlToDelete) return;
 
     try {
-      const response = await fetch(`/api/short-url/${shortCode}`, {
+      const response = await fetch(`/api/short-url/${urlToDelete.shortCode}`, {
         method: 'DELETE',
       });
 
@@ -219,7 +234,7 @@ export default function ShortUrlPage() {
 
       if (data.success) {
         // Remove URL from the list
-        setUrls(urls.filter(url => url.id !== id));
+        setUrls(urls.filter(url => url.id !== urlToDelete.id));
         setSuccess(data.message);
         setTimeout(dismissSuccess, 3000);
       } else {
@@ -230,6 +245,9 @@ export default function ShortUrlPage() {
       console.error('Error deleting URL:', error);
       setError('Failed to delete URL');
       setTimeout(dismissError, 3000);
+    } finally {
+      setDeleteDialogOpen(false);
+      setUrlToDelete(null);
     }
   };
 
@@ -440,7 +458,7 @@ export default function ShortUrlPage() {
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  onClick={() => deleteUrl(url.id, url.shortCode)}
+                                  onClick={() => handleDeleteClick(url.id, url.shortCode)}
                                   title="Delete short URL"
                                   className="h-8 w-8"
                                   disabled={!user}
@@ -464,6 +482,23 @@ export default function ShortUrlPage() {
           </div>
         </div>
       </div>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Short URL</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete the short URL "{urlToDelete?.shortCode}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={deleteUrl} className="bg-red-600 hover:bg-red-700">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
