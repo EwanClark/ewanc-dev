@@ -14,17 +14,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Separator } from "@/components/ui/separator"
 import { FaGithub } from "react-icons/fa"
 import { useAuth } from "@/lib/auth-context"
-import { generateMetadata } from "@/lib/seo"
-import { Metadata } from "next"
 import Image from "next/image"
-
-export const metadata: Metadata = generateMetadata({
-  title: "Sign In",
-  description: "Sign in to your account to access your projects, short URLs, and developer tools. Login with email or GitHub/Google authentication.",
-  path: "/login",
-  keywords: ["login", "sign in", "authentication", "account access", "user portal"],
-  type: "website"
-});
 
 export default function LoginPage() {
   const router = useRouter()
