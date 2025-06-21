@@ -43,7 +43,6 @@ export default function ShortUrlPage() {
   const [loading, setLoading] = useState(false);
   const [urls, setUrls] = useState<ShortenedUrl[]>([]);
   const [urlValid, setUrlValid] = useState<boolean | null>(null);
-  const [copySuccess, setCopySuccess] = useState<string | null>(null);
 
   const setPassword = (password: string) => {
     console.log("Password:", password);
@@ -74,6 +73,7 @@ export default function ShortUrlPage() {
       new URL(url);
     } catch {
       setError("Please enter a valid URL including http:// or https://");
+      setTimeout(() => setError(null), 5000);
       setLoading(false);
       return;
     }
@@ -83,6 +83,7 @@ export default function ShortUrlPage() {
       setError(
         "This custom alias is already taken. Please choose another one."
       );
+      setTimeout(() => setError(null), 5000);
       setLoading(false);
       return;
     }
@@ -104,6 +105,7 @@ export default function ShortUrlPage() {
       setSuccess(
         `URL shortened successfully! Your short URL is: short.url/${shortCode}`
       );
+      setTimeout(() => setSuccess(null), 5000);
       setUrl("");
       setCustomAlias("");
       setLoading(false);
@@ -112,8 +114,6 @@ export default function ShortUrlPage() {
 
   const copyToClipboard = (shortCode: string) => {
     navigator.clipboard.writeText(`https://short.url/${shortCode}`);
-    setCopySuccess(`Copied: short.url/${shortCode}`);
-    setTimeout(() => setCopySuccess(null), 2000);
   };
 
   return (
@@ -167,12 +167,6 @@ export default function ShortUrlPage() {
                 {success && (
                   <Alert className="mb-4 bg-green-500/10 text-green-500 border-green-500/20 animate-in fade-in duration-300">
                     <AlertDescription>{success}</AlertDescription>
-                  </Alert>
-                )}
-
-                {copySuccess && (
-                  <Alert className="mb-4 bg-blue-500/10 text-blue-500 border-blue-500/20 animate-in fade-in duration-300">
-                    <AlertDescription>{copySuccess}</AlertDescription>
                   </Alert>
                 )}
 
