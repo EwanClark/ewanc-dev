@@ -7,6 +7,7 @@ import { AuthProvider } from "@/lib/auth-context"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from "@/components/ui/toaster"
+import { generateMetadata, generatePersonStructuredData, generateWebsiteStructuredData } from "@/lib/seo"
 
 // Optimize font loading
 const inter = Inter({ 
@@ -17,22 +18,13 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Dev Portfolio - Full-Stack Developer",
-  description: "Year 8 self-taught developer specializing in backend development and full-stack applications.",
-  metadataBase: new URL('https://ewanc-dev.vercel.app'),
-  openGraph: {
-    title: "Dev Portfolio - Full-Stack Developer",
-    description: "Year 8 self-taught developer specializing in backend development and full-stack applications.",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Dev Portfolio - Full-Stack Developer",
-    description: "Year 8 self-taught developer specializing in backend development and full-stack applications.",
-  },
+  ...generateMetadata(),
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: [
+      { url: '/favicon.ico', sizes: '180x180' },
     ],
   },
   other: {
@@ -45,6 +37,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const personSchema = generatePersonStructuredData()
+  const websiteSchema = generateWebsiteStructuredData()
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -52,6 +47,32 @@ export default function RootLayout({
         <link rel="preload" href="/profile-picture-optimized.jpg" as="image" />
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+        <link rel="dns-prefetch" href="//vercel.live" />
+        <link rel="dns-prefetch" href="//vitals.vercel-analytics.com" />
+        
+        {/* SEO and performance meta tags */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <link rel="apple-touch-icon" href="/favicon.ico" />
+        
+        {/* Canonical URL will be set by individual pages */}
+        
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(personSchema),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteSchema),
+          }}
+        />
       </head>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>

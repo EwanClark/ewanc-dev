@@ -109,4 +109,60 @@ export function formatDeviceType(device: string | null): string {
   };
 
   return deviceMap[device.toLowerCase()] || 'Desktop';
+}
+
+// SEO and performance tracking utilities
+
+export function trackPageView(url: string) {
+  if (typeof window !== 'undefined' && (window as any).gtag) {
+    (window as any).gtag('config', process.env.NEXT_PUBLIC_GA_ID, {
+      page_location: url,
+    })
+  }
+}
+
+export function trackEvent(action: string, category: string, label?: string, value?: number) {
+  if (typeof window !== 'undefined' && (window as any).gtag) {
+    (window as any).gtag('event', action, {
+      event_category: category,
+      event_label: label,
+      value: value,
+    })
+  }
+}
+
+// SEO-focused events
+export function trackSEOEvents() {
+  // Track external link clicks
+  document.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement
+    const link = target.closest('a')
+    
+    if (link && link.href && !link.href.startsWith(window.location.origin)) {
+      trackEvent('click', 'external_link', link.href)
+    }
+  })
+
+  // Track email clicks
+  document.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement
+    const link = target.closest('a')
+    
+    if (link && link.href && link.href.startsWith('mailto:')) {
+      trackEvent('click', 'email', link.href.replace('mailto:', ''))
+    }
+  })
+
+  // Track contact form interactions
+  const contactButtons = document.querySelectorAll('[data-contact]')
+  contactButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      trackEvent('click', 'contact', button.getAttribute('data-contact') || 'unknown')
+    })
+  })
+}
+
+// Initialize tracking on page load
+if (typeof window !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', trackSEOEvents)
 } 
