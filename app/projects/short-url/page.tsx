@@ -265,7 +265,7 @@ export default function ShortUrlPage() {
         <div className="max-w-4xl mx-auto">
           <div className="mb-6 sm:mb-8">
             <h1 className="text-2xl sm:text-3xl font-bold mb-2">
-              URL Shortener
+              Short URL
             </h1>
           </div>
 

@@ -29,9 +29,8 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Determine if we're in a specific project section
-  const isInChat = pathname.startsWith("/projects/chat")
   const isInShortUrl = pathname.startsWith("/projects/short-url")
-  const currentProject = isInChat ? "Chat" : isInShortUrl ? "Short URL" : null
+  const currentProject = isInShortUrl ? "Short URL" : null
 
   const navItems = [
     { name: "Home", href: "/" },
@@ -52,15 +51,12 @@ export function Navbar() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-1 font-semibold text-lg hover:text-foreground/80 transition-all duration-200 group">
-                {currentProject ? `${currentProject} Project` : "Dev Portfolio"} <FaChevronDown className="h-4 w-4 transition-transform duration-200 group-hover:rotate-180 group-data-[state=open]:rotate-180" />
+                {currentProject ? `${currentProject}` : "Portfolio"} <FaChevronDown className="h-4 w-4 transition-transform duration-200 group-hover:rotate-180 group-data-[state=open]:rotate-180" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
               <DropdownMenuItem asChild>
                 <Link href="/">Portfolio</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/projects/chat">Chat</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/projects/short-url">Short URL</Link>
