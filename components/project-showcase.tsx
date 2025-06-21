@@ -68,16 +68,16 @@ export function ProjectShowcase() {
         {Object.entries(projects).map(([category, projectList]) => (
           <TabsContent key={category} value={category} className="space-y-6">
             {projectList.map((project, index) => (
-              <Card key={index} className="overflow-hidden border border-border/50 bg-card/50 backdrop-blur">
+              <Card key={index} className="overflow-hidden border border-border/50 bg-card/50 backdrop-blur hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer group">
                 <CardContent className="p-6">
                   <div className="space-y-4">
                     <div>
-                      <h3 className="text-2xl font-semibold">{project.title}</h3>
-                      <p className="text-muted-foreground mt-1">{project.description}</p>
+                      <h3 className="text-2xl font-semibold group-hover:text-primary transition-colors">{project.title}</h3>
+                      <p className="text-muted-foreground mt-1 group-hover:text-foreground/80 transition-colors">{project.description}</p>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {project.tags.map((tag, i) => (
-                        <Badge key={i} variant="secondary">
+                        <Badge key={i} variant="secondary" className="transition-colors group-hover:bg-primary/10">
                           {tag}
                         </Badge>
                       ))}

@@ -64,7 +64,7 @@ export function ThemeToggle() {
     <Button 
       variant="ghost" 
       size="icon" 
-      className="h-9 w-9" 
+      className="h-9 w-9 transition-all duration-200 hover:scale-105" 
       onClick={cycleTheme}
       title={getTooltipText()}
     >

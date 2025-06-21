@@ -17,6 +17,24 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [isErrorExiting, setIsErrorExiting] = useState(false)
+  const [isSuccessExiting, setIsSuccessExiting] = useState(false)
+
+  const dismissError = () => {
+    setIsErrorExiting(true)
+    setTimeout(() => {
+      setError(null)
+      setIsErrorExiting(false)
+    }, 300)
+  }
+
+  const dismissSuccess = () => {
+    setIsSuccessExiting(true)
+    setTimeout(() => {
+      setSuccess(false)
+      setIsSuccessExiting(false)
+    }, 300)
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,11 +47,14 @@ export default function ForgotPasswordPage() {
 
       if (error) {
         setError(error.message)
+        setTimeout(dismissError, 5000)
       } else {
         setSuccess(true)
+        setTimeout(dismissSuccess, 5000)
       }
     } catch (err) {
       setError("An unexpected error occurred")
+      setTimeout(dismissError, 5000)
       console.error(err)
     } finally {
       setLoading(false)
@@ -53,13 +74,26 @@ export default function ForgotPasswordPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {error && (
-              <Alert variant="destructive">
+              <Alert 
+                variant="destructive"
+                className={`transition-all duration-300 ${
+                  isErrorExiting 
+                    ? 'animate-out fade-out slide-out-to-top-2' 
+                    : 'animate-in fade-in slide-in-from-top-2'
+                }`}
+              >
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
 
             {success && (
-              <Alert>
+              <Alert
+                className={`bg-green-50 dark:bg-green-900/20 border-green-500 dark:border-green-900 transition-all duration-300 ${
+                  isSuccessExiting 
+                    ? 'animate-out fade-out slide-out-to-top-2' 
+                    : 'animate-in fade-in slide-in-from-top-2'
+                }`}
+              >
                 <AlertDescription>
                   If an account exists with this email, you will receive a password reset link shortly.
                 </AlertDescription>
@@ -88,7 +122,7 @@ export default function ForgotPasswordPage() {
           <CardFooter className="flex flex-col items-center gap-2">
             <div className="text-sm text-center">
               Remember your password?{" "}
-              <Link href="/login" className="text-primary hover:underline">
+              <Link href="/login" className="text-primary hover:underline transition-all duration-200 hover:scale-105">
                 Sign in
               </Link>
             </div>

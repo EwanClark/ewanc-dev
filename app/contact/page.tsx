@@ -19,7 +19,7 @@ export default function ContactPage() {
           
           <div className="grid gap-6 sm:gap-8">
             {/* Contact card with improved design */}
-            <Card className="border border-border">
+            <Card className="border border-border hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-2">
                   <MdMailOutline className="h-5 w-5 text-primary" />
@@ -39,7 +39,7 @@ export default function ContactPage() {
             
             {/* Additional informative cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              <Card className="border border-border">
+              <Card className="border border-border hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
                 <CardContent className="pt-6">
                   <div className="flex flex-col items-center text-center">
                     <FaWpforms className="h-8 w-8 sm:h-10 sm:w-10 mb-3 sm:mb-4 text-primary" />
@@ -51,7 +51,7 @@ export default function ContactPage() {
                 </CardContent>
               </Card>
               
-              <Card className="border border-border">
+              <Card className="border border-border hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
                 <CardContent className="pt-6">
                   <div className="flex flex-col items-center text-center">
                     <FaGithub className="h-8 w-8 sm:h-10 sm:w-10 mb-3 sm:mb-4 text-primary" />
@@ -63,7 +63,7 @@ export default function ContactPage() {
                 </CardContent>
               </Card>
               
-              <Card className="border border-border sm:col-span-2 lg:col-span-1">
+              <Card className="border border-border sm:col-span-2 lg:col-span-1 hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
                 <CardContent className="pt-6">
                   <div className="flex flex-col items-center text-center">
                     <FaDesktop className="h-8 w-8 sm:h-10 sm:w-10 mb-3 sm:mb-4 text-primary" />

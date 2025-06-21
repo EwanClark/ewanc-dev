@@ -86,24 +86,24 @@ export function ExperienceTimeline() {
 								</div>
 
 								<div className="w-1/2">
-									<Card
-										className={`p-4 shadow-md mx-4 ${
-											index % 2 === 0 ? "ml-8" : "mr-8"
-										} hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer group`}
-									>
-										<h3 className="font-bold group-hover:text-primary transition-colors">{event.title}</h3>
-										<div className="flex justify-between items-center">
-											<span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
-												{event.company}
-											</span>
-											<span className="text-sm font-medium bg-primary/10 text-primary rounded-full px-2 py-0.5 group-hover:bg-primary/20 transition-colors">
-												{event.date}
-											</span>
-										</div>
-										<p className="mt-2 text-sm text-muted-foreground group-hover:text-foreground/80 transition-colors">
-											{event.description}
-										</p>
-									</Card>
+																	<Card
+									className={`p-4 shadow-md mx-4 ${
+										index % 2 === 0 ? "ml-8" : "mr-8"
+									} hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer group`}
+								>
+									<h3 className="font-bold group-hover:text-primary transition-colors">{event.title}</h3>
+									<div className="flex justify-between items-center">
+										<span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+											{event.company}
+										</span>
+										<span className="text-sm font-medium bg-primary/10 text-primary rounded-full px-2 py-0.5 group-hover:bg-primary/20 transition-colors">
+											{event.date}
+										</span>
+									</div>
+									<p className="mt-2 text-sm text-muted-foreground group-hover:text-foreground/80 transition-colors">
+										{event.description}
+									</p>
+								</Card>
 								</div>
 							</div>
 						))}
@@ -125,20 +125,20 @@ export function ExperienceTimeline() {
 									</div>
 								</div>
 
-								<Card className="p-4 shadow-md hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer group">
-									<h3 className="font-bold group-hover:text-primary transition-colors">{event.title}</h3>
-									<div className="flex justify-between items-center flex-wrap gap-1">
-										<span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
-											{event.company}
-										</span>
-										<span className="text-sm font-medium bg-primary/10 text-primary rounded-full px-2 py-0.5 group-hover:bg-primary/20 transition-colors">
-											{event.date}
-										</span>
-									</div>
-									<p className="mt-2 text-sm text-muted-foreground group-hover:text-foreground/80 transition-colors">
-										{event.description}
-									</p>
-								</Card>
+															<Card className="p-4 shadow-md hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer group">
+								<h3 className="font-bold group-hover:text-primary transition-colors">{event.title}</h3>
+								<div className="flex justify-between items-center flex-wrap gap-1">
+									<span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+										{event.company}
+									</span>
+									<span className="text-sm font-medium bg-primary/10 text-primary rounded-full px-2 py-0.5 group-hover:bg-primary/20 transition-colors">
+										{event.date}
+									</span>
+								</div>
+								<p className="mt-2 text-sm text-muted-foreground group-hover:text-foreground/80 transition-colors">
+									{event.description}
+								</p>
+							</Card>
 							</div>
 						))}
 					</div>

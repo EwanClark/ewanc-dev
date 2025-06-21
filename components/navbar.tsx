@@ -51,8 +51,8 @@ export function Navbar() {
         <div className="flex items-center gap-6">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1 font-semibold text-lg hover:text-foreground/80 transition-colors">
-                {currentProject ? `${currentProject} Project` : "Dev Portfolio"} <FaChevronDown className="h-4 w-4" />
+              <button className="flex items-center gap-1 font-semibold text-lg hover:text-foreground/80 transition-all duration-200 group">
+                {currentProject ? `${currentProject} Project` : "Dev Portfolio"} <FaChevronDown className="h-4 w-4 transition-transform duration-200 group-hover:rotate-180 group-data-[state=open]:rotate-180" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
@@ -89,7 +89,7 @@ export function Navbar() {
           {/* Mobile Navigation */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden h-9 w-9">
+              <Button variant="ghost" size="icon" className="md:hidden h-9 w-9 transition-all duration-200 hover:scale-105">
                 <FaBars className="h-4 w-4" />
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
@@ -164,7 +164,7 @@ export function Navbar() {
           <ThemeToggle />
 
           <Link href="https://github.com/ewanclark/" target="_blank" rel="noopener noreferrer">
-            <Button variant="ghost" size="icon" className="h-9 w-9">
+            <Button variant="ghost" size="icon" className="h-9 w-9 transition-all duration-200 hover:scale-105">
               <FaGithub style={{ width: 20, height: 20 }} />
               <span className="sr-only">GitHub</span>
             </Button>
@@ -175,8 +175,8 @@ export function Navbar() {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
-                    <Avatar className="h-8 w-8">
+                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full transition-all duration-200 hover:scale-105">
+                    <Avatar className="h-8 w-8 transition-all duration-200">
                       <AvatarImage src={user.avatarSource === "default" ? undefined : (user.avatarUrl || undefined)} alt={user.name ?? undefined} />
                       <AvatarFallback className="bg-[#121212] text-white">
                         {(user.name || user.email || 'User').split(' ').map(part => part[0] || '').join('').substring(0, 2).toUpperCase()}
@@ -207,12 +207,14 @@ export function Navbar() {
             ) : (
               <div className="flex items-center gap-2">
                 <Link href="/login">
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" className="transition-all duration-200 hover:scale-105">
                     Log in
                   </Button>
                 </Link>
                 <Link href="/signup">
-                  <Button size="sm">Sign up</Button>
+                  <Button size="sm" className="transition-all duration-200 hover:scale-105">
+                    Sign up
+                  </Button>
                 </Link>
               </div>
             )}

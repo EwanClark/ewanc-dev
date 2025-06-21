@@ -21,7 +21,25 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false)
   const [hashPresent, setHashPresent] = useState<boolean | null>(null) // null = still checking
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isErrorExiting, setIsErrorExiting] = useState(false)
+  const [isSuccessExiting, setIsSuccessExiting] = useState(false)
   const supabase = createClient()
+
+  const dismissError = () => {
+    setIsErrorExiting(true)
+    setTimeout(() => {
+      setError(null)
+      setIsErrorExiting(false)
+    }, 300)
+  }
+
+  const dismissSuccess = () => {
+    setIsSuccessExiting(true)
+    setTimeout(() => {
+      setSuccess(false)
+      setIsSuccessExiting(false)
+    }, 300)
+  }
 
   // Check if the user is in a valid password recovery session
   useEffect(() => {
@@ -93,12 +111,14 @@ export default function ResetPasswordPage() {
 
     if (password !== confirmPassword) {
       setError("Passwords do not match")
+      setTimeout(dismissError, 5000)
       setLoading(false)
       return
     }
 
     if (password.length < 8) {
       setError("Password must be at least 8 characters long")
+      setTimeout(dismissError, 5000)
       setLoading(false)
       return
     }
@@ -118,14 +138,18 @@ export default function ResetPasswordPage() {
             // The hash can be complex, so we attempt to handle different formats
             // Supabase usually includes type=recovery in the hash for password reset flows
             setError("Unable to reset password with the provided link. Please request a new password reset link.")
+            setTimeout(dismissError, 5000)
           } catch {
             setError("Invalid password reset link format. Please request a new reset link.")
+            setTimeout(dismissError, 5000)
           }
         } else {
           setError(error.message)
+          setTimeout(dismissError, 5000)
         }
       } else {
         setSuccess(true)
+        setTimeout(dismissSuccess, 5000)
         
         // If we successfully reset the password, we should be logged in
         // Get the updated session
@@ -144,6 +168,7 @@ export default function ResetPasswordPage() {
       }
     } catch (err) {
       setError("An unexpected error occurred")
+      setTimeout(dismissError, 5000)
       console.error(err)
     } finally {
       setLoading(false)
@@ -163,13 +188,26 @@ export default function ResetPasswordPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {error && (
-              <Alert variant="destructive">
+              <Alert 
+                variant="destructive"
+                className={`transition-all duration-300 ${
+                  isErrorExiting 
+                    ? 'animate-out fade-out slide-out-to-top-2' 
+                    : 'animate-in fade-in slide-in-from-top-2'
+                }`}
+              >
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
 
             {success && (
-              <Alert>
+              <Alert
+                className={`bg-green-50 dark:bg-green-900/20 border-green-500 dark:border-green-900 transition-all duration-300 ${
+                  isSuccessExiting 
+                    ? 'animate-out fade-out slide-out-to-top-2' 
+                    : 'animate-in fade-in slide-in-from-top-2'
+                }`}
+              >
                 <AlertDescription>
                   Your password has been reset successfully! 
                   {isLoggedIn ? 
@@ -194,7 +232,10 @@ export default function ResetPasswordPage() {
             {/* Only show error when we've confirmed the session is not valid */}
             {hashPresent === false && !success && (
               <div className="space-y-4">
-                <Alert variant="destructive">
+                <Alert 
+                  variant="destructive"
+                  className="animate-in fade-in slide-in-from-top-2 transition-all duration-300"
+                >
                   <AlertDescription>
                     Invalid or expired password reset link. Please try again by requesting a new password reset.
                   </AlertDescription>
@@ -241,7 +282,7 @@ export default function ResetPasswordPage() {
           </CardContent>
           <CardFooter className="flex justify-center">
             <div className="text-sm text-center">
-              <Link href="/login" className="text-primary hover:underline">
+              <Link href="/login" className="text-primary hover:underline transition-all duration-200 hover:scale-105">
                 Back to Sign in
               </Link>
             </div>

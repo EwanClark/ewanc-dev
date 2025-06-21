@@ -270,7 +270,7 @@ export default function ShortUrlPage() {
           </div>
 
           {!user && (
-            <Card className="mb-6 sm:mb-8">
+            <Card className="mb-6 sm:mb-8 hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
               <CardContent className="pt-6">
                 <div className="text-center">
                   <p className="mb-4">
@@ -295,7 +295,7 @@ export default function ShortUrlPage() {
           )}
 
           <div className={!user ? "opacity-50 pointer-events-none" : ""}>
-            <Card className="mb-6 sm:mb-8">
+            <Card className="mb-6 sm:mb-8 hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
               <CardHeader>
                 <CardTitle>Shorten a URL</CardTitle>
               </CardHeader>
@@ -381,7 +381,7 @@ export default function ShortUrlPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
               <CardHeader>
                 <CardTitle>Your Shortened URLs</CardTitle>
               </CardHeader>

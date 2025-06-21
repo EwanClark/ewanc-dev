@@ -23,6 +23,15 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [isErrorExiting, setIsErrorExiting] = useState(false)
+
+  const dismissError = () => {
+    setIsErrorExiting(true)
+    setTimeout(() => {
+      setError(null)
+      setIsErrorExiting(false)
+    }, 300)
+  }
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -34,6 +43,7 @@ export default function LoginPage() {
 
       if (error) {
         setError(error.message)
+        setTimeout(dismissError, 5000)
       } else {
         router.push("/")
       }
@@ -52,9 +62,11 @@ export default function LoginPage() {
       const { error } = await signInWithGithub()
       if (error) {
         setError(error.message)
+        setTimeout(dismissError, 5000)
       }
     } catch (err) {
       setError("An unexpected error occurred")
+      setTimeout(dismissError, 5000)
       console.error(err)
     } finally {
       setLoading(false)
@@ -68,9 +80,11 @@ export default function LoginPage() {
       const { error } = await signInWithGoogle()
       if (error) {
         setError(error.message)
+        setTimeout(dismissError, 5000)
       }
     } catch (err) {
       setError("An unexpected error occurred")
+      setTimeout(dismissError, 5000)
       console.error(err)
     } finally {
       setLoading(false)
@@ -88,7 +102,14 @@ export default function LoginPage() {
           <CardContent className="space-y-4">
 
             {error && (
-              <Alert variant="destructive">
+              <Alert 
+                variant="destructive"
+                className={`transition-all duration-300 ${
+                  isErrorExiting 
+                    ? 'animate-out fade-out slide-out-to-top-2' 
+                    : 'animate-in fade-in slide-in-from-top-2'
+                }`}
+              >
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
@@ -108,7 +129,7 @@ export default function LoginPage() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password">Password</Label>
-                  <Link href="/forgot-password" className="text-sm text-primary hover:underline">
+                  <Link href="/forgot-password" className="text-sm text-primary hover:underline transition-all duration-200 hover:scale-105">
                     Forgot password?
                   </Link>
                 </div>
@@ -147,7 +168,7 @@ export default function LoginPage() {
           <CardFooter className="flex justify-center">
             <p className="text-sm text-muted-foreground">
               Don&apos;t have an account?{" "}
-              <Link href="/signup" className="text-primary hover:underline">
+              <Link href="/signup" className="text-primary hover:underline transition-all duration-200 hover:scale-105">
                 Sign up
               </Link>
             </p>

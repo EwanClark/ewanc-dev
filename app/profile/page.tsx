@@ -33,6 +33,7 @@ export default function ProfilePage() {
   const [updating, setUpdating] = useState(false)
   const [alertStatus, setAlertStatus] = useState<'success' | 'error' | null>(null)
   const [showAlert, setShowAlert] = useState(false)
+  const [isAlertExiting, setIsAlertExiting] = useState(false)
   const { toast } = useToast()
 
   const supabase = createClient()
@@ -158,7 +159,7 @@ export default function ProfilePage() {
       setShowAlert(true)
       
       setTimeout(() => {
-        setShowAlert(false)
+        dismissAlert()
       }, 5000)
       
       setProfile(prev => prev ? { 
@@ -181,18 +182,26 @@ export default function ProfilePage() {
       setShowAlert(true)
       
       setTimeout(() => {
-        setShowAlert(false)
+        dismissAlert()
       }, 5000)
     } finally {
       setUpdating(false)
     }
   }
 
+  const dismissAlert = () => {
+    setIsAlertExiting(true)
+    setTimeout(() => {
+      setShowAlert(false)
+      setIsAlertExiting(false)
+    }, 300)
+  }
+
   const handleShowAlert = (status: 'success' | 'error') => {
     setAlertStatus(status)
     setShowAlert(true)
     setTimeout(() => {
-      setShowAlert(false)
+      dismissAlert()
     }, 5000)
   }
 
@@ -289,7 +298,13 @@ export default function ProfilePage() {
           {showAlert && (
             <Alert 
               variant={alertStatus === 'error' ? 'destructive' : 'default'} 
-              className={`mb-6 ${alertStatus === 'success' ? 'border-green-500 bg-green-50 dark:bg-green-900/20 dark:border-green-900' : ''}`}
+              className={`mb-6 transition-all duration-300 ${
+                alertStatus === 'success' ? 'border-green-500 bg-green-50 dark:bg-green-900/20 dark:border-green-900' : ''
+              } ${
+                isAlertExiting 
+                  ? 'animate-out fade-out slide-out-to-top-2' 
+                  : 'animate-in fade-in slide-in-from-top-2'
+              }`}
             >
               {alertStatus === 'success' ? (
                 <FaRegCheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />

@@ -22,24 +22,50 @@ export default function SignupPage() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [isErrorExiting, setIsErrorExiting] = useState(false)
+
+  const dismissError = () => {
+    setIsErrorExiting(true)
+    setTimeout(() => {
+      setError(null)
+      setIsErrorExiting(false)
+    }, 300)
+  }
 
   const handleEmailSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
+    if (password !== confirmPassword) {
+      setError("Passwords do not match")
+      setTimeout(dismissError, 5000)
+      setLoading(false)
+      return
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long")
+      setTimeout(dismissError, 5000)
+      setLoading(false)
+      return
+    }
+
     try {
       const { error } = await signUp(email, password, name)
 
       if (error) {
         setError(error.message)
+        setTimeout(dismissError, 5000)
       } else {
         router.push("/signup-success")
       }
     } catch (err) {
       setError("An unexpected error occurred")
+      setTimeout(dismissError, 5000)
       console.error(err)
     } finally {
       setLoading(false)
@@ -54,9 +80,11 @@ export default function SignupPage() {
       const { error } = await signInWithGithub()
       if (error) {
         setError(error.message)
+        setTimeout(dismissError, 5000)
       }
     } catch (err) {
       setError("An unexpected error occurred")
+      setTimeout(dismissError, 5000)
       console.error(err)
     } finally {
       setLoading(false)
@@ -71,9 +99,11 @@ export default function SignupPage() {
       const { error } = await signInWithGoogle()
       if (error) {
         setError(error.message)
+        setTimeout(dismissError, 5000)
       }
     } catch (err) {
       setError("An unexpected error occurred")
+      setTimeout(dismissError, 5000)
       console.error(err)
     } finally {
       setLoading(false)
@@ -90,7 +120,14 @@ export default function SignupPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {error && (
-              <Alert variant="destructive">
+              <Alert 
+                variant="destructive"
+                className={`transition-all duration-300 ${
+                  isErrorExiting 
+                    ? 'animate-out fade-out slide-out-to-top-2' 
+                    : 'animate-in fade-in slide-in-from-top-2'
+                }`}
+              >
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
@@ -128,6 +165,17 @@ export default function SignupPage() {
                   required
                 />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password">Confirm Password</Label>
+                <Input
+                  id="confirm-password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? "Creating account..." : "Create account"}
               </Button>
@@ -153,7 +201,7 @@ export default function SignupPage() {
           <CardFooter className="flex justify-center">
             <p className="text-sm text-muted-foreground">
               Already have an account?{" "}
-              <Link href="/login" className="text-primary hover:underline">
+              <Link href="/login" className="text-primary hover:underline transition-all duration-200 hover:scale-105">
                 Sign in
               </Link>
             </p>

@@ -121,12 +121,13 @@ type Params = {
 //   [key: string]: string | string[] | undefined
 // }
 
-export default function ProjectPage({ 
+export default async function ProjectPage({ 
   params
 }: {
-  params: Params
+  params: Promise<Params>
 }) {
-  const project = projects[params.id as keyof typeof projects]
+  const resolvedParams = await params
+  const project = projects[resolvedParams.id as keyof typeof projects]
 
   if (!project) {
     notFound()
@@ -181,7 +182,7 @@ export default function ProjectPage({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-          <Card>
+          <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
             <CardHeader>
               <CardTitle>Key Features</CardTitle>
               <CardDescription>Main functionality and capabilities</CardDescription>
@@ -198,7 +199,7 @@ export default function ProjectPage({
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
             <CardHeader>
               <CardTitle>Technical Implementation</CardTitle>
               <CardDescription>Technologies and architecture details</CardDescription>

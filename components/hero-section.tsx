@@ -31,11 +31,11 @@ export function HeroSection() {
               web solutions with modern technologies.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6 text-sm text-muted-foreground mb-4">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 transition-all duration-200 hover:text-foreground group">
                 <FiMapPin className="h-4 w-4" />
                 <span>London, UK</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 transition-all duration-200 hover:text-foreground">
                 <span>Available for projects</span>
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               </div>

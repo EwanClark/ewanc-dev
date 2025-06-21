@@ -250,11 +250,10 @@ export function ProfileAvatarSection({
 
           {/* Upload options */}
           {avatarSource === 'upload' && (
-            <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
+            <div className="space-y-3 p-4 bg-card/50 rounded-lg border border-border/40">
               <Label className="text-sm font-medium">Upload Options</Label>
               <div className="flex gap-3">
                 <Button 
-                  variant="secondary" 
                   onClick={handleUploadClick} 
                   className="flex-1 font-medium"
                 >
@@ -275,7 +274,7 @@ export function ProfileAvatarSection({
 
           {/* URL input */}
           {avatarSource === 'url' && (
-            <div className="space-y-3 p-4 bg-muted/20 rounded-lg border border-border/10">
+            <div className="space-y-3 p-4 bg-card/50 rounded-lg border border-border/40">
               <Label htmlFor="customUrl" className="text-sm font-medium">External Image URL</Label>
               <Input
                 id="customUrl"
