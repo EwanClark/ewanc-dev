@@ -133,12 +133,20 @@ export default function ShortUrlPage() {
       setTimeout(() => setSuccess(null), 5000);
       setUrl("");
       setCustomAlias("");
+      setPasswordState("");
       setLoading(false);
     }, 1000);
   };
 
-  const copyToClipboard = (shortCode: string) => {
-    navigator.clipboard.writeText(`https://short.url/${shortCode}`);
+  const copyToClipboard = async (shortCode: string) => {
+    try {
+      await navigator.clipboard.writeText(`https://short.url/${shortCode}`);
+      setSuccess(`Copied short.url/${shortCode} to clipboard!`);
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      setError("Failed to copy to clipboard");
+      setTimeout(() => setError(null), 3000);
+    }
   };
 
   const viewAnalytics = (shortCode: string) => {
