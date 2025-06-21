@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Globe, Users, Clock, Shield } from "lucide-react";
+import { ArrowLeft, Globe, Users, Clock, Shield, MapPin, Monitor, ExternalLink } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Area, AreaChart, ReferenceLine } from "recharts";
 
 type ClickData = {
@@ -118,24 +118,13 @@ export default function AnalyticsPage() {
   const shortCode = params.shortCode as string;
   const [analytics, setAnalytics] = useState<UrlAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // Check if mobile
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
     // Simulate API call
     setTimeout(() => {
       setAnalytics(generateMockClickData(shortCode));
       setLoading(false);
     }, 1000);
-
-    return () => window.removeEventListener('resize', checkMobile);
   }, [shortCode]);
 
   const chartData = useMemo(() => {
@@ -179,29 +168,29 @@ export default function AnalyticsPage() {
     return (
       <div className="min-h-screen">
         <Navbar />
-        <div className="container py-6 sm:py-8">
+        <div className="container py-4 px-4 sm:py-6 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
-            <div className="mb-6">
-              <div className="h-10 bg-muted rounded mb-4 animate-pulse"></div>
-              <div className="h-8 bg-muted rounded w-3/4 mb-2 animate-pulse"></div>
-              <div className="h-4 bg-muted rounded w-1/2 animate-pulse"></div>
+            <div className="mb-4 sm:mb-6">
+              <div className="h-8 sm:h-10 bg-muted rounded mb-3 sm:mb-4 animate-pulse"></div>
+              <div className="h-6 sm:h-8 bg-muted rounded w-3/4 mb-2 animate-pulse"></div>
+              <div className="h-3 sm:h-4 bg-muted rounded w-1/2 animate-pulse"></div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
               {[...Array(4)].map((_, i) => (
                 <Card key={i}>
-                  <CardContent className="p-6">
-                    <div className="h-16 bg-muted rounded animate-pulse"></div>
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="h-12 sm:h-16 bg-muted rounded animate-pulse"></div>
                   </CardContent>
                 </Card>
               ))}
             </div>
-            <Card className="mb-6">
+            <Card className="mb-4 sm:mb-6">
               <CardContent className="p-4 sm:p-6">
-                <div className="h-64 sm:h-80 lg:h-96 bg-muted rounded animate-pulse"></div>
+                <div className="h-64 sm:h-96 bg-muted rounded animate-pulse"></div>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="p-2 sm:p-6">
+              <CardContent className="p-4 sm:p-6">
                 <div className="h-64 sm:h-96 bg-muted rounded animate-pulse"></div>
               </CardContent>
             </Card>
@@ -215,13 +204,13 @@ export default function AnalyticsPage() {
     return (
       <div className="min-h-screen">
         <Navbar />
-        <div className="container py-8">
+        <div className="container py-6 sm:py-8 px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Analytics Not Found</h1>
-            <p className="text-muted-foreground mb-4">
+            <h1 className="text-xl sm:text-2xl font-bold mb-4">Analytics Not Found</h1>
+            <p className="text-muted-foreground mb-4 text-sm sm:text-base">
               The analytics for this URL could not be found.
             </p>
-            <Button onClick={() => router.back()}>
+            <Button onClick={() => router.back()} size="sm" className="sm:size-default">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
@@ -234,82 +223,85 @@ export default function AnalyticsPage() {
   return (
     <div className="min-h-screen">
       <Navbar />
-      <div className="container py-6 sm:py-8">
+      <div className="container py-4 px-4 sm:py-6 sm:px-6 lg:py-8 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="mb-6">
+          <div className="mb-4 sm:mb-6">
             <Button
               variant="ghost"
               onClick={() => router.back()}
-              className="mb-4"
+              className="mb-3 sm:mb-4 -ml-2 sm:-ml-4"
+              size="sm"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to URLs
             </Button>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold mb-2">
-                  Analytics for /{analytics.shortCode}
-                </h1>
-                <p className="text-muted-foreground break-all">
-                  {analytics.originalUrl}
-                </p>
+            <div className="flex flex-col gap-3 sm:gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 break-words">
+                    Analytics for /{analytics.shortCode}
+                  </h1>
+                  <p className="text-muted-foreground text-sm sm:text-base break-all leading-relaxed">
+                    {analytics.originalUrl}
+                  </p>
+                </div>
+                {analytics.isPasswordProtected && (
+                  <Badge variant="secondary" className="self-start shrink-0">
+                    <Shield className="w-3 h-3 mr-1" />
+                    Password Protected
+                  </Badge>
+                )}
               </div>
-              {analytics.isPasswordProtected && (
-                <Badge variant="secondary" className="self-start">
-                  <Shield className="w-3 h-3 mr-1" />
-                  Password Protected
-                </Badge>
-              )}
             </div>
           </div>
 
           {/* Summary Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
             <Card>
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Total Clicks</p>
-                    <p className="text-2xl font-bold">{analytics.totalClicks}</p>
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Total Clicks</p>
+                    <p className="text-lg sm:text-2xl font-bold">{analytics.totalClicks}</p>
                   </div>
-                  <Globe className="w-8 h-8 text-muted-foreground" />
+                  <Globe className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground shrink-0" />
                 </div>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Unique Visitors</p>
-                    <p className="text-2xl font-bold">{analytics.uniqueClicks}</p>
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Unique Visitors</p>
+                    <p className="text-lg sm:text-2xl font-bold">{analytics.uniqueClicks}</p>
                   </div>
-                  <Users className="w-8 h-8 text-muted-foreground" />
+                  <Users className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground shrink-0" />
                 </div>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Created</p>
-                    <p className="text-2xl font-bold">{analytics.createdAt.toLocaleDateString()}</p>
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Created</p>
+                    <p className="text-sm sm:text-lg lg:text-2xl font-bold">{analytics.createdAt.toLocaleDateString()}</p>
                   </div>
-                  <Clock className="w-8 h-8 text-muted-foreground" />
+                  <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground shrink-0" />
                 </div>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Avg. Daily</p>
-                    <p className="text-2xl font-bold">
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Avg. Daily</p>
+                    <p className="text-lg sm:text-2xl font-bold">
                       {Math.round(analytics.totalClicks / Math.max(1, Math.ceil((Date.now() - analytics.createdAt.getTime()) / (1000 * 60 * 60 * 24))))}
                     </p>
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center">
-                    <div className="w-3 h-3 rounded-full bg-green-500" />
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
+                    <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-green-500" />
                   </div>
                 </div>
               </CardContent>
@@ -317,42 +309,33 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Enhanced Click Analytics Chart */}
-          <Card className="mb-6">
-            <CardHeader className="pb-4">
-              <div className="flex flex-col gap-4">
+          <Card className="mb-4 sm:mb-6">
+            <CardHeader className="p-4 sm:p-6">
+              <div className="flex flex-col gap-3 sm:gap-4">
                 <div>
                   <CardTitle className="text-lg sm:text-xl">Clicks Over Time (Last 30 Days)</CardTitle>
                   <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                    <span className="hidden sm:inline">Hover over the chart to see detailed daily statistics</span>
-                    <span className="sm:hidden">Tap on the chart to see daily statistics</span>
+                    Hover over the chart to see detailed daily statistics
                   </p>
                 </div>
-                <div className="flex justify-center sm:justify-end gap-6 sm:gap-4 text-sm">
+                <div className="flex gap-4 sm:gap-6 text-sm">
                   <div className="text-center">
-                    <div className="text-lg sm:text-xl font-bold text-green-600">{averageDailyClicks}</div>
+                    <div className="text-base sm:text-lg font-bold text-green-600">{averageDailyClicks}</div>
                     <div className="text-xs sm:text-sm text-muted-foreground">Avg/Day</div>
                   </div>
                   {peakDay && (
                     <div className="text-center">
-                      <div className="text-lg sm:text-xl font-bold text-blue-600">{peakDay.clicks}</div>
+                      <div className="text-base sm:text-lg font-bold text-blue-600">{peakDay.clicks}</div>
                       <div className="text-xs sm:text-sm text-muted-foreground">Peak Day</div>
                     </div>
                   )}
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="px-2 sm:px-6">
+            <CardContent className="p-4 sm:p-6 pt-0">
               <div className="h-64 sm:h-80 lg:h-96">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart 
-                    data={chartData} 
-                    margin={{ 
-                      top: 20, 
-                      right: isMobile ? 10 : 30, 
-                      left: isMobile ? 10 : 20, 
-                      bottom: 20 
-                    }}
-                  >
+                  <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
                     <defs>
                       <linearGradient id="clicksGradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
@@ -362,27 +345,22 @@ export default function AnalyticsPage() {
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
                     <XAxis 
                       dataKey="date" 
-                      tickFormatter={(date) => {
-                        const d = new Date(date);
-                        return isMobile 
-                          ? d.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })
-                          : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                      }}
-                      tick={{ fontSize: isMobile ? 10 : 12 }}
+                      tickFormatter={(date) => new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      tick={{ fontSize: 10 }}
                       tickLine={{ stroke: 'hsl(var(--muted-foreground))' }}
-                      interval={isMobile ? 'preserveStartEnd' : 0}
+                      interval="preserveStartEnd"
                     />
                     <YAxis 
-                      tick={{ fontSize: isMobile ? 10 : 12 }}
+                      tick={{ fontSize: 10 }}
                       tickLine={{ stroke: 'hsl(var(--muted-foreground))' }}
                       axisLine={{ stroke: 'hsl(var(--muted-foreground))' }}
-                      width={isMobile ? 30 : 40}
+                      width={30}
                     />
                     <Tooltip 
                       labelFormatter={(date) => new Date(date).toLocaleDateString('en-US', { 
-                        weekday: isMobile ? 'short' : 'long', 
+                        weekday: 'long', 
                         year: 'numeric', 
-                        month: isMobile ? 'short' : 'long', 
+                        month: 'long', 
                         day: 'numeric' 
                       })}
                       formatter={(value, name) => [
@@ -394,7 +372,7 @@ export default function AnalyticsPage() {
                         border: '1px solid hsl(var(--border))',
                         borderRadius: '8px',
                         boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                        fontSize: isMobile ? '12px' : '14px'
+                        fontSize: '12px'
                       }}
                       cursor={{ stroke: 'hsl(var(--primary))', strokeWidth: 1, strokeDasharray: '2 2' }}
                     />
@@ -403,23 +381,23 @@ export default function AnalyticsPage() {
                         x={peakDay.date} 
                         stroke="hsl(var(--destructive))" 
                         strokeDasharray="4 4"
-                        label={{ value: "Peak", position: "top", fontSize: isMobile ? 10 : 12 }}
+                        label={{ value: "Peak", position: "top", fontSize: 10 }}
                       />
                     )}
                     <Area
                       type="monotone"
                       dataKey="clicks"
                       stroke="hsl(var(--primary))"
-                      strokeWidth={isMobile ? 2 : 3}
+                      strokeWidth={2}
                       fill="url(#clicksGradient)"
                       dot={{ 
                         fill: 'hsl(var(--primary))', 
                         strokeWidth: 2, 
                         stroke: 'hsl(var(--background))',
-                        r: isMobile ? 3 : 4
+                        r: 3
                       }}
                       activeDot={{ 
-                        r: isMobile ? 5 : 6, 
+                        r: 5, 
                         fill: 'hsl(var(--primary))',
                         stroke: 'hsl(var(--background))',
                         strokeWidth: 2,
@@ -429,19 +407,18 @@ export default function AnalyticsPage() {
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
-              <div className="mt-3 sm:mt-4 flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4 text-xs text-muted-foreground">
+              <div className="mt-3 sm:mt-4 flex flex-wrap gap-3 sm:gap-4 text-xs text-muted-foreground">
                 <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-primary"></div>
-                  <span className="text-xs">Daily Clicks</span>
+                  <div className="w-3 h-3 rounded-full bg-primary"></div>
+                  <span>Daily Clicks</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <div className="w-2 h-0.5 sm:w-3 sm:h-1 bg-destructive"></div>
-                  <span className="text-xs">Peak Day</span>
+                  <div className="w-3 h-1 bg-destructive"></div>
+                  <span>Peak Day</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <div className="w-2 h-0.5 sm:w-3 sm:h-1 border border-primary border-dashed"></div>
-                  <span className="text-xs hidden sm:inline">Hover Cursor</span>
-                  <span className="text-xs sm:hidden">Tap for Details</span>
+                  <div className="w-3 h-1 border border-primary border-dashed"></div>
+                  <span>Hover Cursor</span>
                 </div>
               </div>
             </CardContent>
@@ -449,113 +426,164 @@ export default function AnalyticsPage() {
 
           {/* Detailed Click Table */}
           <Card>
-            <CardHeader>
+            <CardHeader className="p-4 sm:p-6">
               <CardTitle className="text-lg sm:text-xl">Detailed Click Data</CardTitle>
-              <p className="text-xs sm:text-sm text-muted-foreground">
-                <span className="sm:hidden">Scroll horizontally to see all data</span>
-                <span className="hidden sm:inline">Complete click tracking information</span>
-              </p>
             </CardHeader>
-            <CardContent className="px-2 sm:px-6">
-              <div className="overflow-x-auto -mx-2 sm:mx-0">
-                <div className="min-w-[900px]">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="min-w-[120px]">Timestamp</TableHead>
-                        <TableHead className="min-w-[120px]">IP Address</TableHead>
-                        <TableHead className="min-w-[140px]">Location</TableHead>
-                        <TableHead className="min-w-[100px]">ISP</TableHead>
-                        <TableHead className="min-w-[80px]">Device</TableHead>
-                        <TableHead className="min-w-[80px]">Browser</TableHead>
-                        <TableHead className="min-w-[100px]">OS</TableHead>
-                        <TableHead className="min-w-[120px]">Referrer</TableHead>
-                        {analytics.isPasswordProtected && <TableHead className="min-w-[100px]">Authorized</TableHead>}
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {analytics.clicks.map((click) => (
-                        <TableRow key={click.id}>
-                          <TableCell className="min-w-[120px]">
-                            <div className="text-xs sm:text-sm">
-                              <div className="font-medium">
-                                {click.timestamp.toLocaleDateString('en-US', { 
-                                  month: 'short', 
-                                  day: 'numeric' 
-                                })}
-                              </div>
-                              <div className="text-muted-foreground text-xs">
-                                {click.timestamp.toLocaleTimeString('en-US', { 
-                                  hour: '2-digit', 
-                                  minute: '2-digit' 
-                                })}
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell className="font-mono text-xs sm:text-sm min-w-[120px]">
-                            <div className="break-all">{click.ip}</div>
-                          </TableCell>
-                          <TableCell className="min-w-[140px]">
-                            <div className="text-xs sm:text-sm">
-                              <div className="font-medium">{click.city}</div>
-                              <div className="text-muted-foreground text-xs">
-                                {click.region}, {click.country}
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell className="min-w-[100px] text-xs sm:text-sm">
-                            {click.isp}
-                          </TableCell>
-                          <TableCell className="min-w-[80px]">
-                            <Badge variant="outline" className="text-xs">
-                              {click.device}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="min-w-[80px] text-xs sm:text-sm">
-                            {click.browser}
-                          </TableCell>
-                          <TableCell className="min-w-[100px] text-xs sm:text-sm">
-                            {click.os}
-                          </TableCell>
-                          <TableCell className="min-w-[120px]">
-                            <div className="max-w-[120px]">
-                              <div className="truncate text-xs sm:text-sm" title={click.referrer}>
-                                {click.referrer === "Direct" ? (
-                                  <Badge variant="secondary" className="text-xs">Direct</Badge>
-                                ) : (
-                                  <a 
-                                    href={click.referrer} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="text-blue-500 hover:underline text-xs"
-                                  >
-                                    {new URL(click.referrer).hostname}
-                                  </a>
-                                )}
-                              </div>
-                            </div>
-                          </TableCell>
-                          {analytics.isPasswordProtected && (
-                            <TableCell className="min-w-[100px]">
-                              {click.authorized === null ? (
-                                <Badge variant="outline" className="text-xs">N/A</Badge>
-                              ) : click.authorized ? (
-                                <Badge variant="default" className="bg-green-500 text-xs">
-                                  ✓ Yes
-                                </Badge>
-                              ) : (
-                                <Badge variant="destructive" className="text-xs">✗ No</Badge>
-                              )}
-                            </TableCell>
+            <CardContent className="p-0 sm:p-6 sm:pt-0">
+              {/* Mobile Card View */}
+              <div className="block sm:hidden">
+                <div className="space-y-3 p-4">
+                  {analytics.clicks.map((click) => (
+                    <Card key={click.id} className="p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm font-medium">
+                          {click.timestamp.toLocaleDateString()}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {click.timestamp.toLocaleTimeString()}
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-3 text-xs">
+                        <div>
+                          <div className="text-muted-foreground mb-1">IP Address</div>
+                          <div className="font-mono text-xs">{click.ip}</div>
+                        </div>
+                        <div>
+                          <div className="text-muted-foreground mb-1">ISP</div>
+                          <div className="truncate">{click.isp}</div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <MapPin className="w-3 h-3 text-muted-foreground" />
+                          <span className="text-xs">{click.city}, {click.region}, {click.country}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Monitor className="w-3 h-3 text-muted-foreground" />
+                          <div className="flex gap-2 flex-wrap">
+                            <Badge variant="outline" className="text-xs py-0">{click.device}</Badge>
+                            <Badge variant="outline" className="text-xs py-0">{click.browser}</Badge>
+                            <Badge variant="outline" className="text-xs py-0">{click.os}</Badge>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="text-muted-foreground text-xs mb-1">Referrer</div>
+                        <div className="flex items-center gap-1">
+                          {click.referrer === "Direct" ? (
+                            <Badge variant="secondary" className="text-xs">Direct</Badge>
+                          ) : (
+                            <a 
+                              href={click.referrer} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-blue-500 hover:underline text-xs flex items-center gap-1"
+                            >
+                              {new URL(click.referrer).hostname}
+                              <ExternalLink className="w-3 h-3" />
+                            </a>
                           )}
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                        </div>
+                      </div>
+
+                      {analytics.isPasswordProtected && (
+                        <div>
+                          <div className="text-muted-foreground text-xs mb-1">Authorized</div>
+                          {click.authorized === null ? (
+                            <Badge variant="outline" className="text-xs">N/A</Badge>
+                          ) : click.authorized ? (
+                            <Badge variant="default" className="bg-green-500 text-xs">
+                              ✓ Yes
+                            </Badge>
+                          ) : (
+                            <Badge variant="destructive" className="text-xs">✗ No</Badge>
+                          )}
+                        </div>
+                      )}
+                    </Card>
+                  ))}
                 </div>
               </div>
-              <div className="mt-4 text-xs text-muted-foreground text-center sm:hidden">
-                💡 Scroll left/right to see all columns
+
+              {/* Desktop Table View */}
+              <div className="hidden sm:block overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="min-w-[140px]">Timestamp</TableHead>
+                      <TableHead className="min-w-[120px]">IP Address</TableHead>
+                      <TableHead className="min-w-[160px]">Location</TableHead>
+                      <TableHead className="min-w-[120px]">ISP</TableHead>
+                      <TableHead className="min-w-[80px]">Device</TableHead>
+                      <TableHead className="min-w-[80px]">Browser</TableHead>
+                      <TableHead className="min-w-[100px]">OS</TableHead>
+                      <TableHead className="min-w-[150px]">Referrer</TableHead>
+                      {analytics.isPasswordProtected && <TableHead className="min-w-[100px]">Authorized</TableHead>}
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {analytics.clicks.map((click) => (
+                      <TableRow key={click.id}>
+                        <TableCell>
+                          <div className="text-sm">
+                            <div>{click.timestamp.toLocaleDateString()}</div>
+                            <div className="text-muted-foreground">
+                              {click.timestamp.toLocaleTimeString()}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="font-mono text-sm">
+                          {click.ip}
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            <div>{click.city}, {click.region}</div>
+                            <div className="text-muted-foreground">{click.country}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{click.isp}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{click.device}</Badge>
+                        </TableCell>
+                        <TableCell>{click.browser}</TableCell>
+                        <TableCell>{click.os}</TableCell>
+                        <TableCell className="max-w-[150px]">
+                          <div className="truncate" title={click.referrer}>
+                            {click.referrer === "Direct" ? (
+                              <Badge variant="secondary">Direct</Badge>
+                            ) : (
+                              <a 
+                                href={click.referrer} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-blue-500 hover:underline text-sm flex items-center gap-1"
+                              >
+                                {new URL(click.referrer).hostname}
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            )}
+                          </div>
+                        </TableCell>
+                        {analytics.isPasswordProtected && (
+                          <TableCell>
+                            {click.authorized === null ? (
+                              <Badge variant="outline">N/A</Badge>
+                            ) : click.authorized ? (
+                              <Badge variant="default" className="bg-green-500">
+                                ✓ Yes
+                              </Badge>
+                            ) : (
+                              <Badge variant="destructive">✗ No</Badge>
+                            )}
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
             </CardContent>
           </Card>
