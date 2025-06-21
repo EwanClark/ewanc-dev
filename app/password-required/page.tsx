@@ -21,10 +21,19 @@ function PasswordForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isErrorExiting, setIsErrorExiting] = useState(false);
 
   const shortCode = searchParams.get("shortCode");
   const clickId = searchParams.get("clickId");
   const hasError = searchParams.get("error") === "invalid";
+
+  const dismissError = () => {
+    setIsErrorExiting(true)
+    setTimeout(() => {
+      setError(null)
+      setIsErrorExiting(false)
+    }, 300)
+  }
 
   useEffect(() => {
     if (!shortCode) {
@@ -35,6 +44,7 @@ function PasswordForm() {
   useEffect(() => {
     if (hasError) {
       setError("Incorrect password. Please try again.");
+      setTimeout(dismissError, 5000);
     }
   }, [hasError]);
 
@@ -42,6 +52,7 @@ function PasswordForm() {
     e.preventDefault();
     if (!password.trim()) {
       setError("Please enter a password");
+      setTimeout(dismissError, 5000);
       return;
     }
 
@@ -90,7 +101,14 @@ function PasswordForm() {
           </CardHeader>
           <CardContent>
             {error && (
-              <Alert variant="destructive" className="mb-4">
+              <Alert 
+                variant="destructive" 
+                className={`mb-4 transition-all duration-300 ${
+                  isErrorExiting 
+                    ? 'animate-out fade-out slide-out-to-top-2' 
+                    : 'animate-in fade-in slide-in-from-top-2'
+                }`}
+              >
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}

@@ -19,7 +19,25 @@ export function ProfilePasswordSection({ onChangePassword }: ProfilePasswordSect
   const [passwordError, setPasswordError] = useState<string | null>(null)
   const [passwordSuccess, setPasswordSuccess] = useState(false)
   const [passwordLoading, setPasswordLoading] = useState(false)
+  const [isErrorExiting, setIsErrorExiting] = useState(false)
+  const [isSuccessExiting, setIsSuccessExiting] = useState(false)
   const { toast } = useToast()
+
+  const dismissError = () => {
+    setIsErrorExiting(true)
+    setTimeout(() => {
+      setPasswordError(null)
+      setIsErrorExiting(false)
+    }, 300)
+  }
+
+  const dismissSuccess = () => {
+    setIsSuccessExiting(true)
+    setTimeout(() => {
+      setPasswordSuccess(false)
+      setIsSuccessExiting(false)
+    }, 300)
+  }
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -30,12 +48,14 @@ export function ProfilePasswordSection({ onChangePassword }: ProfilePasswordSect
     // Validate passwords
     if (newPassword.length < 8) {
       setPasswordError("New password must be at least 8 characters long")
+      setTimeout(dismissError, 5000)
       setPasswordLoading(false)
       return
     }
     
     if (newPassword !== confirmPassword) {
       setPasswordError("New password and confirmation do not match")
+      setTimeout(dismissError, 5000)
       setPasswordLoading(false)
       return
     }
@@ -45,6 +65,7 @@ export function ProfilePasswordSection({ onChangePassword }: ProfilePasswordSect
       
       if (error) {
         setPasswordError(error.message)
+        setTimeout(dismissError, 5000)
       } else {
         setPasswordSuccess(true)
         setCurrentPassword('')
@@ -59,11 +80,12 @@ export function ProfilePasswordSection({ onChangePassword }: ProfilePasswordSect
         
         // Reset success message after 5 seconds
         setTimeout(() => {
-          setPasswordSuccess(false)
+          dismissSuccess()
         }, 5000)
       }
     } catch (err) {
       setPasswordError("An unexpected error occurred")
+      setTimeout(dismissError, 5000)
       console.error(err)
     } finally {
       setPasswordLoading(false)
@@ -77,14 +99,27 @@ export function ProfilePasswordSection({ onChangePassword }: ProfilePasswordSect
           <h2 className="text-lg font-semibold">Change Password</h2>
           
           {passwordError && (
-            <Alert variant="destructive">
+            <Alert 
+              variant="destructive"
+              className={`transition-all duration-300 ${
+                isErrorExiting 
+                  ? 'animate-out fade-out slide-out-to-top-2' 
+                  : 'animate-in fade-in slide-in-from-top-2'
+              }`}
+            >
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>{passwordError}</AlertDescription>
             </Alert>
           )}
           
           {passwordSuccess && (
-            <Alert className="bg-green-50 dark:bg-green-900/20 border-green-500 dark:border-green-900">
+            <Alert 
+              className={`bg-green-50 dark:bg-green-900/20 border-green-500 dark:border-green-900 transition-all duration-300 ${
+                isSuccessExiting 
+                  ? 'animate-out fade-out slide-out-to-top-2' 
+                  : 'animate-in fade-in slide-in-from-top-2'
+              }`}
+            >
               <FaRegCheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
               <AlertTitle>Success</AlertTitle>
               <AlertDescription>Your password has been changed successfully.</AlertDescription>
