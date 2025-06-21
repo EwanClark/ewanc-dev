@@ -51,6 +51,7 @@ export default function ShortUrlPage() {
   const [urlsLoading, setUrlsLoading] = useState(true);
   const [urls, setUrls] = useState<ShortenedUrl[]>([]);
   const [urlValid, setUrlValid] = useState<boolean | null>(null);
+  const [baseUrl, setBaseUrl] = useState<string>("");
 
   const setPassword = (password: string) => {
     setPasswordState(password);
@@ -84,6 +85,11 @@ export default function ShortUrlPage() {
       setUrlsLoading(false);
     }
   };
+
+  // Set base URL on client side only
+  useEffect(() => {
+    setBaseUrl(window.location.origin);
+  }, []);
 
   // Fetch URLs when component mounts and user is available
   useEffect(() => {
@@ -168,7 +174,6 @@ export default function ShortUrlPage() {
 
   const copyToClipboard = async (shortCode: string) => {
     try {
-      const baseUrl = window.location.origin;
       await navigator.clipboard.writeText(`${baseUrl}/${shortCode}`);
       setSuccess(`Copied ${baseUrl}/${shortCode} to clipboard!`);
       setTimeout(() => setSuccess(null), 3000);
@@ -353,7 +358,7 @@ export default function ShortUrlPage() {
                           <TableRow key={url.id}>
                             <TableCell className="font-medium">
                               <div className="break-all">
-                                {window.location.origin.replace(/^https?:\/\//, '')}/{url.shortCode}
+                                {baseUrl ? baseUrl.replace(/^https?:\/\//, '') : 'Loading...'}/{url.shortCode}
                               </div>
                             </TableCell>
                             <TableCell className="hidden md:table-cell max-w-[200px]">
