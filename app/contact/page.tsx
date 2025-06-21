@@ -1,9 +1,8 @@
 import { Navbar } from "@/components/navbar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { EmailButton } from "@/components/email-button"
-import { CiLaptop } from "react-icons/ci";
 import { FaWpforms } from "react-icons/fa6"
-import { FaGithub } from "react-icons/fa"
+import { FaGithub, FaDesktop } from "react-icons/fa"
 import { MdMailOutline } from "react-icons/md";
 
 
@@ -67,7 +66,7 @@ export default function ContactPage() {
               <Card className="border border-border sm:col-span-2 lg:col-span-1">
                 <CardContent className="pt-6">
                   <div className="flex flex-col items-center text-center">
-                    <CiLaptop className="h-8 w-8 sm:h-10 sm:w-10 mb-3 sm:mb-4 text-primary" />
+                    <FaDesktop className="h-8 w-8 sm:h-10 sm:w-10 mb-3 sm:mb-4 text-primary" />
                     <h3 className="font-semibold mb-2">Project Requests</h3>
                     <p className="text-sm text-muted-foreground">
                       Need a website or app built? Reach out to discuss your project requirements.
