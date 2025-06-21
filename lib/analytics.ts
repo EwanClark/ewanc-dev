@@ -1,5 +1,16 @@
 import { UAParser } from 'ua-parser-js';
 
+// Helper function to check if IP is in the 172.16.0.0/12 private range
+function isPrivate172Range(ip: string): boolean {
+  if (!ip.startsWith('172.')) return false;
+  
+  const parts = ip.split('.');
+  if (parts.length !== 4) return false;
+  
+  const secondOctet = parseInt(parts[1], 10);
+  return secondOctet >= 16 && secondOctet <= 31;
+}
+
 export interface LocationData {
   country: string | null;
   region: string | null;
@@ -17,7 +28,7 @@ export interface DeviceData {
 export async function getLocationFromIP(ip: string): Promise<LocationData> {
   try {
     // Skip localhost and private IPs
-    if (ip === '127.0.0.1' || ip === '::1' || ip.startsWith('192.168.') || ip.startsWith('10.') || ip.startsWith('172.')) {
+    if (ip === '127.0.0.1' || ip === '::1' || ip.startsWith('192.168.') || ip.startsWith('10.') || isPrivate172Range(ip)) {
       return {
         country: 'Local',
         region: 'Local',
