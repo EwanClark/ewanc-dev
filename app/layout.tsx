@@ -47,7 +47,7 @@ export default function RootLayout({
         <link rel="preload" href="/profile-picture-optimized.jpg" as="image" />
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
-        <link rel="dns-prefetch" href="//vercel.live" />
+        <link rel="dns-prefetch" href="//ewanc.dev" />
         <link rel="dns-prefetch" href="//vitals.vercel-analytics.com" />
         
         {/* SEO and performance meta tags */}
