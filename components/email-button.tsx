@@ -13,7 +13,7 @@ export function EmailButton({ email }: EmailButtonProps) {
   return (
     <Button 
       onClick={() => window.location.href = `mailto:${email}`}
-      className="flex items-center gap-2"
+      className="flex items-center gap-2 transition-all duration-200 hover:scale-105 group"
     >
       <MdMailOutline className="h-4 w-4" />
       Send Email

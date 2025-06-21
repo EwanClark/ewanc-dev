@@ -16,7 +16,7 @@ export default function AboutPage() {
           <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">About Me</h1>
 
           <div className="space-y-6 sm:space-y-8">
-            <Card>
+            <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
               <CardContent className="pt-6">
                 <div className="flex items-start gap-4">
                   <div className="text-muted-foreground flex-shrink-0">
@@ -49,7 +49,7 @@ export default function AboutPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
               <CardContent className="pt-6">
                 <div className="flex items-start gap-4">
                   <div className="text-muted-foreground flex-shrink-0">
@@ -76,7 +76,7 @@ export default function AboutPage() {
             </Card>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-              <Card>
+              <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
                 <CardContent className="pt-6">
                   <h3 className="font-semibold mb-3">Current Learning</h3>
                   <ul className="space-y-2 text-sm text-muted-foreground">
@@ -88,7 +88,7 @@ export default function AboutPage() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
                 <CardContent className="pt-6">
                   <h3 className="font-semibold mb-3">Interests</h3>
                   <ul className="space-y-2 text-sm text-muted-foreground">
@@ -101,7 +101,7 @@ export default function AboutPage() {
               </Card>
             </div>
 
-            <Card>
+            <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
               <CardContent className="pt-6">
                 <h3 className="font-semibold mb-3">Goals</h3>
                 <p className="text-muted-foreground">

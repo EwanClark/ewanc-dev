@@ -122,7 +122,7 @@ export default function ForgotPasswordPage() {
           <CardFooter className="flex flex-col items-center gap-2">
             <div className="text-sm text-center">
               Remember your password?{" "}
-              <Link href="/login" className="text-primary hover:underline">
+              <Link href="/login" className="text-primary hover:underline transition-all duration-200 hover:scale-105">
                 Sign in
               </Link>
             </div>

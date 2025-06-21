@@ -226,7 +226,7 @@ export default function AnalyticsPage() {
 
           {/* Summary Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
-            <Card>
+            <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div className="min-w-0">
@@ -237,7 +237,7 @@ export default function AnalyticsPage() {
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div className="min-w-0">
@@ -248,7 +248,7 @@ export default function AnalyticsPage() {
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div className="min-w-0">
@@ -259,7 +259,7 @@ export default function AnalyticsPage() {
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div className="min-w-0">
@@ -277,7 +277,7 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Enhanced Click Analytics Chart */}
-          <Card className="mb-4 sm:mb-6">
+          <Card className="mb-4 sm:mb-6 hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
             <CardHeader className="p-4 sm:p-6">
               <div className="flex flex-col gap-3 sm:gap-4">
                 <div>
@@ -393,7 +393,7 @@ export default function AnalyticsPage() {
           </Card>
 
           {/* Detailed Click Table */}
-          <Card>
+          <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
             <CardHeader className="p-4 sm:p-6">
               <CardTitle className="text-lg sm:text-xl">Detailed Click Data</CardTitle>
             </CardHeader>
@@ -402,7 +402,7 @@ export default function AnalyticsPage() {
               <div className="block sm:hidden">
                 <div className="space-y-3 p-4">
                   {analytics.clicks.map((click) => (
-                    <Card key={click.id} className="p-4 space-y-3">
+                    <Card key={click.id} className="p-4 space-y-3 hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
                       <div className="flex items-center justify-between">
                         <div className="text-sm font-medium">
                           {click.timestamp.toLocaleDateString()}
