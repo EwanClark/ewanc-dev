@@ -33,15 +33,6 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['@radix-ui/react-icons'],
   },
-  // PWA and SEO optimizations
-  async rewrites() {
-    return [
-      {
-        source: '/robots.txt',
-        destination: '/app/robots.txt',
-      },
-    ]
-  },
   // Headers for caching, compression, and SEO
   async headers() {
     return [
