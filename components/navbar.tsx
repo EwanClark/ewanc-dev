@@ -15,7 +15,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { FaGithub, FaChevronDown } from "react-icons/fa6"
+import { FaChevronDown } from "react-icons/fa6"
+import { FaGithub } from "react-icons/fa"
 import { MdLogout } from "react-icons/md";
 import { FaRegUser, FaBars } from "react-icons/fa";
 import { useAuth } from "@/lib/auth-context"
@@ -162,15 +163,12 @@ export function Navbar() {
           {/* Theme Toggle */}
           <ThemeToggle />
 
-          {/* Only show GitHub link on main portfolio pages */}
-          {!currentProject && (
-            <Link href="https://github.com/ewanclark/" target="_blank" rel="noopener noreferrer">
-              <Button variant="ghost" size="icon" className="h-9 w-9">
-                <FaGithub className="h-4 w-4" />
-                <span className="sr-only">GitHub</span>
-              </Button>
-            </Link>
-          )}
+          <Link href="https://github.com/ewanclark/" target="_blank" rel="noopener noreferrer">
+            <Button variant="ghost" size="icon" className="h-9 w-9">
+              <FaGithub style={{ width: 20, height: 20 }} />
+              <span className="sr-only">GitHub</span>
+            </Button>
+          </Link>
 
           {/* Desktop User authentication */}
           <div className="hidden md:block">

@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { FiArrowUpRight } from "react-icons/fi";
-import { FaGithub } from "react-icons/fa6";
+import { FaGithub } from "react-icons/fa";
 import Link from "next/link"
 
 const projects = {

@@ -2,7 +2,8 @@ import { Navbar } from "@/components/navbar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { EmailButton } from "@/components/email-button"
 import { CiLaptop } from "react-icons/ci";
-import { FaWpforms, FaGithub } from "react-icons/fa6"
+import { FaWpforms } from "react-icons/fa6"
+import { FaGithub } from "react-icons/fa"
 import { MdMailOutline } from "react-icons/md";
 
 

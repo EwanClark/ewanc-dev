@@ -12,8 +12,9 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Separator } from "@/components/ui/separator"
-import { FaGithub, FaGoogle } from "react-icons/fa"
+import { FaGithub } from "react-icons/fa"
 import { useAuth } from "@/lib/auth-context"
+import Image from "next/image"
 
 export default function SignupPage() {
   const router = useRouter()
@@ -139,13 +140,13 @@ export default function SignupPage() {
             </div>
 
             <div className="space-y-2">
-              <Button variant="outline" className="w-full" onClick={handleGithubSignup}>
-                <FaGithub className="mr-2 h-4 w-4" />
-                GitHub
-              </Button>
               <Button variant="outline" className="w-full" onClick={handleGoogleSignup}>
-                <FaGoogle className="mr-2 h-4 w-4" />
-                Google
+                <Image src="/google.svg" alt="Google" width={18} height={18} className="w-5 h-5" />
+                  Google
+              </Button>
+              <Button variant="outline" className="w-full" onClick={handleGithubSignup}>
+                <FaGithub style={{ width: 20, height: 20 }} />
+                  GitHub
               </Button>
             </div>
           </CardContent>
