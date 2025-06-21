@@ -23,7 +23,9 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { FaRegCopy } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
+import { BiBarChartAlt2 } from "react-icons/bi";
 import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 
 type ShortenedUrl = {
   id: string;
@@ -35,13 +37,36 @@ type ShortenedUrl = {
 
 export default function ShortUrlPage() {
   const { user } = useAuth();
+  const router = useRouter();
   const [url, setUrl] = useState("");
   const [customAlias, setCustomAlias] = useState("");
   const [password, setPasswordState] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [urls, setUrls] = useState<ShortenedUrl[]>([]);
+  const [urls, setUrls] = useState<ShortenedUrl[]>([
+    {
+      id: "1",
+      originalUrl: "https://github.com/your-username/awesome-project",
+      shortCode: "gh-proj",
+      createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
+      clicks: 142,
+    },
+    {
+      id: "2",
+      originalUrl: "https://docs.google.com/document/d/1234567890/edit",
+      shortCode: "doc-share",
+      createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000), // 12 days ago
+      clicks: 87,
+    },
+    {
+      id: "3",
+      originalUrl: "https://example.com/very/long/url/with/many/parameters?utm_source=email&utm_medium=newsletter",
+      shortCode: "news-link",
+      createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000), // 20 days ago
+      clicks: 23,
+    },
+  ]);
   const [urlValid, setUrlValid] = useState<boolean | null>(null);
 
   const setPassword = (password: string) => {
@@ -114,6 +139,10 @@ export default function ShortUrlPage() {
 
   const copyToClipboard = (shortCode: string) => {
     navigator.clipboard.writeText(`https://short.url/${shortCode}`);
+  };
+
+  const viewAnalytics = (shortCode: string) => {
+    router.push(`/projects/short-url/${shortCode}/analytics`);
   };
 
   return (
@@ -270,6 +299,16 @@ export default function ShortUrlPage() {
                             </TableCell>
                             <TableCell className="text-right">
                               <div className="flex justify-end gap-1 sm:gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => viewAnalytics(url.shortCode)}
+                                  title="View Analytics"
+                                  className="h-8 w-8"
+                                  disabled={!user}
+                                >
+                                  <BiBarChartAlt2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                                </Button>
                                 <Button
                                   variant="ghost"
                                   size="icon"
