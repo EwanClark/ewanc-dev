@@ -47,6 +47,8 @@ export default function ShortUrlPage() {
   const [password, setPasswordState] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [isErrorExiting, setIsErrorExiting] = useState(false);
+  const [isSuccessExiting, setIsSuccessExiting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [urlsLoading, setUrlsLoading] = useState(true);
   const [urls, setUrls] = useState<ShortenedUrl[]>([]);
@@ -55,6 +57,23 @@ export default function ShortUrlPage() {
 
   const setPassword = (password: string) => {
     setPasswordState(password);
+  };
+
+  // Helper functions for animated dismissal
+  const dismissError = () => {
+    setIsErrorExiting(true);
+    setTimeout(() => {
+      setError(null);
+      setIsErrorExiting(false);
+    }, 300); // Match animation duration
+  };
+
+  const dismissSuccess = () => {
+    setIsSuccessExiting(true);
+    setTimeout(() => {
+      setSuccess(null);
+      setIsSuccessExiting(false);
+    }, 300); // Match animation duration
   };
 
   // Fetch user's URLs from API
@@ -75,12 +94,12 @@ export default function ShortUrlPage() {
         setUrls(formattedUrls);
       } else {
         setError(data.error || 'Failed to fetch URLs');
-        setTimeout(() => setError(null), 5000);
+        setTimeout(dismissError, 5000);
       }
     } catch (error) {
       console.error('Error fetching URLs:', error);
       setError('Failed to fetch URLs');
-      setTimeout(() => setError(null), 5000);
+      setTimeout(dismissError, 5000);
     } finally {
       setUrlsLoading(false);
     }
@@ -124,7 +143,7 @@ export default function ShortUrlPage() {
       new URL(url);
     } catch {
       setError("Please enter a valid URL including http:// or https://");
-      setTimeout(() => setError(null), 5000);
+      setTimeout(dismissError, 5000);
       setLoading(false);
       return;
     }
@@ -152,7 +171,7 @@ export default function ShortUrlPage() {
         };
         setUrls([newUrl, ...urls]);
         setSuccess(data.message);
-        setTimeout(() => setSuccess(null), 5000);
+        setTimeout(dismissSuccess, 5000);
         
         // Clear form
         setUrl("");
@@ -161,12 +180,12 @@ export default function ShortUrlPage() {
         setUrlValid(null);
       } else {
         setError(data.error || 'Failed to create short URL');
-        setTimeout(() => setError(null), 5000);
+        setTimeout(dismissError, 5000);
       }
     } catch (error) {
       console.error('Error creating short URL:', error);
       setError('Failed to create short URL');
-      setTimeout(() => setError(null), 5000);
+      setTimeout(dismissError, 5000);
     } finally {
       setLoading(false);
     }
@@ -176,10 +195,10 @@ export default function ShortUrlPage() {
     try {
       await navigator.clipboard.writeText(`${baseUrl}/${shortCode}`);
       setSuccess(`Copied ${baseUrl}/${shortCode} to clipboard!`);
-      setTimeout(() => setSuccess(null), 3000);
+      setTimeout(dismissSuccess, 3000);
     } catch (err) {
       setError("Failed to copy to clipboard");
-      setTimeout(() => setError(null), 3000);
+      setTimeout(dismissError, 3000);
     }
   };
 
@@ -203,15 +222,15 @@ export default function ShortUrlPage() {
         // Remove URL from the list
         setUrls(urls.filter(url => url.id !== id));
         setSuccess(data.message);
-        setTimeout(() => setSuccess(null), 3000);
+        setTimeout(dismissSuccess, 3000);
       } else {
         setError(data.error || 'Failed to delete URL');
-        setTimeout(() => setError(null), 3000);
+        setTimeout(dismissError, 3000);
       }
     } catch (error) {
       console.error('Error deleting URL:', error);
       setError('Failed to delete URL');
-      setTimeout(() => setError(null), 3000);
+      setTimeout(dismissError, 3000);
     }
   };
 
@@ -258,13 +277,26 @@ export default function ShortUrlPage() {
               </CardHeader>
               <CardContent>
                 {error && (
-                  <Alert variant="destructive" className="mb-4">
+                  <Alert 
+                    variant="destructive" 
+                    className={`mb-4 transition-all duration-300 ${
+                      isErrorExiting 
+                        ? 'animate-out fade-out slide-out-to-top-2' 
+                        : 'animate-in fade-in slide-in-from-top-2'
+                    }`}
+                  >
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
                 )}
 
                 {success && (
-                  <Alert className="mb-4 bg-green-500/10 text-green-500 border-green-500/20 animate-in fade-in duration-300">
+                  <Alert 
+                    className={`mb-4 bg-green-500/10 text-green-500 border-green-500/20 transition-all duration-300 ${
+                      isSuccessExiting 
+                        ? 'animate-out fade-out slide-out-to-top-2' 
+                        : 'animate-in fade-in slide-in-from-top-2'
+                    }`}
+                  >
                     <AlertDescription>{success}</AlertDescription>
                   </Alert>
                 )}
@@ -356,15 +388,27 @@ export default function ShortUrlPage() {
                       <TableBody>
                         {urls.map((url) => (
                           <TableRow key={url.id}>
-                            <TableCell className="font-medium">
-                              <div className="break-all">
+                            <TableCell>
+                              <a 
+                                href={`${baseUrl}/${url.shortCode}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="break-all text-foreground hover:text-primary underline decoration-foreground/60 hover:decoration-primary transition-all duration-200 underline-offset-2 hover:underline-offset-4 cursor-pointer"
+                                title="Open short URL"
+                              >
                                 {baseUrl ? baseUrl.replace(/^https?:\/\//, '') : 'Loading...'}/{url.shortCode}
-                              </div>
+                              </a>
                             </TableCell>
                             <TableCell className="hidden md:table-cell max-w-[200px]">
-                              <div className="truncate" title={url.originalUrl}>
+                              <a 
+                                href={url.originalUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="truncate block text-foreground hover:text-primary underline decoration-foreground/60 hover:decoration-primary transition-all duration-200 underline-offset-2 hover:underline-offset-4 cursor-pointer"
+                                title={url.originalUrl}
+                              >
                                 {url.originalUrl}
-                              </div>
+                              </a>
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
                               {url.createdAt.toLocaleDateString()}
@@ -393,18 +437,6 @@ export default function ShortUrlPage() {
                                   disabled={!user}
                                 >
                                   <FaRegCopy className="h-3 w-3 sm:h-4 sm:w-4" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() =>
-                                    window.open(url.originalUrl, "_blank")
-                                  }
-                                  title="Visit original URL"
-                                  className="h-8 w-8"
-                                  disabled={!user}
-                                >
-                                  <FiExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />
                                 </Button>
                                 <Button
                                   variant="ghost"
