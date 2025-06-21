@@ -12,7 +12,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Shield, ArrowLeft } from "lucide-react";
+import { IoShield } from "react-icons/io5";
+import { FaArrowLeft } from "react-icons/fa6";
 
 function PasswordForm() {
   const router = useRouter();
@@ -72,7 +73,7 @@ function PasswordForm() {
             className="mb-4 -ml-4"
             size="sm"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <FaArrowLeft className="w-4 h-4 mr-2" />
             Back
           </Button>
         </div>
@@ -80,7 +81,7 @@ function PasswordForm() {
         <Card>
           <CardHeader className="text-center">
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Shield className="w-8 h-8 text-primary" />
+              <IoShield className="w-8 h-8 text-primary" />
             </div>
             <CardTitle className="text-xl">Password Required</CardTitle>
             <p className="text-muted-foreground text-sm">

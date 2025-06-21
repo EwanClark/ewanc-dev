@@ -22,9 +22,8 @@ import {
 } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { FaRegCopy } from "react-icons/fa";
-import { FiExternalLink } from "react-icons/fi";
 import { BiBarChartAlt2 } from "react-icons/bi";
-import { Trash2 } from "lucide-react";
+import { FaRegTrashAlt } from "react-icons/fa";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 
@@ -446,7 +445,7 @@ export default function ShortUrlPage() {
                                   className="h-8 w-8"
                                   disabled={!user}
                                 >
-                                  <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                                  <FaRegTrashAlt className="h-3 w-3 sm:h-4 sm:w-4" />
                                 </Button>
                               </div>
                             </TableCell>
