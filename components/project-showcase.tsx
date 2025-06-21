@@ -18,13 +18,6 @@ const projects = {
       github: "https://github.com",
       demo: "https://example.com",
     },
-    {
-      title: "DevChat",
-      description: "Real-time chat application for developer teams.",
-      tags: ["React", "Socket.io", "Express", "MongoDB"],
-      github: "https://github.com",
-      demo: "https://example.com",
-    },
   ],
   Mobile: [
     {

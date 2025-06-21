@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { FaDatabase, FaComments, FaLink } from "react-icons/fa"
+import { FaDatabase, FaLink } from "react-icons/fa"
 import { CiGlobe } from "react-icons/ci";
 
 const projects = [
@@ -12,14 +12,6 @@ const projects = [
     icon: <FaDatabase className="h-6 w-6" />,
     tags: ["Node.js", "Express", "PostgreSQL", "JWT"],
     status: "Completed",
-  },
-  {
-    id: "chat-app",
-    title: "Real-time Chat",
-    description: "Full-stack chat application with WebSocket connections and message persistence.",
-    icon: <FaComments className="h-6 w-6" />,
-    tags: ["Next.js", "Socket.io", "Supabase", "TypeScript"],
-    status: "In Progress",
   },
   {
     id: "url-shortener",

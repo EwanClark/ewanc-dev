@@ -3,24 +3,24 @@ import { Navbar } from "@/components/navbar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { FaArrowLeft, FaGithub, FaExternalLinkAlt, FaDatabase, FaLink, FaGlobe, FaComments } from "react-icons/fa"
+import { FaArrowLeft, FaDatabase, FaLink, FaGlobe, FaGithub, FaExternalLinkAlt } from "react-icons/fa"
 import Link from "next/link"
 
 const projects = {
   "task-manager": {
     title: "Task Manager API",
     description:
-      "A comprehensive RESTful API for task management with user authentication, role-based permissions, and real-time updates. Built with Node.js and Express, featuring JWT authentication and PostgreSQL database integration.",
+      "A comprehensive RESTful API for task management featuring user authentication, real-time updates, and advanced filtering capabilities. Built with Node.js and PostgreSQL for high performance and reliability.",
     icon: <FaDatabase className="h-8 w-8" />,
-    tags: ["Node.js", "Express", "PostgreSQL", "JWT", "REST API", "Authentication"],
+    tags: ["Node.js", "Express", "PostgreSQL", "JWT", "REST API", "Prisma"],
     status: "Completed",
     github: "https://github.com/username/task-manager-api",
-    demo: "https://task-manager-api.vercel.app",
+    demo: "https://task-manager-api.herokuapp.com",
     features: [
-      "User authentication with JWT tokens",
+      "JWT-based authentication system",
       "CRUD operations for tasks and projects",
-      "Role-based access control",
       "Real-time notifications",
+      "Advanced filtering and sorting",
       "Data validation and error handling",
       "API documentation with Swagger",
     ],
@@ -31,32 +31,6 @@ const projects = {
       Validation: "Joi schema validation for request data",
       Testing: "Jest and Supertest for comprehensive API testing",
       Deployment: "Docker containerization with CI/CD pipeline",
-    },
-  },
-  "chat-app": {
-    title: "Real-time Chat Application",
-    description:
-      "A full-stack real-time chat application featuring WebSocket connections, message persistence, and user presence indicators. Built with Next.js frontend and Socket.io for real-time communication.",
-    icon: <FaComments className="h-8 w-8" />,
-    tags: ["Next.js", "Socket.io", "Supabase", "TypeScript", "Real-time", "WebSocket"],
-    status: "In Progress",
-    github: "https://github.com/username/chat-app",
-    demo: "https://chat-app-demo.vercel.app",
-    features: [
-      "Real-time messaging with Socket.io",
-      "User authentication and profiles",
-      "Message history and persistence",
-      "Online/offline user status",
-      "Typing indicators",
-      "File sharing capabilities",
-    ],
-    techDetails: {
-      Frontend: "Next.js with TypeScript for type-safe development",
-      "Real-time": "Socket.io for bidirectional WebSocket communication",
-      Database: "Supabase for user management and message storage",
-      Styling: "Tailwind CSS with custom chat UI components",
-      "State Management": "React Context for global state management",
-      Deployment: "Vercel for frontend, Railway for Socket.io server",
     },
   },
   "url-shortener": {
