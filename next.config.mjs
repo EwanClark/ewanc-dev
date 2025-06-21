@@ -31,7 +31,7 @@ const nextConfig = {
   compress: true,
   // Experimental features for performance
   experimental: {
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+    optimizePackageImports: ['@radix-ui/react-icons'],
   },
   // Headers for caching and compression
   async headers() {

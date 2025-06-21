@@ -20,9 +20,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Globe, Users, Clock, Shield, MapPin, Monitor, ExternalLink } from "lucide-react";
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Area, AreaChart, ReferenceLine } from "recharts";
+import { CiGlobe } from "react-icons/ci";
+import { FaArrowLeft } from "react-icons/fa6";
+import { FaRegUser, FaRegClock } from "react-icons/fa";
+import { IoShield } from "react-icons/io5";
+import { FiMapPin, FiExternalLink } from "react-icons/fi";
+import { CiLaptop } from "react-icons/ci";
+import { ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Area, AreaChart, ReferenceLine } from "recharts";
 
 type ClickData = {
   id: string;
@@ -176,7 +180,7 @@ export default function AnalyticsPage() {
               The analytics for this URL could not be found.
             </p>
             <Button onClick={() => router.back()} size="sm" className="sm:size-default">
-              <ArrowLeft className="w-4 h-4 mr-2" />
+              <FaArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
           </div>
@@ -198,14 +202,14 @@ export default function AnalyticsPage() {
               className="mb-3 sm:mb-4 -ml-2 sm:-ml-4"
               size="sm"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
+              <FaArrowLeft className="w-4 h-4 mr-2" />
               Back to URLs
             </Button>
             <div className="flex flex-col gap-3 sm:gap-4">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
                 <div className="min-w-0 flex-1">
                   <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 break-words">
-                    Analytics for /{analytics.shortCode}
+                    Analytics for {process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/{analytics.shortCode}
                   </h1>
                   <p className="text-muted-foreground text-sm sm:text-base break-all leading-relaxed">
                     {analytics.originalUrl}
@@ -213,7 +217,7 @@ export default function AnalyticsPage() {
                 </div>
                 {analytics.isPasswordProtected && (
                   <Badge variant="secondary" className="self-start shrink-0">
-                    <Shield className="w-3 h-3 mr-1" />
+                    <IoShield className="w-3 h-3 mr-1" />
                     Password Protected
                   </Badge>
                 )}
@@ -230,7 +234,7 @@ export default function AnalyticsPage() {
                     <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Total Clicks</p>
                     <p className="text-lg sm:text-2xl font-bold">{analytics.totalClicks}</p>
                   </div>
-                  <Globe className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground shrink-0" />
+                  <CiGlobe className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground shrink-0" />
                 </div>
               </CardContent>
             </Card>
@@ -241,7 +245,7 @@ export default function AnalyticsPage() {
                     <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Unique Visitors</p>
                     <p className="text-lg sm:text-2xl font-bold">{analytics.uniqueClicks}</p>
                   </div>
-                  <Users className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground shrink-0" />
+                  <FaRegUser className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground shrink-0" />
                 </div>
               </CardContent>
             </Card>
@@ -252,7 +256,7 @@ export default function AnalyticsPage() {
                     <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Created</p>
                     <p className="text-sm sm:text-lg lg:text-2xl font-bold">{analytics.createdAt.toLocaleDateString()}</p>
                   </div>
-                  <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground shrink-0" />
+                  <FaRegClock className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground shrink-0" />
                 </div>
               </CardContent>
             </Card>
@@ -422,11 +426,11 @@ export default function AnalyticsPage() {
 
                       <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                          <MapPin className="w-3 h-3 text-muted-foreground" />
+                          <FiMapPin className="w-3 h-3 text-muted-foreground" />
                           <span className="text-xs">{click.city}, {click.region}, {click.country}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Monitor className="w-3 h-3 text-muted-foreground" />
+                          <CiLaptop className="w-3 h-3 text-muted-foreground" />
                           <div className="flex gap-2 flex-wrap">
                             <Badge variant="outline" className="text-xs py-0">{click.device}</Badge>
                             <Badge variant="outline" className="text-xs py-0">{click.browser}</Badge>
@@ -448,7 +452,7 @@ export default function AnalyticsPage() {
                               className="text-blue-500 hover:underline text-xs flex items-center gap-1"
                             >
                               {new URL(click.referrer).hostname}
-                              <ExternalLink className="w-3 h-3" />
+                              <FiExternalLink className="w-3 h-3" />
                             </a>
                           )}
                         </div>
@@ -527,7 +531,7 @@ export default function AnalyticsPage() {
                                 className="text-blue-500 hover:underline text-sm flex items-center gap-1"
                               >
                                 {new URL(click.referrer).hostname}
-                                <ExternalLink className="w-3 h-3" />
+                                <FiExternalLink className="w-3 h-3" />
                               </a>
                             )}
                           </div>
