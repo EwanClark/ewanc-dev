@@ -331,7 +331,7 @@ export default function AnalyticsPage() {
                         month: 'long', 
                         day: 'numeric' 
                       })}
-                      formatter={(value, name) => [
+                      formatter={(value) => [
                         <span key="value" className="font-semibold">{value} clicks</span>, 
                         ''
                       ]}

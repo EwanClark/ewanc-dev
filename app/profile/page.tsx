@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
+import Link from "next/link"
 import { createClient } from "@/utils/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -267,10 +268,10 @@ export default function ProfilePage() {
                     <h2 className="text-2xl font-semibold mb-6">Authentication Required</h2>
                     <div className="flex gap-4 justify-center">
                       <Button size="lg" asChild className="px-8 font-medium">
-                        <a href="/login">Log In</a>
+                        <Link href="/login">Log In</Link>
                       </Button>
                       <Button size="lg" variant="outline" asChild className="px-8 font-medium">
-                        <a href="/signup">Create Account</a>
+                        <Link href="/signup">Create Account</Link>
                       </Button>
                     </div>
                   </div>

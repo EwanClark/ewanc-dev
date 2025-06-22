@@ -1,5 +1,3 @@
-import { generatePersonStructuredData } from '@/lib/seo'
-
 interface StructuredDataProps {
   data: object
 }

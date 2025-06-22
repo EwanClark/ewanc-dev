@@ -2,7 +2,8 @@
 
 import type React from "react";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -71,24 +72,24 @@ export default function ShortUrlPage() {
   };
 
   // Helper functions for animated dismissal
-  const dismissError = () => {
+  const dismissError = useCallback(() => {
     setIsErrorExiting(true);
     setTimeout(() => {
       setError(null);
       setIsErrorExiting(false);
     }, 300); // Match animation duration
-  };
+  }, []);
 
-  const dismissSuccess = () => {
+  const dismissSuccess = useCallback(() => {
     setIsSuccessExiting(true);
     setTimeout(() => {
       setSuccess(null);
       setIsSuccessExiting(false);
     }, 300); // Match animation duration
-  };
+  }, []);
 
   // Fetch user's URLs from API
-  const fetchUrls = async () => {
+  const fetchUrls = useCallback(async () => {
     if (!user) return;
     
     try {
@@ -114,7 +115,7 @@ export default function ShortUrlPage() {
     } finally {
       setUrlsLoading(false);
     }
-  };
+  }, [user, dismissError]);
 
   // Set base URL on client side only
   useEffect(() => {
@@ -128,7 +129,7 @@ export default function ShortUrlPage() {
     } else {
       setUrlsLoading(false);
     }
-  }, [user]);
+  }, [user, fetchUrls]);
 
   const validateUrl = (inputUrl: string) => {
     if (!inputUrl) {
@@ -207,7 +208,7 @@ export default function ShortUrlPage() {
       await navigator.clipboard.writeText(`${baseUrl}/${shortCode}`);
       setSuccess(`Copied ${baseUrl}/${shortCode} to clipboard!`);
       setTimeout(dismissSuccess, 3000);
-    } catch (err) {
+    } catch {
       setError("Failed to copy to clipboard");
       setTimeout(dismissError, 3000);
     }
@@ -278,7 +279,7 @@ export default function ShortUrlPage() {
                   </p>
                   <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
                     <Button size="lg" className="w-full sm:w-32" asChild>
-                      <a href="/login">Log In</a>
+                      <Link href="/login">Log In</Link>
                     </Button>
                     <Button
                       size="lg"
@@ -286,7 +287,7 @@ export default function ShortUrlPage() {
                       variant="outline"
                       asChild
                     >
-                      <a href="/signup">Sign Up</a>
+                      <Link href="/signup">Sign Up</Link>
                     </Button>
                   </div>
                 </div>
@@ -413,7 +414,7 @@ export default function ShortUrlPage() {
                         {urls.map((url) => (
                           <TableRow key={url.id}>
                             <TableCell>
-                              <a 
+                              <Link 
                                 href={`${baseUrl}/${url.shortCode}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -421,10 +422,10 @@ export default function ShortUrlPage() {
                                 title="Open short URL"
                               >
                                 {baseUrl ? baseUrl.replace(/^https?:\/\//, '') : 'Loading...'}/{url.shortCode}
-                              </a>
+                              </Link>
                             </TableCell>
                             <TableCell className="hidden md:table-cell max-w-[200px]">
-                              <a 
+                              <Link 
                                 href={url.originalUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -432,7 +433,7 @@ export default function ShortUrlPage() {
                                 title={url.originalUrl}
                               >
                                 {url.originalUrl}
-                              </a>
+                              </Link>
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
                               {url.createdAt.toLocaleDateString()}
