@@ -1,47 +1,65 @@
+"use client"
+
 import { Card } from "@/components/ui/card"
 import Image from "next/image";
+import { useTheme } from "next-themes";
 
-
+const TechIcon = ({ name, lightIcon, darkIcon }: { name: string; lightIcon?: string; darkIcon: string }) => {
+  const { resolvedTheme } = useTheme();
+  
+  // Use light icon if available and theme is light, otherwise use dark icon
+  const iconSrc = lightIcon && resolvedTheme === "light" ? lightIcon : darkIcon;
+  
+  return (
+    <Image 
+      src={iconSrc} 
+      width={32} 
+      height={32} 
+      alt={name} 
+      className="w-8 h-8" 
+    />
+  );
+};
 
 const techStack = [
   {
     category: "Programming Languages",
     technologies: [
-      { name: "TypeScript", icon: <Image src="/typescript.svg" width={32} height={32} alt="TypeScript" className="w-8 h-8" /> },
-      { name: "JavaScript", icon: <Image src="/javascript.svg" width={32} height={32} alt="JavaScript" className="w-8 h-8" /> },
-      { name: "Python", icon: <Image src="/python.svg" width={32} height={32} alt="Python" className="w-8 h-8" /> },
-      { name: "Rust", icon: <Image src="/rust.svg" width={32} height={32} alt="Rust" className="w-8 h-8" /> },
-      { name: "C++", icon: <Image src="/cpp.svg" width={32} height={32} alt="C++" className="w-8 h-8" /> },
+      { name: "TypeScript", icon: <TechIcon name="TypeScript" darkIcon="/typescript.svg" /> },
+      { name: "JavaScript", icon: <TechIcon name="JavaScript" darkIcon="/javascript.svg" /> },
+      { name: "Python", icon: <TechIcon name="Python" darkIcon="/python.svg" /> },
+      { name: "Rust", icon: <TechIcon name="Rust" lightIcon="/rust-light.svg" darkIcon="/rust.svg" /> },
+      { name: "C++", icon: <TechIcon name="C++" darkIcon="/cpp.svg" /> },
     ],
   },
   {
     category: "Frontend Development",
     technologies: [
-      { name: "Next.js", icon: <Image src="/nextjs.svg" width={32} height={32} alt="Next.js" className="w-8 h-8" /> },
-      { name: "React", icon: <Image src="/react.svg" width={32} height={32} alt="React" className="w-8 h-8" /> },
-      { name: "Tailwind", icon: <Image src="/tailwindcss.svg" width={32} height={32} alt="Tailwind" className="w-8 h-8" /> },
-      { name: "Electron", icon: <Image src="/electron.svg" width={32} height={32} alt="Electron" className="w-8 h-8" /> },
-      { name: "Figma", icon: <Image src="/figma.svg" width={32} height={32} alt="Figma" className="w-8 h-8" /> },
+      { name: "Next.js", icon: <TechIcon name="Next.js" darkIcon="/nextjs.svg" /> },
+      { name: "React", icon: <TechIcon name="React" darkIcon="/react.svg" /> },
+      { name: "Tailwind", icon: <TechIcon name="Tailwind" darkIcon="/tailwindcss.svg" /> },
+      { name: "Electron", icon: <TechIcon name="Electron" darkIcon="/electron.svg" /> },
+      { name: "Figma", icon: <TechIcon name="Figma" darkIcon="/figma.svg" /> },
     ],
   },
   {
     category: "Backend Development",
     technologies: [
-      { name: "Express", icon: <Image src="/expressjs.svg" width={32} height={32} alt="Express" className="w-8 h-8" /> },
-      { name: "Supabase", icon: <Image src="/supabase.svg" width={32} height={32} alt="Supabase" className="w-8 h-8" /> },
-      { name: "MongoDB", icon: <Image src="/mongodb.svg" width={32} height={32} alt="MongoDB" className="w-8 h-8" /> },
-      { name: "Vercel", icon: <Image src="/vercel.svg" width={32} height={32} alt="Vercel" className="w-8 h-8" /> },
-      { name: "AWS", icon: <Image src="/aws.svg" width={32} height={32} alt="AWS" className="w-8 h-8" /> },
+      { name: "Express", icon: <TechIcon name="Express" lightIcon="/expressjs-light.svg" darkIcon="/expressjs.svg" /> },
+      { name: "Supabase", icon: <TechIcon name="Supabase" darkIcon="/supabase.svg" /> },
+      { name: "MongoDB", icon: <TechIcon name="MongoDB" darkIcon="/mongodb.svg" /> },
+      { name: "Vercel", icon: <TechIcon name="Vercel" lightIcon="/vercel-light.svg" darkIcon="/vercel.svg" /> },
+      { name: "AWS", icon: <TechIcon name="AWS" lightIcon="/aws-light.svg" darkIcon="/aws.svg" /> },
     ],
   },
   {
     category: "Tools",
     technologies: [
-      { name: "Cursor", icon: <Image src="/cursor.svg" width={32} height={32} alt="Cursor" className="w-8 h-8" /> },
-      { name: "Git", icon: <Image src="/git.svg" width={32} height={32} alt="Git" className="w-8 h-8" /> },
-      { name: "Excalidraw", icon: <Image src="/excalidraw.svg" width={32} height={32} alt="Excalidraw" className="w-8 h-8" /> },
-      { name: "Hyprland", icon: <Image src="/hyprland.svg" width={32} height={32} alt="Hyprland" className="w-8 h-8" /> },
-      { name: "Arch Linux", icon: <Image src="/arch.svg" width={32} height={32} alt="Arch Linux" className="w-8 h-8" /> },
+      { name: "Cursor", icon: <TechIcon name="Cursor" lightIcon="/cursor-light.svg" darkIcon="/cursor.svg" /> },
+      { name: "Git", icon: <TechIcon name="Git" darkIcon="/git.svg" /> },
+      { name: "Excalidraw", icon: <TechIcon name="Excalidraw" darkIcon="/excalidraw.svg" /> },
+      { name: "Hyprland", icon: <TechIcon name="Hyprland" darkIcon="/hyprland.svg" /> },
+      { name: "Arch Linux", icon: <TechIcon name="Arch Linux" darkIcon="/arch.svg" /> },
     ],
   },
 ]
