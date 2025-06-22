@@ -24,7 +24,7 @@ import { CiGlobe } from "react-icons/ci";
 import { FaArrowLeft } from "react-icons/fa6";
 import { FaRegUser, FaRegClock, FaDesktop } from "react-icons/fa";
 import { IoShield } from "react-icons/io5";
-import { FiMapPin, FiExternalLink } from "react-icons/fi";
+import { FiMapPin } from "react-icons/fi";
 import { ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Area, AreaChart, ReferenceLine } from "recharts";
 
 type ClickData = {
@@ -438,24 +438,23 @@ export default function AnalyticsPage() {
                         </div>
                       </div>
 
-                      <div>
-                        <div className="text-muted-foreground text-xs mb-1">Referrer</div>
-                        <div className="flex items-center gap-1">
-                          {click.referrer === "Direct" ? (
-                            <Badge variant="secondary" className="text-xs">Direct</Badge>
-                          ) : (
-                            <a 
-                              href={click.referrer} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-blue-500 hover:underline text-xs flex items-center gap-1"
-                            >
-                              {new URL(click.referrer).hostname}
-                              <FiExternalLink className="w-3 h-3" />
-                            </a>
-                          )}
+                                              <div>
+                          <div className="text-muted-foreground text-xs mb-1">Referrer</div>
+                          <div className="flex items-center gap-1">
+                            {click.referrer === "Direct" ? (
+                              <Badge variant="secondary" className="text-xs">Direct</Badge>
+                            ) : (
+                              <a 
+                                href={click.referrer} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-xs text-foreground hover:text-primary underline decoration-foreground/60 hover:decoration-primary transition-all duration-200 underline-offset-2 hover:underline-offset-4 cursor-pointer"
+                              >
+                                {new URL(click.referrer).hostname}
+                              </a>
+                            )}
+                          </div>
                         </div>
-                      </div>
 
                       {analytics.isPasswordProtected && (
                         <div>
@@ -527,10 +526,9 @@ export default function AnalyticsPage() {
                                 href={click.referrer} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className="text-blue-500 hover:underline text-sm flex items-center gap-1"
+                                className="text-sm text-foreground hover:text-primary underline decoration-foreground/60 hover:decoration-primary transition-all duration-200 underline-offset-2 hover:underline-offset-4 cursor-pointer"
                               >
                                 {new URL(click.referrer).hostname}
-                                <FiExternalLink className="w-3 h-3" />
                               </a>
                             )}
                           </div>
