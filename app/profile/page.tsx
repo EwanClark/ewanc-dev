@@ -293,17 +293,6 @@ export default function ProfilePage() {
             <div>
               <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight">Profile Settings</h1>
             </div>
-            {/* Mobile Save Button - Shown only on mobile */}
-            <div className="sm:hidden">
-              <Button 
-                onClick={handleSaveChanges} 
-                disabled={updating}
-                size="default"
-                className="w-full font-medium"
-              >
-                {updating ? 'Saving...' : 'Save Changes'}
-              </Button>
-            </div>
           </div>
           
           {/* Display alert message */}
