@@ -110,7 +110,25 @@ async function trackClick(
 
     // Get user agent and referrer
     const userAgent = request.headers.get("user-agent") || "";
-    const referrer = request.headers.get("referer") || "Direct";
+    const rawReferrer = request.headers.get("referer");
+    
+    // Enhanced referrer processing with debugging
+    let referrer = "Direct";
+    if (rawReferrer) {
+      try {
+        const referrerUrl = new URL(rawReferrer);
+        const referrerHost = referrerUrl.hostname.toLowerCase();
+
+        if (referrerHost !== request.nextUrl.hostname) {
+          referrer = rawReferrer;
+        } else {
+          referrer = "Direct"; // Self-referral treated as direct
+        }
+      } catch (e) {
+        // Invalid URL, keep as direct
+        referrer = "Direct";
+      }
+    }
 
     // Get location data from IP
     const locationData = await getLocationFromIP(clientIp);
