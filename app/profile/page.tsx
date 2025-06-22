@@ -208,9 +208,9 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-background">
         <Navbar />
-        <div className="container py-8 sm:py-16">
+        <div className="container px-4 py-6 sm:px-6 sm:py-8 lg:py-16">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center justify-between mb-6 sm:mb-8">
               <div className="animate-pulse w-48 sm:w-60">
@@ -220,21 +220,21 @@ export default function ProfilePage() {
             </div>
             
             <Card className="border border-border/40 shadow-sm">
-              <CardContent className="pt-6">
-                <div className="flex flex-col gap-8">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex flex-col gap-6 sm:gap-8">
                   <div className="flex flex-col items-center">
                     <div className="animate-pulse space-y-6 w-full">
                       <div className="flex justify-center">
-                        <div className="rounded-full bg-muted h-40 w-40"></div>
+                        <div className="rounded-full bg-muted h-32 w-32 sm:h-40 sm:w-40"></div>
                       </div>
-                      <div className="h-12 bg-muted rounded w-60 mx-auto"></div>
+                      <div className="h-12 bg-muted rounded w-48 sm:w-60 mx-auto"></div>
                     </div>
                   </div>
                   
                   <div className="animate-pulse space-y-6 w-full">
-                    <div className="h-40 bg-muted rounded w-full"></div>
-                    <div className="h-64 bg-muted rounded w-full"></div>
-                    <div className="h-10 bg-muted rounded w-1/3 ml-auto"></div>
+                    <div className="h-32 sm:h-40 bg-muted rounded w-full"></div>
+                    <div className="h-48 sm:h-64 bg-muted rounded w-full"></div>
+                    <div className="h-10 bg-muted rounded mx-auto w-32 sm:w-40"></div>
                   </div>
                 </div>
               </CardContent>
@@ -247,13 +247,13 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-background">
         <Navbar />
-        <div className="container py-8 sm:py-16">
+        <div className="container px-4 py-6 sm:px-6 sm:py-8 lg:py-16">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center justify-between mb-6 sm:mb-8">
               <div>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">Profile Settings</h1>
+                <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight">Profile Settings</h1>
               </div>
             </div>
             
@@ -261,16 +261,16 @@ export default function ProfilePage() {
               <CardContent className="p-0">
                 <div className="flex flex-col items-center justify-center min-h-[400px] relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-background z-0"></div>
-                  <div className="text-center z-10 p-8">
-                    <div className="w-20 h-20 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-6">
-                      <FaRegUser className="h-10 w-10 text-primary/70" />
+                  <div className="text-center z-10 p-6 sm:p-8">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                      <FaRegUser className="h-8 w-8 sm:h-10 sm:w-10 text-primary/70" />
                     </div>
-                    <h2 className="text-2xl font-semibold mb-6">Authentication Required</h2>
-                    <div className="flex gap-4 justify-center">
-                      <Button size="lg" asChild className="px-8 font-medium">
+                    <h2 className="text-lg sm:text-2xl font-semibold mb-4 sm:mb-6">Authentication Required</h2>
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+                      <Button size="lg" asChild className="px-6 sm:px-8 font-medium">
                         <Link href="/login">Log In</Link>
                       </Button>
-                      <Button size="lg" variant="outline" asChild className="px-8 font-medium">
+                      <Button size="lg" variant="outline" asChild className="px-6 sm:px-8 font-medium">
                         <Link href="/signup">Create Account</Link>
                       </Button>
                     </div>
@@ -285,13 +285,24 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container py-8 sm:py-16">
+      <div className="container px-4 py-6 sm:px-6 sm:py-8 lg:py-16">
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8 gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">Profile Settings</h1>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight">Profile Settings</h1>
+            </div>
+            {/* Mobile Save Button - Shown only on mobile */}
+            <div className="sm:hidden">
+              <Button 
+                onClick={handleSaveChanges} 
+                disabled={updating}
+                size="default"
+                className="w-full font-medium"
+              >
+                {updating ? 'Saving...' : 'Save Changes'}
+              </Button>
             </div>
           </div>
           
@@ -320,11 +331,13 @@ export default function ProfilePage() {
                   ? 'Your profile has been updated successfully.'
                   : 'There was an error saving your profile. Please try again.'}
               </AlertDescription>
-            </Alert>          )}
+            </Alert>
+          )}
 
           <Card className="mb-6 border border-border/40 shadow-sm">
-            <CardContent className="pt-6 relative">
-              <div className="absolute right-4 top-4 sm:right-6 sm:top-6">
+            <CardContent className="p-4 sm:p-6 relative">
+              {/* Desktop Save Button */}
+              <div className="hidden sm:block absolute right-4 top-4 sm:right-6 sm:top-6">
                 <Button 
                   onClick={handleSaveChanges} 
                   disabled={updating}
@@ -334,7 +347,8 @@ export default function ProfilePage() {
                   {updating ? 'Saving...' : 'Save Changes'}
                 </Button>
               </div>
-              <div className="flex flex-col gap-8">
+              
+              <div className="flex flex-col gap-6 sm:gap-8">
                 <ProfileAvatarSection
                   fullName={fullName}
                   userEmail={user.email || ''}
@@ -356,12 +370,12 @@ export default function ProfilePage() {
                 
                 <div className="space-y-6 w-full">
                   {/* Profile Information Section */}
-                  <div className="bg-card/50 p-6 rounded-lg border border-border/40">
-                    <div className="space-y-5">
+                  <div className="bg-card/50 p-4 sm:p-6 rounded-lg border border-border/40">
+                    <div className="space-y-4 sm:space-y-5">
                       <div className="space-y-2">
-                        <div className="flex justify-between items-end">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-2">
                           <Label htmlFor="email" className="text-sm font-semibold">Email</Label>
-                          <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Verified</span>
+                          <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded w-fit">Verified</span>
                         </div>
                         <Input 
                           id="email" 
@@ -387,6 +401,18 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 </div>
+              </div>
+              
+              {/* Mobile Save Button at bottom */}
+              <div className="sm:hidden mt-6 pt-4 border-t border-border/40">
+                <Button 
+                  onClick={handleSaveChanges} 
+                  disabled={updating}
+                  size="default"
+                  className="w-full font-medium"
+                >
+                  {updating ? 'Saving...' : 'Save Changes'}
+                </Button>
               </div>
             </CardContent>
           </Card>
