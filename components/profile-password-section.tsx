@@ -94,9 +94,9 @@ export function ProfilePasswordSection({ onChangePassword }: ProfilePasswordSect
 
   return (
     <Card className="mb-6 border border-border/40 shadow-sm">
-      <CardContent className="pt-6">
+      <CardContent className="p-4 sm:p-6">
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Change Password</h2>
+          <h2 className="text-base sm:text-lg font-semibold">Change Password</h2>
           
           {passwordError && (
             <Alert 
@@ -108,7 +108,7 @@ export function ProfilePasswordSection({ onChangePassword }: ProfilePasswordSect
               }`}
             >
               <AlertTitle>Error</AlertTitle>
-              <AlertDescription>{passwordError}</AlertDescription>
+              <AlertDescription className="text-sm">{passwordError}</AlertDescription>
             </Alert>
           )}
           
@@ -122,7 +122,7 @@ export function ProfilePasswordSection({ onChangePassword }: ProfilePasswordSect
             >
               <FaRegCheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
               <AlertTitle>Success</AlertTitle>
-              <AlertDescription>Your password has been changed successfully.</AlertDescription>
+              <AlertDescription className="text-sm">Your password has been changed successfully.</AlertDescription>
             </Alert>
           )}
           
@@ -170,14 +170,16 @@ export function ProfilePasswordSection({ onChangePassword }: ProfilePasswordSect
               />
             </div>
             
-            <Button 
-              type="submit"
-              disabled={passwordLoading || newPassword !== confirmPassword || newPassword.length < 8}
-              size="default"
-              className="font-medium"
-            >
-              {passwordLoading ? 'Changing...' : 'Change Password'}
-            </Button>
+            <div className="pt-2">
+              <Button 
+                type="submit"
+                disabled={passwordLoading || newPassword !== confirmPassword || newPassword.length < 8}
+                size="default"
+                className="w-full sm:w-auto font-medium"
+              >
+                {passwordLoading ? 'Changing...' : 'Change Password'}
+              </Button>
+            </div>
           </form>
         </div>
       </CardContent>

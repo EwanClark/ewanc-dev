@@ -131,10 +131,10 @@ export function ProfileAvatarSection({
       {/* Avatar Preview */}
       <div className="flex flex-col items-center gap-4 w-full">
         <div className="relative group">
-          <Avatar className="w-40 h-40 border-2 border-border shadow-md transition-all group-hover:shadow-lg">
+          <Avatar className="w-32 h-32 sm:w-40 sm:h-40 border-2 border-border shadow-md transition-all group-hover:shadow-lg">
             <AvatarImage src={avatarSource === 'default' ? undefined : (getPreviewAvatarUrl() || undefined)} alt={fullName || 'User'} />
             <AvatarFallback 
-              className="text-2xl font-medium bg-[#121212] text-white"
+              className="text-xl sm:text-2xl font-medium bg-[#121212] text-white"
             >
               {(fullName || userEmail || 'User').split(' ').map(part => part[0] || '').join('').substring(0, 2).toUpperCase()}
             </AvatarFallback>
@@ -149,13 +149,13 @@ export function ProfileAvatarSection({
         </div>
         
         <div className="text-center">
-          <h3 className="font-medium">{fullName || userEmail || 'User'}</h3>
-          <p className="text-sm text-muted-foreground">{userEmail}</p>
+          <h3 className="font-medium text-sm sm:text-base">{fullName || userEmail || 'User'}</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">{userEmail}</p>
         </div>
       </div>
 
       {/* Avatar Settings */}
-      <div className="bg-card/50 p-6 rounded-lg border border-border/40">
+      <div className="bg-card/50 p-4 sm:p-6 rounded-lg border border-border/40">
         <div className="space-y-4">
           <div>
             <Label className="text-sm font-semibold mb-3 block">Profile Picture</Label>
@@ -165,7 +165,7 @@ export function ProfileAvatarSection({
                 const newValue = value as AvatarSource;
                 setAvatarSource(newValue);
               }}
-              className="grid grid-cols-2 gap-3"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3"
             >
               <Label 
                 htmlFor="upload" 
@@ -215,7 +215,7 @@ export function ProfileAvatarSection({
           {avatarSource === 'provider' && hasProviders && (
             <div className="space-y-3 p-4 bg-card/50 rounded-lg border border-border/10">
               <Label className="text-sm font-medium">Connected Accounts</Label>
-              <RadioGroup value={selectedProvider} onValueChange={handleProviderSelection} className="grid grid-cols-2 gap-2">
+              <RadioGroup value={selectedProvider} onValueChange={handleProviderSelection} className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {availableProviders.map((providerOption) => (
                   <Label 
                     key={providerOption.provider}
@@ -228,7 +228,7 @@ export function ProfileAvatarSection({
                           value={providerOption.provider} 
                           id={`sel-${providerOption.provider}`}
                         />
-                        <span className="font-medium capitalize">
+                        <span className="font-medium capitalize text-sm">
                           {providerOption.provider}
                         </span>
                       </div>
@@ -238,7 +238,7 @@ export function ProfileAvatarSection({
                           alt={`${providerOption.provider} avatar`}
                           width={32}
                           height={32}
-                          className="w-8 h-8 rounded-full border shadow-sm"
+                          className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border shadow-sm"
                         />
                       )}
                     </div>
@@ -252,7 +252,7 @@ export function ProfileAvatarSection({
           {avatarSource === 'upload' && (
             <div className="space-y-3 p-4 bg-card/50 rounded-lg border border-border/40">
               <Label className="text-sm font-medium">Upload Options</Label>
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Button 
                   onClick={handleUploadClick} 
                   className="flex-1 font-medium"
