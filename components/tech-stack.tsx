@@ -3,21 +3,43 @@
 import { Card } from "@/components/ui/card"
 import Image from "next/image";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 const TechIcon = ({ name, lightIcon, darkIcon }: { name: string; lightIcon?: string; darkIcon: string }) => {
   const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   
-  // Use light icon if available and theme is light, otherwise use dark icon
-  const iconSrc = lightIcon && resolvedTheme === "light" ? lightIcon : darkIcon;
+  // Prevent hydration mismatch by only rendering after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  // Determine the correct icon to use
+  const getIconSrc = () => {
+    if (!mounted) {
+      // During SSR, we can't know the theme, so use dark as default
+      return darkIcon;
+    }
+    
+    // After mounting, use the resolved theme to determine the correct icon
+    if (lightIcon && resolvedTheme === "light") {
+      return lightIcon;
+    }
+    
+    return darkIcon;
+  };
   
   return (
-    <Image 
-      src={iconSrc} 
-      width={32} 
-      height={32} 
-      alt={name} 
-      className="w-8 h-8" 
-    />
+    <div className="transition-opacity duration-200">
+      <Image 
+        src={getIconSrc()} 
+        width={32} 
+        height={32} 
+        alt={name} 
+        className="w-8 h-8" 
+        priority={false}
+      />
+    </div>
   );
 };
 
