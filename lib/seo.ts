@@ -1,9 +1,9 @@
 import { Metadata } from 'next'
 
 const baseUrl = 'https://ewanc.dev'
-const siteName = 'Ewan Clark - Full-Stack Developer'
-const defaultTitle = 'Ewan Clark - Full-Stack Developer Portfolio'
-const defaultDescription = 'Ewan Clark - Year 8 programmer and full-stack developer from London. Self-taught coder specializing in backend development, full-stack applications, and modern web technologies.'
+const siteName = 'Ewan Clark - Full Stack Developer'
+const defaultTitle = 'Ewan Clark - Full Stack Developer'
+const defaultDescription = 'Ewan Clark - Year 8 programmer and full-stack developer from London. Self-taught specializing in backend development.'
 
 export function generateMetadata({
   title,
@@ -75,7 +75,7 @@ export function generateMetadata({
           url: `${baseUrl}/favicon.ico`,
           width: 512,
           height: 512,
-          alt: 'Ewan Clark - Full-Stack Developer',
+          alt: defaultTitle,
         },
       ],
       ...(publishedTime && { publishedTime }),
@@ -107,8 +107,8 @@ export function generatePersonStructuredData() {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: 'Ewan Clark',
-    jobTitle: 'Full-Stack Developer',
-    description: 'Year 8 self-taught programmer and full-stack developer from London, UK, specializing in backend development and modern web applications.',
+    jobTitle: 'Full Stack Developer',
+    description: defaultDescription,
     url: baseUrl,
     image: `${baseUrl}/favicon.ico`,
     address: {

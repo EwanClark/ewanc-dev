@@ -4,16 +4,6 @@ import { EmailButton } from "@/components/email-button"
 import { FaWpforms } from "react-icons/fa6"
 import { FaGithub, FaDesktop } from "react-icons/fa"
 import { MdMailOutline } from "react-icons/md"
-import { generateMetadata } from "@/lib/seo"
-import { Metadata } from "next"
-
-export const metadata: Metadata = generateMetadata({
-  title: "Contact Me",
-  description: "Get in touch with me for project collaborations, job opportunities, or developer connections. Email me at ewanclark4312@gmail.com for inquiries.",
-  path: "/contact",
-  keywords: ["contact", "email", "collaboration", "hire developer", "freelance", "job opportunities"]
-});
-
 
 export default function ContactPage() {
   return (

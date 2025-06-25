@@ -1,13 +1,5 @@
 User-agent: *
-Allow: /
-
-User-agent: *
-Disallow: /api/
-Disallow: /auth/
-Disallow: /profile/
-Disallow: /reset-password/
-Disallow: /forgot-password/
-Disallow: /password-required/
-Disallow: /signup-success/
+Allow: /$
+Disallow: /
 
 Sitemap: https://ewanc.dev/sitemap.xml 
