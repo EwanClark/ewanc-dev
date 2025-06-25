@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { FaMoon, FaDesktop } from "react-icons/fa"
+import { FaMoon } from "react-icons/fa"
 import { IoSunny } from "react-icons/io5";
 import { useTheme } from "next-themes"
 
@@ -11,36 +11,23 @@ export function ThemeToggle() {
   const { setTheme, theme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
 
-  // Avoid hydration mismatch
   React.useEffect(() => {
     setMounted(true)
   }, [])
 
-  const cycleTheme = () => {
-    if (theme === "light") {
-      setTheme("dark")
-    } else if (theme === "dark") {
-      setTheme("system")
-    } else {
-      setTheme("light")
-    }
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light")
   }
 
   const getIcon = () => {
     if (!mounted) {
-      return <FaDesktop className="h-4 w-4" />
+      // Default to light icon during SSR
+      return <IoSunny className="h-4 w-4" />
     }
     
-    switch (theme) {
-      case "light":
-        return <IoSunny className="h-4 w-4" />
-      case "dark":
-        return <FaMoon className="h-4 w-4" />
-      case "system":
-        return <FaDesktop className="h-4 w-4" />
-      default:
-        return <FaDesktop className="h-4 w-4" />
-    }
+    return theme === "light" 
+      ? <IoSunny className="h-4 w-4" />
+      : <FaMoon className="h-4 w-4" />
   }
 
   const getTooltipText = () => {
@@ -48,16 +35,9 @@ export function ThemeToggle() {
       return "Toggle theme"
     }
     
-    switch (theme) {
-      case "light":
-        return "Switch to dark mode"
-      case "dark":
-        return "Switch to system mode"
-      case "system":
-        return "Switch to light mode"
-      default:
-        return "Toggle theme"
-    }
+    return theme === "light" 
+      ? "Switch to dark mode" 
+      : "Switch to light mode"
   }
 
   return (
@@ -65,7 +45,7 @@ export function ThemeToggle() {
       variant="ghost" 
       size="icon" 
       className="h-9 w-9 transition-all duration-200 hover:scale-105" 
-      onClick={cycleTheme}
+      onClick={toggleTheme}
       title={getTooltipText()}
     >
       {getIcon()}

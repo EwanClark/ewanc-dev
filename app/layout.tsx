@@ -75,7 +75,7 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
           <AuthProvider>{children}</AuthProvider>
         </ThemeProvider>
         <Toaster />
