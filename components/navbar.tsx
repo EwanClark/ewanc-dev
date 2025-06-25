@@ -25,12 +25,12 @@ import { ThemeToggle } from "@/components/theme-toggle"
 export function Navbar() {
   const pathname = usePathname()
   const { user, signOut } = useAuth()
-  // const [, setOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Determine if we're in a specific project section
   const isInShortUrl = pathname.startsWith("/projects/short-url")
-  const currentProject = isInShortUrl ? "Short URL" : null
+  const isInGraph = pathname.startsWith("/projects/graph")
+  const currentProject = isInShortUrl ? "Short URL" : isInGraph ? "Graph" : null
 
   const navItems = [
     { name: "Home", href: "/" },
@@ -60,6 +60,9 @@ export function Navbar() {
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/projects/short-url">Short URL</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/projects/graph">Graph</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
