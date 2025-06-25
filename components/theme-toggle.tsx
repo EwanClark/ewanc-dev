@@ -11,25 +11,11 @@ export function ThemeToggle() {
   const { setTheme, theme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
 
-  // Avoid hydration mismatch and handle first-time visitors
   React.useEffect(() => {
     setMounted(true)
-    
-    // Check if user has a theme preference set
-    const hasThemePreference = localStorage.getItem('theme') !== null
-    
-    if (!hasThemePreference) {
-      // First-time visitor: detect their system preference and set it
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      const systemTheme = systemPrefersDark ? 'dark' : 'light'
-      
-      // Set their preference based on system theme
-      setTheme(systemTheme)
-    }
-  }, [setTheme])
+  }, [])
 
   const toggleTheme = () => {
-    // Simple toggle between dark and light only
     setTheme(theme === "light" ? "dark" : "light")
   }
 
