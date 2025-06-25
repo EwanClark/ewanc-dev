@@ -7,15 +7,6 @@ import { LuLightbulb } from "react-icons/lu";
 import { IoIosStarOutline } from "react-icons/io";
 import { FiBookOpen, FiCoffee } from "react-icons/fi";
 import { CiGlobe } from "react-icons/ci";
-import { generateMetadata } from "@/lib/seo";
-import { Metadata } from "next";
-
-export const metadata: Metadata = generateMetadata({
-  title: "Experience",
-  description: "Explore my professional journey and timeline as a full-stack developer. From self-taught beginnings to building modern web applications.",
-  path: "/experience",
-  keywords: ["experience", "career", "professional timeline", "work history", "developer experience"]
-});
 
 // Set this to true when you want to enable the experience page
 // and remove the notFound() call in the ExperiencePage component
