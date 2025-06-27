@@ -59,15 +59,28 @@ function PasswordForm() {
     setLoading(true);
     setError(null);
 
-    // Create the URL with password and clickId
-    const params = new URLSearchParams();
-    params.set("password", password);
+    // Use server-side form submission instead of client-side redirect
+    // This is more reliable on mobile browsers
+    const form = document.createElement('form');
+    form.method = 'GET';
+    form.action = `/${shortCode}`;
+    
+    const passwordInput = document.createElement('input');
+    passwordInput.type = 'hidden';
+    passwordInput.name = 'password';
+    passwordInput.value = password;
+    form.appendChild(passwordInput);
+    
     if (clickId) {
-      params.set("clickId", clickId);
+      const clickIdInput = document.createElement('input');
+      clickIdInput.type = 'hidden';
+      clickIdInput.name = 'clickId';
+      clickIdInput.value = clickId;
+      form.appendChild(clickIdInput);
     }
-
-    // Redirect back to the short URL with the password
-    window.location.href = `/${shortCode}?${params.toString()}`;
+    
+    document.body.appendChild(form);
+    form.submit();
   };
 
   if (!shortCode) {

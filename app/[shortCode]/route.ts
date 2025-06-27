@@ -35,13 +35,13 @@ export async function GET(
       const clickId = url.searchParams.get("clickId");
 
       if (!providedPassword) {
-        // Track unauthorized attempt first
-        const newClickId = await trackClick(request, shortUrl.id, false);
+        // Track unauthorized attempt asynchronously to avoid blocking redirect
+        trackClickAsync(request, shortUrl.id, false);
 
-        // Redirect to password form with click ID
+        // Redirect to password form
         return NextResponse.redirect(
           new URL(
-            `/password-required?shortCode=${shortCode}&clickId=${newClickId}`,
+            `/password-required?shortCode=${shortCode}`,
             request.url
           )
         );
@@ -52,46 +52,59 @@ export async function GET(
         shortUrl.password_hash
       );
       if (!isPasswordValid) {
-        // Track failed attempt if no existing click ID
-        if (!clickId) {
-          const newClickId = await trackClick(request, shortUrl.id, false);
-          return NextResponse.redirect(
-            new URL(
-              `/password-required?shortCode=${shortCode}&error=invalid&clickId=${newClickId}`,
-              request.url
-            )
-          );
-        } else {
-          return NextResponse.redirect(
-            new URL(
-              `/password-required?shortCode=${shortCode}&error=invalid&clickId=${clickId}`,
-              request.url
-            )
-          );
-        }
+        // Track failed attempt asynchronously
+        trackClickAsync(request, shortUrl.id, false);
+        
+        return NextResponse.redirect(
+          new URL(
+            `/password-required?shortCode=${shortCode}&error=invalid`,
+            request.url
+          )
+        );
       }
 
-      // Password is valid - update existing click record to authorized BEFORE redirecting
-      if (clickId) {
-        const updateSuccess = await updateClickAuthorization(clickId, true);
-        if (!updateSuccess) {
-          console.error(`Failed to update click ${clickId} to authorized`);
-        }
-      } else {
-        // Track successful attempt if no existing click ID
-        await trackClick(request, shortUrl.id, true);
-      }
+      // Password is valid - track successful attempt asynchronously
+      trackClickAsync(request, shortUrl.id, true);
     } else {
-      // Track regular click for non-password protected URLs
-      await trackClick(request, shortUrl.id, null);
+      // Track regular click for non-password protected URLs asynchronously
+      trackClickAsync(request, shortUrl.id, null);
     }
 
-    // Redirect to original URL (database update happens before this)
-    return NextResponse.redirect(shortUrl.original_url);
+    // Add mobile browser specific headers for better redirect handling
+    const userAgent = request.headers.get("user-agent") || "";
+    const isMobile = /Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+    const isSafari = /Safari/i.test(userAgent) && !/Chrome/i.test(userAgent);
+    
+    const response = NextResponse.redirect(shortUrl.original_url, { status: 302 });
+    
+    if (isMobile || isSafari) {
+      // Add headers to help mobile browsers handle the redirect properly
+      response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+      response.headers.set('Pragma', 'no-cache');
+      response.headers.set('Expires', '0');
+    }
+
+    return response;
   } catch (error) {
     console.error("Error in redirect:", error);
     return NextResponse.redirect(new URL("/not-found", request.url));
   }
+}
+
+// Async function to track clicks without blocking redirects
+async function trackClickAsync(
+  request: NextRequest,
+  shortUrlId: string,
+  authorized: boolean | null
+): Promise<void> {
+  // Don't await this - let it run in background
+  setTimeout(async () => {
+    try {
+      await trackClick(request, shortUrlId, authorized);
+    } catch (error) {
+      console.error("Background click tracking failed:", error);
+    }
+  }, 0);
 }
 
 async function trackClick(
@@ -111,8 +124,18 @@ async function trackClick(
     // Get user agent
     const userAgent = request.headers.get("user-agent") || "";
 
-    // Get location data from IP
-    const locationData = await getLocationFromIP(clientIp);
+    // Get location data from IP with timeout to prevent blocking
+    let locationData = { country: null, region: null, city: null, isp: null };
+    try {
+      locationData = await Promise.race([
+        getLocationFromIP(clientIp),
+        new Promise<any>((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout')), 2000)
+        )
+      ]);
+    } catch (error) {
+      console.log("Location lookup timed out or failed, using defaults");
+    }
 
     // Parse user agent for device info
     const deviceData = parseUserAgent(userAgent);
