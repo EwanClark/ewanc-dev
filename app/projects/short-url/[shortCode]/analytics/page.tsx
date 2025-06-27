@@ -37,7 +37,7 @@ type ClickData = {
   country: string;
   userAgent: string;
   authorized: boolean | null; // null for non-password protected URLs
-  referrer: string;
+
   device: string;
   browser: string;
   os: string;
@@ -438,23 +438,7 @@ export default function AnalyticsPage() {
                         </div>
                       </div>
 
-                                              <div>
-                          <div className="text-muted-foreground text-xs mb-1">Referrer</div>
-                          <div className="flex items-center gap-1">
-                            {click.referrer === "Direct" ? (
-                              <Badge variant="secondary" className="text-xs">Direct</Badge>
-                            ) : (
-                              <a 
-                                href={click.referrer} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="text-xs text-foreground hover:text-primary underline decoration-foreground/60 hover:decoration-primary transition-all duration-200 underline-offset-2 hover:underline-offset-4 cursor-pointer"
-                              >
-                                {new URL(click.referrer).hostname}
-                              </a>
-                            )}
-                          </div>
-                        </div>
+
 
                       {analytics.isPasswordProtected && (
                         <div>
@@ -487,7 +471,7 @@ export default function AnalyticsPage() {
                       <TableHead className="min-w-[80px]">Device</TableHead>
                       <TableHead className="min-w-[80px]">Browser</TableHead>
                       <TableHead className="min-w-[100px]">OS</TableHead>
-                      <TableHead className="min-w-[150px]">Referrer</TableHead>
+
                       {analytics.isPasswordProtected && <TableHead className="min-w-[100px]">Authorized</TableHead>}
                     </TableRow>
                   </TableHeader>
@@ -517,22 +501,7 @@ export default function AnalyticsPage() {
                         </TableCell>
                         <TableCell>{click.browser}</TableCell>
                         <TableCell>{click.os}</TableCell>
-                        <TableCell className="max-w-[150px]">
-                          <div className="truncate" title={click.referrer}>
-                            {click.referrer === "Direct" ? (
-                              <Badge variant="secondary">Direct</Badge>
-                            ) : (
-                              <a 
-                                href={click.referrer} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="text-sm text-foreground hover:text-primary underline decoration-foreground/60 hover:decoration-primary transition-all duration-200 underline-offset-2 hover:underline-offset-4 cursor-pointer"
-                              >
-                                {new URL(click.referrer).hostname}
-                              </a>
-                            )}
-                          </div>
-                        </TableCell>
+
                         {analytics.isPasswordProtected && (
                           <TableCell>
                             {click.authorized === null ? (

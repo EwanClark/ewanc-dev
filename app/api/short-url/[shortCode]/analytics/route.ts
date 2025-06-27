@@ -68,7 +68,7 @@ export async function GET(
         country: click.country || 'Unknown',
         userAgent: click.user_agent || '',
         authorized: click.authorized,
-        referrer: click.referrer || 'Direct',
+
         device: click.device || 'Unknown',
         browser: click.browser || 'Unknown',
         os: click.os || 'Unknown',

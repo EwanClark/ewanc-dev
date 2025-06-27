@@ -108,27 +108,8 @@ async function trackClick(
     const clientIp =
       forwardedFor?.split(",")[0]?.trim() || realIp || "127.0.0.1";
 
-    // Get user agent and referrer
+    // Get user agent
     const userAgent = request.headers.get("user-agent") || "";
-    const rawReferrer = request.headers.get("referer");
-    
-    // Enhanced referrer processing with debugging
-    let referrer = "Direct";
-    if (rawReferrer) {
-      try {
-        const referrerUrl = new URL(rawReferrer);
-        const referrerHost = referrerUrl.hostname.toLowerCase();
-
-        if (referrerHost !== request.nextUrl.hostname) {
-          referrer = rawReferrer;
-        } else {
-          referrer = "Direct"; // Self-referral treated as direct
-        }
-      } catch (e) {
-        // Invalid URL, keep as direct
-        referrer = "Direct";
-      }
-    }
 
     // Get location data from IP
     const locationData = await getLocationFromIP(clientIp);
@@ -143,7 +124,6 @@ async function trackClick(
         short_url_id: shortUrlId,
         ip_address: clientIp,
         user_agent: userAgent,
-        referrer: referrer,
         authorized: authorized,
         country: locationData.country,
         region: locationData.region,

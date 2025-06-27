@@ -155,7 +155,7 @@ export interface Database {
           short_url_id: string
           ip_address: string
           user_agent: string | null
-          referrer: string | null
+
           timestamp: string
           country: string | null
           region: string | null
@@ -171,7 +171,6 @@ export interface Database {
           short_url_id: string
           ip_address: string
           user_agent?: string | null
-          referrer?: string | null
           timestamp?: string
           country?: string | null
           region?: string | null
@@ -187,7 +186,6 @@ export interface Database {
           short_url_id?: string
           ip_address?: string
           user_agent?: string | null
-          referrer?: string | null
           timestamp?: string
           country?: string | null
           region?: string | null

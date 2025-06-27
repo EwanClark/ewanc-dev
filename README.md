@@ -243,7 +243,6 @@ The URL shortener includes comprehensive analytics:
 - **Click Tracking**: Total and unique clicks
 - **Geolocation**: Country, region, and city data
 - **Device Analytics**: Browser, OS, and device type
-- **Referrer Tracking**: See where traffic comes from
 - **Time-based Analytics**: Track usage over time
 
 ## 🚀 Deployment
