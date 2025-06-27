@@ -418,6 +418,7 @@ export default function ShortUrlPage() {
                                 href={`${baseUrl}/${url.shortCode}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                prefetch={false}
                                 className="break-all text-foreground hover:text-primary underline decoration-foreground/60 hover:decoration-primary transition-all duration-200 underline-offset-2 hover:underline-offset-4 cursor-pointer"
                                 title="Open short URL"
                               >
@@ -429,6 +430,7 @@ export default function ShortUrlPage() {
                                 href={url.originalUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                prefetch={false}
                                 className="truncate block text-foreground hover:text-primary underline decoration-foreground/60 hover:decoration-primary transition-all duration-200 underline-offset-2 hover:underline-offset-4 cursor-pointer"
                                 title={url.originalUrl}
                               >
