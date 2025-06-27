@@ -24,7 +24,6 @@ CREATE TABLE short_url_analytics (
   short_url_id UUID REFERENCES short_urls(id) ON DELETE CASCADE,
   ip_address INET NOT NULL,
   user_agent TEXT,
-  referrer TEXT,
   timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   
   -- Geolocation data

@@ -31,7 +31,7 @@ const projects = {
       Database: "Supabase for URL storage, user management, and analytics data",
       Authentication: "Supabase Auth with email/password and OAuth providers (GitHub, Google)",
       Styling: "Tailwind CSS with shadcn/ui component library for modern design",
-      Analytics: "Custom analytics engine tracking clicks, unique visitors, and referrers",
+      Analytics: "Custom analytics engine tracking clicks, unique visitors, and device information",
       Security: "Input validation, password hashing, and rate limiting protection",
       Performance: "Server-side rendering with optimized database queries and caching",
     },
