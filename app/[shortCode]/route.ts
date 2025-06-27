@@ -35,13 +35,13 @@ export async function GET(
       const clickId = url.searchParams.get("clickId");
 
       if (!providedPassword) {
-        // Track unauthorized attempt asynchronously to avoid blocking redirect
-        trackClickAsync(request, shortUrl.id, false);
+        // Track unauthorized attempt and get clickId for updating later
+        const newClickId = await trackClick(request, shortUrl.id, false);
 
-        // Redirect to password form
+        // Redirect to password form with clickId
         return NextResponse.redirect(
           new URL(
-            `/password-required?shortCode=${shortCode}`,
+            `/password-required?shortCode=${shortCode}&clickId=${newClickId}`,
             request.url
           )
         );
@@ -52,19 +52,33 @@ export async function GET(
         shortUrl.password_hash
       );
       if (!isPasswordValid) {
-        // Track failed attempt asynchronously
-        trackClickAsync(request, shortUrl.id, false);
-        
-        return NextResponse.redirect(
-          new URL(
-            `/password-required?shortCode=${shortCode}&error=invalid`,
-            request.url
-          )
-        );
+        // Track failed attempt if no existing click ID, otherwise keep existing
+        if (!clickId) {
+          const newClickId = await trackClick(request, shortUrl.id, false);
+          return NextResponse.redirect(
+            new URL(
+              `/password-required?shortCode=${shortCode}&error=invalid&clickId=${newClickId}`,
+              request.url
+            )
+          );
+        } else {
+          return NextResponse.redirect(
+            new URL(
+              `/password-required?shortCode=${shortCode}&error=invalid&clickId=${clickId}`,
+              request.url
+            )
+          );
+        }
       }
 
-      // Password is valid - track successful attempt asynchronously
-      trackClickAsync(request, shortUrl.id, true);
+      // Password is valid - update existing click record to authorized
+      if (clickId) {
+        // Update existing record asynchronously to avoid blocking redirect
+        updateClickAuthorizationAsync(clickId, true);
+      } else {
+        // Track successful attempt if no existing click ID (fallback)
+        trackClickAsync(request, shortUrl.id, true);
+      }
     } else {
       // Track regular click for non-password protected URLs asynchronously
       trackClickAsync(request, shortUrl.id, null);
@@ -103,6 +117,21 @@ async function trackClickAsync(
       await trackClick(request, shortUrlId, authorized);
     } catch (error) {
       console.error("Background click tracking failed:", error);
+    }
+  }, 0);
+}
+
+// Async function to update click authorization without blocking redirects
+async function updateClickAuthorizationAsync(
+  clickId: string,
+  authorized: boolean
+): Promise<void> {
+  // Don't await this - let it run in background
+  setTimeout(async () => {
+    try {
+      await updateClickAuthorization(clickId, authorized);
+    } catch (error) {
+      console.error("Background click authorization update failed:", error);
     }
   }, 0);
 }
