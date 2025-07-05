@@ -136,8 +136,60 @@ export default function ShortUrlPage() {
       setUrlValid(null);
       return;
     }
+    
+    // Comprehensive URL regex pattern
+    const urlRegex = /^https?:\/\/(?:[-\w.])+(?:\:[0-9]+)?(?:\/(?:[\w\/_.])*)?(?:\?(?:[\w&=%.])*)?(?:\#(?:[\w.])*)?$/;
+    
+    // More specific domain validation regex
+    const domainRegex = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
+    
+    // First check with regex
+    if (!urlRegex.test(inputUrl)) {
+      setUrlValid(false);
+      return;
+    }
+    
     try {
-      new URL(inputUrl);
+      const url = new URL(inputUrl);
+      
+      // Check if the URL has a valid protocol (http or https)
+      if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+        setUrlValid(false);
+        return;
+      }
+      
+      // Check if the URL has a valid hostname
+      if (!url.hostname || url.hostname.length === 0) {
+        setUrlValid(false);
+        return;
+      }
+      
+      // Validate domain structure with regex
+      if (!domainRegex.test(url.hostname)) {
+        setUrlValid(false);
+        return;
+      }
+      
+      // Additional checks for malformed URLs
+      if (url.hostname.includes('..') || url.hostname.startsWith('.') || url.hostname.endsWith('.')) {
+        setUrlValid(false);
+        return;
+      }
+      
+      // Check for minimum domain length (e.g., a.co)
+      if (url.hostname.length < 4) {
+        setUrlValid(false);
+        return;
+      }
+      
+      // Ensure TLD is at least 2 characters
+      const tld = url.hostname.split('.').pop();
+      if (!tld || tld.length < 2) {
+        setUrlValid(false);
+        return;
+      }
+      
+      // URL is valid
       setUrlValid(true);
     } catch {
       setUrlValid(false);
