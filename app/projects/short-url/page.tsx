@@ -178,12 +178,6 @@ export default function ShortUrlPage() {
         return;
       }
       
-      // Check for minimum domain length (e.g., a.co)
-      if (url.hostname.length < 4) {
-        setUrlValid(false);
-        return;
-      }
-      
       // Ensure TLD is at least 2 characters
       const tld = url.hostname.split('.').pop();
       if (!tld || tld.length < 2) {
