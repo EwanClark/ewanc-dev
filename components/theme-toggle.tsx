@@ -8,7 +8,7 @@ import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 
 export function ThemeToggle() {
-  const { setTheme, theme } = useTheme()
+  const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
@@ -16,16 +16,15 @@ export function ThemeToggle() {
   }, [])
 
   const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light")
+    setTheme(resolvedTheme === "light" ? "dark" : "light")
   }
 
   const getIcon = () => {
     if (!mounted) {
-      // Default to light icon during SSR
       return <IoSunny className="h-4 w-4" />
     }
     
-    return theme === "light" 
+    return resolvedTheme === "light" 
       ? <IoSunny className="h-4 w-4" />
       : <FaMoon className="h-4 w-4" />
   }
@@ -35,7 +34,8 @@ export function ThemeToggle() {
       return "Toggle theme"
     }
     
-    return theme === "light" 
+    // Use resolvedTheme for tooltip text as well
+    return resolvedTheme === "light" 
       ? "Switch to dark mode" 
       : "Switch to light mode"
   }
