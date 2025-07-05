@@ -37,6 +37,7 @@ import { BiBarChartAlt2 } from "react-icons/bi";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
+import { isReservedRoute } from "@/lib/route-utils";
 
 type ShortenedUrl = {
   id: string;
@@ -63,6 +64,7 @@ export default function ShortUrlPage() {
   const [urlsLoading, setUrlsLoading] = useState(true);
   const [urls, setUrls] = useState<ShortenedUrl[]>([]);
   const [urlValid, setUrlValid] = useState<boolean | null>(null);
+  const [aliasValid, setAliasValid] = useState<boolean | null>(null);
   const [baseUrl, setBaseUrl] = useState<string>("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [urlToDelete, setUrlToDelete] = useState<{ id: string; shortCode: string } | null>(null);
@@ -136,12 +138,83 @@ export default function ShortUrlPage() {
       setUrlValid(null);
       return;
     }
+    
+    // Comprehensive URL regex pattern
+    const urlRegex = /^https?:\/\/(?:[-\w.])+(?:\:[0-9]+)?(?:\/(?:[\w\/_.])*)?(?:\?(?:[\w&=%.])*)?(?:\#(?:[\w.])*)?$/;
+    
+    // More specific domain validation regex
+    const domainRegex = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
+    
+    // First check with regex
+    if (!urlRegex.test(inputUrl)) {
+      setUrlValid(false);
+      return;
+    }
+    
     try {
-      new URL(inputUrl);
+      const url = new URL(inputUrl);
+      
+      // Check if the URL has a valid protocol (http or https)
+      if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+        setUrlValid(false);
+        return;
+      }
+      
+      // Check if the URL has a valid hostname
+      if (!url.hostname || url.hostname.length === 0) {
+        setUrlValid(false);
+        return;
+      }
+      
+      // Validate domain structure with regex
+      if (!domainRegex.test(url.hostname)) {
+        setUrlValid(false);
+        return;
+      }
+      
+      // Additional checks for malformed URLs
+      if (url.hostname.includes('..') || url.hostname.startsWith('.') || url.hostname.endsWith('.')) {
+        setUrlValid(false);
+        return;
+      }
+      
+      // Ensure TLD is at least 2 characters
+      const tld = url.hostname.split('.').pop();
+      if (!tld || tld.length < 2) {
+        setUrlValid(false);
+        return;
+      }
+      
+      // URL is valid
       setUrlValid(true);
     } catch {
       setUrlValid(false);
     }
+  };
+
+  const validateCustomAlias = (inputAlias: string) => {
+    if (!inputAlias) {
+      setAliasValid(null);
+      return;
+    }
+    
+    // Check for characters that would break URL routing or cause conflicts
+    const invalidChars = /[\/\\\.\s#\?&=\+%]/;
+    
+    // Check for routing-breaking characters
+    if (invalidChars.test(inputAlias)) {
+      setAliasValid(false);
+      return;
+    }
+    
+    // Check for reserved route prefixes
+    if (isReservedRoute(inputAlias)) {
+      setAliasValid(false);
+      return;
+    }
+    
+    // Alias is valid
+    setAliasValid(true);
   };
 
   const handleCreateShortUrl = async (e: React.FormEvent) => {
@@ -155,6 +228,14 @@ export default function ShortUrlPage() {
       new URL(url);
     } catch {
       setError("Please enter a valid URL including http:// or https://");
+      setTimeout(dismissError, 5000);
+      setLoading(false);
+      return;
+    }
+
+    // Validate custom alias if provided
+    if (customAlias && aliasValid === false) {
+      setError("Please enter a valid custom alias (avoid spaces, slashes, dots, and words like 'api', 'login', 'signup')");
       setTimeout(dismissError, 5000);
       setLoading(false);
       return;
@@ -190,6 +271,7 @@ export default function ShortUrlPage() {
         setCustomAlias("");
         setPasswordState("");
         setUrlValid(null);
+        setAliasValid(null);
       } else {
         setError(data.error || 'Failed to create short URL');
         setTimeout(dismissError, 5000);
@@ -350,13 +432,36 @@ export default function ShortUrlPage() {
                       )}
                     </div>
                     <div className="space-y-2 mb-3">
-                      <Input
-                        placeholder="Custom alias (optional)"
-                        value={customAlias}
-                        onChange={(e) => setCustomAlias(e.target.value)}
-                        disabled={!user}
-                        className="text-sm opacity-80 transition-opacity duration-200 hover:opacity-100 focus:opacity-100"
-                      />
+                      <div className="relative">
+                        <Input
+                          placeholder="Custom alias (optional)"
+                          value={customAlias}
+                          onChange={(e) => {
+                            setCustomAlias(e.target.value);
+                            validateCustomAlias(e.target.value);
+                          }}
+                          disabled={!user}
+                          className={`text-sm opacity-80 transition-all duration-200 hover:opacity-100 focus:opacity-100 ${
+                            aliasValid === true ? 'border-green-500 focus:border-green-500 opacity-100' : 
+                            aliasValid === false ? 'border-red-500 focus:border-red-500 opacity-100' : ''
+                          }`}
+                        />
+                        {aliasValid === true && (
+                          <div className="absolute right-3 top-3 text-green-500 animate-in fade-in duration-200">
+                            ✓
+                          </div>
+                        )}
+                        {aliasValid === false && (
+                          <div className="absolute right-3 top-3 text-red-500 animate-in fade-in duration-200">
+                            ✗
+                          </div>
+                        )}
+                      </div>
+                      {aliasValid === false && (
+                        <p className="text-xs text-red-500 mt-1 animate-in fade-in duration-200">
+                          Invalid alias. Avoid spaces, slashes, dots, and words like 'api', 'login', 'signup'.
+                        </p>
+                      )}
                       <Input
                         placeholder="Password (optional)"
                         value={password}

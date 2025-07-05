@@ -2,25 +2,14 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { updateSession } from "@/utils/supabase/middleware"
 import { createServerClient } from "@supabase/ssr"
+import { startsWithReservedRoute } from "@/lib/route-utils"
 
 export async function middleware(req: NextRequest) {
   // Skip middleware for short URL redirects to prevent redirect loops
   // Check if it's a short URL (single path segment, not starting with known routes)
   const pathname = req.nextUrl.pathname
   const isShortUrl = pathname.match(/^\/[a-zA-Z0-9]{6,8}$/) && 
-    !pathname.startsWith('/api') &&
-    !pathname.startsWith('/auth') &&
-    !pathname.startsWith('/projects') &&
-    !pathname.startsWith('/about') &&
-    !pathname.startsWith('/contact') &&
-    !pathname.startsWith('/experience') &&
-    !pathname.startsWith('/login') &&
-    !pathname.startsWith('/signup') &&
-    !pathname.startsWith('/profile') &&
-    !pathname.startsWith('/reset-password') &&
-    !pathname.startsWith('/forgot-password') &&
-    !pathname.startsWith('/password-required') &&
-    !pathname.startsWith('/signup-success')
+    !startsWithReservedRoute(pathname)
 
   if (isShortUrl) {
     return NextResponse.next()
