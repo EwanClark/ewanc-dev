@@ -15,7 +15,8 @@ export const RESERVED_ROUTE_PREFIXES = [
   'reset-password',
   'forgot-password',
   'password-required',
-  'signup-success'
+  'signup-success',
+  'not-found'
 ] as const;
 
 /**
