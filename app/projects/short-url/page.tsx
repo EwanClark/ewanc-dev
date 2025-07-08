@@ -134,6 +134,95 @@ export default function ShortUrlPage() {
     }
   }, [user, fetchUrls]);
 
+  // Set up real-time subscriptions for click count updates
+  useEffect(() => {
+    if (!user || urls.length === 0) return;
+
+    const supabase = createClient();
+    let urlSubscription: any = null;
+    let analyticsSubscription: any = null;
+
+    const setupSubscriptions = async () => {
+      // Get all URL IDs for the current user
+      const urlIds = urls.map(url => url.id);
+      
+      if (urlIds.length === 0) return;
+
+      // Subscribe to short_urls table for click count updates
+      urlSubscription = supabase
+        .channel('main_page_url_realtime')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'short_urls',
+            filter: `id=in.(${urlIds.join(',')})`,
+          },
+          (payload) => {
+            console.log('Real-time URL update received:', payload);
+            setUrls(prevUrls => 
+              prevUrls.map(url => 
+                url.id === payload.new.id
+                  ? {
+                      ...url,
+                      totalClicks: payload.new.total_clicks,
+                      uniqueClicks: payload.new.unique_clicks,
+                    }
+                  : url
+              )
+            );
+          }
+        )
+        .subscribe();
+
+      // Subscribe to short_url_analytics table for new click records
+      analyticsSubscription = supabase
+        .channel('main_page_analytics_realtime')
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'short_url_analytics',
+            filter: `short_url_id=in.(${urlIds.join(',')})`,
+          },
+          (payload) => {
+            console.log('Real-time analytics insert received:', payload);
+            setUrls(prevUrls => 
+              prevUrls.map(url => {
+                if (url.id === payload.new.short_url_id) {
+                  // Increment total clicks
+                  const newTotalClicks = url.totalClicks + 1;
+                  
+                  // For unique clicks, we'll rely on the database trigger to update
+                  // the short_urls table, which will be caught by the first subscription
+                  return {
+                    ...url,
+                    totalClicks: newTotalClicks,
+                  };
+                }
+                return url;
+              })
+            );
+          }
+        )
+        .subscribe();
+    };
+
+    setupSubscriptions();
+
+    // Cleanup subscriptions on unmount or when dependencies change
+    return () => {
+      if (urlSubscription) {
+        supabase.removeChannel(urlSubscription);
+      }
+      if (analyticsSubscription) {
+        supabase.removeChannel(analyticsSubscription);
+      }
+    };
+  }, [user, urls.length]);
+
 
 
   const validateUrl = (inputUrl: string) => {
