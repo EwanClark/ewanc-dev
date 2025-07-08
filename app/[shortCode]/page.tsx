@@ -116,81 +116,90 @@ async function updateClickAuthorization(
 }
 
 export default async function ShortCodePage({ params, searchParams }: PageProps) {
-  try {
-    const supabase = await createClient();
-    const headersList = await headers();
-    const { shortCode } = await params;
-    const searchParamsData = await searchParams;
-    const providedPassword = searchParamsData.password as string;
-    const clickId = searchParamsData.clickId as string;
+  const supabase = await createClient();
+  const headersList = await headers();
+  const { shortCode } = await params;
+  const searchParamsData = await searchParams;
+  const providedPassword = searchParamsData.password as string;
+  const clickId = searchParamsData.clickId as string;
 
-    // Get the short URL from database
-    const { data: shortUrl, error: fetchError } = await supabase
+  // Get the short URL from database
+  let shortUrl;
+  try {
+    const { data, error: fetchError } = await supabase
       .from("short_urls")
       .select("*")
       .eq("short_code", shortCode)
       .eq("is_active", true)
       .single();
 
-    if (fetchError || !shortUrl) {
+    if (fetchError || !data) {
       // This will show your custom not-found.tsx page
       notFound();
     }
+    
+    shortUrl = data;
+  } catch (error) {
+    console.error("Error fetching short URL:", error);
+    notFound();
+  }
 
-    // Handle password protection
-    if (shortUrl.password_hash) {
-      if (!providedPassword) {
-        // Track unauthorized attempt and get clickId for updating later
-        const newClickId = await trackClick(headersList, shortUrl.id, false);
+  // Handle password protection
+  if (shortUrl.password_hash) {
+    if (!providedPassword) {
+      // Track unauthorized attempt and get clickId for updating later
+      const newClickId = await trackClick(headersList, shortUrl.id, false);
 
-        // Redirect to password form with clickId
-        redirect(
-          `/password-required?shortCode=${shortCode}&clickId=${newClickId}`
-        );
-      }
-
-      const isPasswordValid = await bcrypt.compare(
-        providedPassword,
-        shortUrl.password_hash
-      );
-      
-      if (!isPasswordValid) {
-        // Track failed attempt if no existing click ID, otherwise keep existing
-        if (!clickId) {
-          const newClickId = await trackClick(headersList, shortUrl.id, false);
-          redirect(
-            `/password-required?shortCode=${shortCode}&error=invalid&clickId=${newClickId}`
-          );
-        } else {
-          redirect(
-            `/password-required?shortCode=${shortCode}&error=invalid&clickId=${clickId}`
-          );
-        }
-      }
-
-      // Password is valid - update existing click record to authorized
-      if (clickId) {
-        // Update existing record asynchronously to avoid blocking redirect
-        updateClickAuthorization(clickId, true).catch(error => 
-          console.error("Background click authorization update failed:", error)
-        );
-      } else {
-        // Track successful attempt if no existing click ID (fallback)
-        trackClick(headersList, shortUrl.id, true).catch(error =>
-          console.error("Background click tracking failed:", error)
-        );
-      }
-    } else {
-      // Track regular click for non-password protected URLs asynchronously
-      trackClick(headersList, shortUrl.id, null).catch(error =>
-        console.error("Background click tracking failed:", error)
+      // Redirect to password form with clickId
+      redirect(
+        `/password-required?shortCode=${shortCode}&clickId=${newClickId}`
       );
     }
 
-    // Redirect to the original URL
-    redirect(shortUrl.original_url);
-  } catch (error) {
-    console.error("Error in redirect:", error);
-    notFound();
+    let isPasswordValid;
+    try {
+      isPasswordValid = await bcrypt.compare(
+        providedPassword,
+        shortUrl.password_hash
+      );
+    } catch (error) {
+      console.error("Error validating password:", error);
+      notFound();
+    }
+    
+    if (!isPasswordValid) {
+      // Track failed attempt if no existing click ID, otherwise keep existing
+      if (!clickId) {
+        const newClickId = await trackClick(headersList, shortUrl.id, false);
+        redirect(
+          `/password-required?shortCode=${shortCode}&error=invalid&clickId=${newClickId}`
+        );
+      } else {
+        redirect(
+          `/password-required?shortCode=${shortCode}&error=invalid&clickId=${clickId}`
+        );
+      }
+    }
+
+    // Password is valid - update existing click record to authorized
+    if (clickId) {
+      // Update existing record asynchronously to avoid blocking redirect
+      updateClickAuthorization(clickId, true).catch(error => 
+        console.error("Background click authorization update failed:", error)
+      );
+    } else {
+      // Track successful attempt if no existing click ID (fallback)
+      trackClick(headersList, shortUrl.id, true).catch(error =>
+        console.error("Background click tracking failed:", error)
+      );
+    }
+  } else {
+    // Track regular click for non-password protected URLs asynchronously
+    trackClick(headersList, shortUrl.id, null).catch(error =>
+      console.error("Background click tracking failed:", error)
+    );
   }
+
+  // Redirect to the original URL - this will throw a redirect error which is normal
+  redirect(shortUrl.original_url);
 } 
