@@ -126,11 +126,13 @@ NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
 
 #### Set Up Database Tables
 
-Run the following SQL scripts in your Supabase SQL editor:
+Run the complete setup script in your Supabase SQL editor:
 
-1. **Authentication Tables**: Execute `scripts/setup-auth-tables.sql`
-2. **Profile Storage**: Execute `scripts/setup-profile-uploads.sql`  
-3. **URL Shortening**: Execute `scripts/setup-shorturl-tables.sql`
+**Execute `scripts/setup-complete.sql`**
+- Sets up all tables, triggers, RLS policies, and real-time functionality
+- Includes comprehensive verification with detailed status reports
+- Safe to run multiple times (idempotent)
+- Provides complete system health check and confirmation
 
 #### Configure Authentication Providers
 
@@ -157,15 +159,12 @@ Run the following SQL scripts in your Supabase SQL editor:
 
 #### Configure Storage for Profile Pictures
 
-The `setup-profile-uploads.sql` script creates:
+The `setup-complete.sql` script automatically creates:
 - `avatars` storage bucket
 - Row Level Security policies
 - Proper CORS configuration
 
-**Manual Storage Setup (if needed)**
-1. Navigate to Storage in your Supabase dashboard
-2. Create a new bucket named `avatars` (make it public)
-3. Set up RLS policies for secure access
+**No manual setup required** - storage is configured automatically when you run the setup script!
 
 ### 5. Run the Development Server
 
