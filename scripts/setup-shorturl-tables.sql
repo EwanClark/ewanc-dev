@@ -55,6 +55,11 @@ ALTER TABLE short_urls ENABLE ROW LEVEL SECURITY;
 ALTER TABLE short_url_analytics ENABLE ROW LEVEL SECURITY;
 
 -- Create RLS policies for short_urls
+-- Allow public access to active short URLs for redirection
+CREATE POLICY "Public access to active short URLs for redirection" ON short_urls
+  FOR SELECT USING (is_active = true);
+
+-- Allow users to manage their own short URLs
 CREATE POLICY "Users can view their own short URLs" ON short_urls
   FOR SELECT USING (auth.uid() = user_id);
 
