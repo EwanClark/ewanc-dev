@@ -19,7 +19,12 @@ async function trackClick(
   authorized: boolean | null
 ): Promise<string | null> {
   try {
-    const supabase = await createClient();
+    // Use service role for system operations (bypasses RLS)
+    const { createClient: createServiceClient } = await import("@supabase/supabase-js");
+    const supabase = createServiceClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
 
     // Get client IP from headers
     const forwardedFor = headersList.get("x-forwarded-for");

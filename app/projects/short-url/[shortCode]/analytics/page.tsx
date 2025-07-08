@@ -26,6 +26,7 @@ import { FaRegUser, FaRegClock, FaDesktop } from "react-icons/fa";
 import { IoShield } from "react-icons/io5";
 import { FiMapPin } from "react-icons/fi";
 import { ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Area, AreaChart, ReferenceLine } from "recharts";
+import { createClient } from "@/utils/supabase/client";
 
 type ClickData = {
   id: string;
@@ -94,6 +95,118 @@ export default function AnalyticsPage() {
 
     fetchAnalytics();
   }, [shortCode]);
+
+    // Set up real-time subscriptions for analytics updates
+  useEffect(() => {
+    if (!analytics) return;
+
+    const supabase = createClient();
+    let urlSubscription: any = null;
+    let analyticsSubscription: any = null;
+
+    const setupSubscriptions = async () => {
+      // Get the URL ID first for proper filtering
+      const { data: urlData, error } = await supabase
+        .from('short_urls')
+        .select('id')
+        .eq('short_code', shortCode)
+        .single();
+
+      if (!urlData?.id) {
+        console.error('Could not get URL ID for realtime subscriptions');
+        return;
+      }
+
+      // Subscribe to short_urls table for click count updates
+      urlSubscription = supabase
+        .channel('analytics_url_realtime')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'short_urls',
+            filter: `id=eq.${urlData.id}`,
+          },
+          (payload) => {
+            console.log('Real-time URL update received:', payload);
+            setAnalytics(prev => {
+              if (!prev) return prev;
+              return {
+                ...prev,
+                totalClicks: payload.new.total_clicks,
+                uniqueClicks: payload.new.unique_clicks,
+              };
+            });
+          }
+        )
+        .subscribe();
+
+      // Subscribe to short_url_analytics table for new click records
+      analyticsSubscription = supabase
+        .channel('analytics_clicks_realtime')
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'short_url_analytics',
+            filter: `short_url_id=eq.${urlData.id}`,
+          },
+          (payload) => {
+            console.log('Real-time analytics insert received:', payload);
+            const newClick: ClickData = {
+              id: payload.new.id,
+              timestamp: new Date(payload.new.timestamp),
+              ip: payload.new.ip_address,
+              isp: payload.new.isp || 'Unknown',
+              city: payload.new.city || 'Unknown',
+              region: payload.new.region || 'Unknown',
+              country: payload.new.country || 'Unknown',
+              userAgent: payload.new.user_agent || '',
+              authorized: payload.new.authorized,
+              device: payload.new.device || 'Unknown',
+              browser: payload.new.browser || 'Unknown',
+              os: payload.new.os || 'Unknown',
+            };
+
+            setAnalytics(prev => {
+              if (!prev) return prev;
+              
+              // Update both the click list AND the counts
+              const newTotalClicks = prev.totalClicks + 1;
+              
+              // Check if this is a unique IP for unique clicks
+              const isUniqueClick = !prev.clicks.some(click => 
+                click.ip === newClick.ip
+              );
+              const newUniqueClicks = isUniqueClick ? 
+                prev.uniqueClicks + 1 : prev.uniqueClicks;
+
+              return {
+                ...prev,
+                totalClicks: newTotalClicks,
+                uniqueClicks: newUniqueClicks,
+                clicks: [newClick, ...prev.clicks],
+              };
+            });
+          }
+        )
+        .subscribe();
+    };
+
+    setupSubscriptions();
+
+    // Cleanup subscriptions on unmount
+    return () => {
+      if (urlSubscription) {
+        supabase.removeChannel(urlSubscription);
+      }
+      if (analyticsSubscription) {
+        supabase.removeChannel(analyticsSubscription);
+      }
+    };
+  }, [shortCode, analytics?.shortCode]);
 
   const chartData = useMemo(() => {
     if (!analytics) return [];

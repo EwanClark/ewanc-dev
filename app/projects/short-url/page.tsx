@@ -38,6 +38,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import { isReservedRoute } from "@/lib/route-utils";
+import { createClient } from "@/utils/supabase/client";
 
 type ShortenedUrl = {
   id: string;
@@ -132,6 +133,8 @@ export default function ShortUrlPage() {
       setUrlsLoading(false);
     }
   }, [user, fetchUrls]);
+
+
 
   const validateUrl = (inputUrl: string) => {
     if (!inputUrl) {
