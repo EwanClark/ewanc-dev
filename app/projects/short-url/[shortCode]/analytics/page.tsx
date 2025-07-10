@@ -67,7 +67,12 @@ export default function AnalyticsPage() {
     const fetchAnalytics = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/short-url/${shortCode}/analytics`);
+        const response = await fetch(`/api/short-url/${shortCode}/analytics`, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+          }
+        });
         const data = await response.json();
         
         if (data.success) {
