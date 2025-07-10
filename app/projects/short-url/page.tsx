@@ -97,7 +97,12 @@ export default function ShortUrlPage() {
     
     try {
       setUrlsLoading(true);
-      const response = await fetch('/api/short-url/user');
+      const response = await fetch('/api/short-url/user', {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+        }
+      });
       const data = await response.json();
       
       if (data.success) {
