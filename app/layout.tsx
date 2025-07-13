@@ -20,12 +20,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   ...generateMetadata(),
   icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-    ],
-    apple: [
-      { url: '/favicon.ico', sizes: '180x180' },
-    ],
+    icon: '/favicon.ico',
   },
   other: {
     'theme-color': '#000000',
@@ -56,7 +51,6 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <link rel="apple-touch-icon" href="/favicon.ico" />
         
         {/* Canonical URL will be set by individual pages */}
         
