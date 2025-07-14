@@ -153,7 +153,6 @@ export function trackSEOEvents() {
     }
   })
 
-  // Track contact form interactions
   const contactButtons = document.querySelectorAll('[data-contact]')
   contactButtons.forEach(button => {
     button.addEventListener('click', () => {

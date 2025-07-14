@@ -93,7 +93,7 @@ export default function AboutPage() {
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     <li>• AI and how it is similar to our brains</li>
                     <li>• Linux to improve my developer environment</li>
-                    <li>• Performance optimization with Rust and C++</li>
+                    <li>• Performance optimisation with Rust and C++</li>
                     <li>• Developer tools for better productivity</li>
                   </ul>
                 </CardContent>
