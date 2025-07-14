@@ -136,7 +136,7 @@ export function generatePersonStructuredData() {
       'Software Engineering',
     ],
     alumniOf: {
-      '@type': 'EducationalOrganization',
+      '@type': 'EducationalOrganisation',
       name: 'Self-Taught',
     },
   }

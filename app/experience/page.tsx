@@ -19,7 +19,7 @@ const detailedExperience = [
 		location: "San Francisco, CA",
 		date: "January 2023 - Present",
 		description:
-			"Leading frontend development for enterprise SaaS products with a focus on performance optimization and component architecture.",
+			"Leading frontend development for enterprise SaaS products with a focus on performance optimisation and component architecture.",
 		achievements: [
 			"Reduced bundle size by 40% through code splitting and lazy loading strategies",
 			"Led migration from Redux to React Context API and custom hooks",

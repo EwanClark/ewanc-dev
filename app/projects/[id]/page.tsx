@@ -23,7 +23,7 @@ const projects = {
       "User authentication and personal URL management",
       "Real-time click statistics and unique visitor tracking",
       "Responsive design with modern UI components",
-      "Bulk URL management and organization",
+              "Bulk URL management and organisation",
       "Secure URL validation and sanitization",
     ],
     techDetails: {
@@ -39,7 +39,7 @@ const projects = {
   "portfolio-site": {
     title: "Portfolio Website",
     description:
-      "A modern, responsive portfolio website built to showcase my projects, skills, and experience as a developer. Features user authentication, project showcases, contact forms, and integrated tools like the URL shortener. Built with Next.js and Supabase, demonstrating full-stack development capabilities.",
+      "A modern, responsive portfolio website built to showcase my projects, skills, and experience as a developer. Features user authentication, project showcases, and integrated tools like the URL shortener. Built with Next.js and Supabase, demonstrating full-stack development capabilities.",
     icon: <FaGlobe className="h-8 w-8" />,
     tags: ["Next.js 15", "Supabase", "TypeScript", "Full-Stack", "Authentication", "SEO"],
     status: "Live",
@@ -50,8 +50,7 @@ const projects = {
       "User authentication system with profile management",
       "Integrated project tools and demonstrations",
       "Modern UI with dark/light mode support",
-      "SEO optimization with meta tags and structured data",
-      "Contact forms and professional information",
+      "SEO optimisation with meta tags and structured data",
       "Dynamic routing for project details",
       "Performance monitoring and analytics integration",
     ],
@@ -61,7 +60,7 @@ const projects = {
       Authentication: "Multi-provider auth (email, GitHub, Google) with profile management",
       Styling: "Tailwind CSS with shadcn/ui for consistent, modern component library",
       SEO: "Dynamic meta tags, structured data, sitemap generation, and social sharing",
-      Performance: "Static generation, image optimization, and edge deployment on Vercel",
+      Performance: "Static generation, image optimisation, and edge deployment on Vercel",
       Security: "CSRF protection, input validation, and secure authentication flows",
       Deployment: "Vercel with automatic deployments and continuous integration",
     },

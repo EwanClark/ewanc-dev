@@ -63,7 +63,7 @@ export const config = {
     /*
      * Match all request paths except:
      * - _next/static (static files)
-     * - _next/image (image optimization files)
+     * - _next/image (image optimisation files)
      * - favicon.ico (favicon file)
      * - public folder
      * - public files
