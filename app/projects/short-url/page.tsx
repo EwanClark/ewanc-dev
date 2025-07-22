@@ -91,18 +91,31 @@ export default function ShortUrlPage() {
     }, 300); // Match animation duration
   }, []);
 
-  // Fetch user's URLs from API
-  const fetchUrls = useCallback(async () => {
+  // Fetch user's URLs from API with timeout and retry logic
+  const fetchUrls = useCallback(async (retryCount = 0) => {
     if (!user) return;
     
     try {
       setUrlsLoading(true);
+      
+      // Add timeout to prevent hanging requests
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
       const response = await fetch('/api/short-url/user', {
         cache: 'no-store',
+        signal: controller.signal,
         headers: {
           'Cache-Control': 'no-cache',
         }
       });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
       
       if (data.success) {
@@ -112,13 +125,22 @@ export default function ShortUrlPage() {
           createdAt: new Date(url.createdAt)
         }));
         setUrls(formattedUrls);
+        console.log(`Successfully fetched ${formattedUrls.length} URLs`);
       } else {
-        setError(data.error || 'Failed to fetch URLs');
-        setTimeout(dismissError, 5000);
+        throw new Error(data.error || 'Failed to fetch URLs');
       }
     } catch (error) {
       console.error('Error fetching URLs:', error);
-      setError('Failed to fetch URLs');
+      
+      // Retry logic for network errors (up to 2 retries)
+      if (retryCount < 2 && (error instanceof TypeError || (error as Error).name === 'AbortError')) {
+        console.log(`Retrying fetch URLs (attempt ${retryCount + 1})`);
+        setTimeout(() => fetchUrls(retryCount + 1), 1000 * (retryCount + 1)); // Exponential backoff
+        return;
+      }
+      
+      const errorMessage = error instanceof Error ? error.message : 'Failed to fetch URLs';
+      setError(errorMessage);
       setTimeout(dismissError, 5000);
     } finally {
       setUrlsLoading(false);
@@ -139,94 +161,9 @@ export default function ShortUrlPage() {
     }
   }, [user, fetchUrls]);
 
-  // Set up real-time subscriptions for click count updates
-  useEffect(() => {
-    if (!user || urls.length === 0) return;
 
-    const supabase = createClient();
-    let urlSubscription: any = null;
-    let analyticsSubscription: any = null;
 
-    const setupSubscriptions = async () => {
-      // Get all URL IDs for the current user
-      const urlIds = urls.map(url => url.id);
-      
-      if (urlIds.length === 0) return;
 
-      // Subscribe to short_urls table for click count updates
-      urlSubscription = supabase
-        .channel('main_page_url_realtime')
-        .on(
-          'postgres_changes',
-          {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'short_urls',
-            filter: `id=in.(${urlIds.join(',')})`,
-          },
-          (payload) => {
-            console.log('Real-time URL update received:', payload);
-            setUrls(prevUrls => 
-              prevUrls.map(url => 
-                url.id === payload.new.id
-                  ? {
-                      ...url,
-                      totalClicks: payload.new.total_clicks,
-                      uniqueClicks: payload.new.unique_clicks,
-                    }
-                  : url
-              )
-            );
-          }
-        )
-        .subscribe();
-
-      // Subscribe to short_url_analytics table for new click records
-      analyticsSubscription = supabase
-        .channel('main_page_analytics_realtime')
-        .on(
-          'postgres_changes',
-          {
-            event: 'INSERT',
-            schema: 'public',
-            table: 'short_url_analytics',
-            filter: `short_url_id=in.(${urlIds.join(',')})`,
-          },
-          (payload) => {
-            console.log('Real-time analytics insert received:', payload);
-            setUrls(prevUrls => 
-              prevUrls.map(url => {
-                if (url.id === payload.new.short_url_id) {
-                  // Increment total clicks
-                  const newTotalClicks = url.totalClicks + 1;
-                  
-                  // For unique clicks, we'll rely on the database trigger to update
-                  // the short_urls table, which will be caught by the first subscription
-                  return {
-                    ...url,
-                    totalClicks: newTotalClicks,
-                  };
-                }
-                return url;
-              })
-            );
-          }
-        )
-        .subscribe();
-    };
-
-    setupSubscriptions();
-
-    // Cleanup subscriptions on unmount or when dependencies change
-    return () => {
-      if (urlSubscription) {
-        supabase.removeChannel(urlSubscription);
-      }
-      if (analyticsSubscription) {
-        supabase.removeChannel(analyticsSubscription);
-      }
-    };
-  }, [user, urls.length]);
 
 
 
