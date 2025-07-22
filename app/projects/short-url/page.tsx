@@ -35,7 +35,6 @@ import {
 import { FaRegCopy } from "react-icons/fa";
 import { BiBarChartAlt2 } from "react-icons/bi";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { IoRefresh } from "react-icons/io5";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import { isReservedRoute } from "@/lib/route-utils";
@@ -70,7 +69,6 @@ export default function ShortUrlPage() {
   const [baseUrl, setBaseUrl] = useState<string>("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [urlToDelete, setUrlToDelete] = useState<{ id: string; shortCode: string } | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const setPassword = (password: string) => {
     setPasswordState(password);
@@ -94,22 +92,15 @@ export default function ShortUrlPage() {
   }, []);
 
   // Fetch user's URLs from API
-  const fetchUrls = useCallback(async (forceRefresh = false) => {
+  const fetchUrls = useCallback(async () => {
     if (!user) return;
     
     try {
-      if (forceRefresh) {
-        setUrlsLoading(true);
-      }
-      
-      // Add timestamp to force cache busting
-      const timestamp = Date.now();
-      const response = await fetch(`/api/short-url/user?t=${timestamp}`, {
+      setUrlsLoading(true);
+      const response = await fetch('/api/short-url/user', {
         cache: 'no-store',
         headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0',
+          'Cache-Control': 'no-cache',
         }
       });
       const data = await response.json();
@@ -121,8 +112,6 @@ export default function ShortUrlPage() {
           createdAt: new Date(url.createdAt)
         }));
         setUrls(formattedUrls);
-        setLastUpdated(new Date());
-        console.log('URLs fetched successfully:', formattedUrls.length, 'URLs');
       } else {
         setError(data.error || 'Failed to fetch URLs');
         setTimeout(dismissError, 5000);
@@ -132,9 +121,7 @@ export default function ShortUrlPage() {
       setError('Failed to fetch URLs');
       setTimeout(dismissError, 5000);
     } finally {
-      if (forceRefresh) {
-        setUrlsLoading(false);
-      }
+      setUrlsLoading(false);
     }
   }, [user, dismissError]);
 
@@ -146,7 +133,6 @@ export default function ShortUrlPage() {
   // Fetch URLs when component mounts and user is available
   useEffect(() => {
     if (user) {
-      setUrlsLoading(true);
       fetchUrls();
     } else {
       setUrlsLoading(false);
@@ -155,15 +141,19 @@ export default function ShortUrlPage() {
 
   // Set up real-time subscriptions for click count updates
   useEffect(() => {
-    if (!user) return;
+    if (!user || urls.length === 0) return;
 
     const supabase = createClient();
     let urlSubscription: any = null;
-    let refreshInterval: NodeJS.Timeout | null = null;
+    let analyticsSubscription: any = null;
 
     const setupSubscriptions = async () => {
+      // Get all URL IDs for the current user
+      const urlIds = urls.map(url => url.id);
+      
+      if (urlIds.length === 0) return;
+
       // Subscribe to short_urls table for click count updates
-      // This is the primary subscription that will catch updates from the database triggers
       urlSubscription = supabase
         .channel('main_page_url_realtime')
         .on(
@@ -172,7 +162,7 @@ export default function ShortUrlPage() {
             event: 'UPDATE',
             schema: 'public',
             table: 'short_urls',
-            filter: `user_id=eq.${user.id}`,
+            filter: `id=in.(${urlIds.join(',')})`,
           },
           (payload) => {
             console.log('Real-time URL update received:', payload);
@@ -187,31 +177,42 @@ export default function ShortUrlPage() {
                   : url
               )
             );
-            setLastUpdated(new Date());
           }
         )
-        .subscribe((status, err) => {
-          console.log('Dashboard realtime subscription status:', status);
-          if (err) {
-            console.error('Dashboard realtime subscription error:', err);
-          }
-          
-          // If subscription fails, fall back to periodic refresh
-          if (status === 'CHANNEL_ERROR' || status === 'CLOSED') {
-            console.warn('Realtime subscription failed, falling back to periodic refresh');
-            if (refreshInterval) clearInterval(refreshInterval);
-            refreshInterval = setInterval(() => {
-              console.log('Periodic refresh due to realtime failure');
-              fetchUrls();
-            }, 10000); // More frequent refresh when realtime fails
-          }
-        });
+        .subscribe();
 
-      // Set up a periodic refresh as a fallback mechanism
-      // This ensures the dashboard stays updated even if real-time fails
-      refreshInterval = setInterval(() => {
-        fetchUrls();
-      }, 30000); // Refresh every 30 seconds
+      // Subscribe to short_url_analytics table for new click records
+      analyticsSubscription = supabase
+        .channel('main_page_analytics_realtime')
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'short_url_analytics',
+            filter: `short_url_id=in.(${urlIds.join(',')})`,
+          },
+          (payload) => {
+            console.log('Real-time analytics insert received:', payload);
+            setUrls(prevUrls => 
+              prevUrls.map(url => {
+                if (url.id === payload.new.short_url_id) {
+                  // Increment total clicks
+                  const newTotalClicks = url.totalClicks + 1;
+                  
+                  // For unique clicks, we'll rely on the database trigger to update
+                  // the short_urls table, which will be caught by the first subscription
+                  return {
+                    ...url,
+                    totalClicks: newTotalClicks,
+                  };
+                }
+                return url;
+              })
+            );
+          }
+        )
+        .subscribe();
     };
 
     setupSubscriptions();
@@ -221,30 +222,11 @@ export default function ShortUrlPage() {
       if (urlSubscription) {
         supabase.removeChannel(urlSubscription);
       }
-      if (refreshInterval) {
-        clearInterval(refreshInterval);
+      if (analyticsSubscription) {
+        supabase.removeChannel(analyticsSubscription);
       }
     };
-  }, [user, fetchUrls]);
-
-  // Add visibility change listener to refresh data when user returns to tab
-  useEffect(() => {
-    if (!user) return;
-
-    const handleVisibilityChange = () => {
-      if (!document.hidden && user) {
-        // User returned to the tab, refresh data
-        console.log('Tab became visible, refreshing URLs...');
-        fetchUrls();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [user, fetchUrls]);
+  }, [user, urls.length]);
 
 
 
@@ -604,26 +586,7 @@ export default function ShortUrlPage() {
 
             <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>Your Shortened URLs</CardTitle>
-                    {lastUpdated && (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Last updated: {lastUpdated.toLocaleTimeString()}
-                      </p>
-                    )}
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => fetchUrls(true)}
-                    disabled={urlsLoading}
-                    className="h-8 w-8 p-0"
-                    title="Refresh URLs"
-                  >
-                    <IoRefresh className={`h-4 w-4 ${urlsLoading ? 'animate-spin' : ''}`} />
-                  </Button>
-                </div>
+                <CardTitle>Your Shortened URLs</CardTitle>
               </CardHeader>
               <CardContent>
                 {urlsLoading ? (
