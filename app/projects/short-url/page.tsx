@@ -125,7 +125,6 @@ export default function ShortUrlPage() {
           createdAt: new Date(url.createdAt)
         }));
         setUrls(formattedUrls);
-        console.log(`Successfully fetched ${formattedUrls.length} URLs`);
       } else {
         throw new Error(data.error || 'Failed to fetch URLs');
       }
@@ -134,7 +133,6 @@ export default function ShortUrlPage() {
       
       // Retry logic for network errors (up to 2 retries)
       if (retryCount < 2 && (error instanceof TypeError || (error as Error).name === 'AbortError')) {
-        console.log(`Retrying fetch URLs (attempt ${retryCount + 1})`);
         setTimeout(() => fetchUrls(retryCount + 1), 1000 * (retryCount + 1)); // Exponential backoff
         return;
       }
@@ -160,6 +158,68 @@ export default function ShortUrlPage() {
       setUrlsLoading(false);
     }
   }, [user, fetchUrls]);
+
+  // Set up real-time subscriptions for live analytics updates
+  useEffect(() => {
+    if (!user) return;
+
+    const supabase = createClient();
+    let urlSubscription: any = null;
+
+    const setupSubscriptions = async () => {
+      // Use a single channel for both subscriptions to avoid WebSocket conflicts
+      urlSubscription = supabase
+        .channel(`dashboard_realtime_${user.id}_${Date.now()}`) // Unique channel per user
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'short_urls',
+            filter: `user_id=eq.${user.id}`, // Filter by user_id directly in subscription
+          },
+          (payload) => {
+            setUrls(prev => prev.map(url => 
+              url.id === payload.new.id
+                ? {
+                    ...url,
+                    totalClicks: payload.new.total_clicks,
+                    uniqueClicks: payload.new.unique_clicks,
+                  }
+                : url
+            ));
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'short_url_analytics',
+          },
+          (payload) => {
+            // The database trigger will handle updating the actual counts in short_urls table
+            // This will trigger the URL subscription above with the correct counts
+            // So we don't need to manually process this - just wait for the UPDATE event
+            // This ensures we get the accurate unique clicks count from the database trigger
+          }
+        )
+        .subscribe();
+    };
+
+    // Add a small delay to ensure authentication is established before subscribing
+    const timer = setTimeout(() => {
+      setupSubscriptions();
+    }, 1000);
+
+    // Cleanup subscriptions on unmount or when user changes
+    return () => {
+      clearTimeout(timer);
+      if (urlSubscription) {
+        supabase.removeChannel(urlSubscription);
+      }
+    };
+  }, [user]); // Only depend on user, not urls - this prevents reconnections on click updates
 
 
 
