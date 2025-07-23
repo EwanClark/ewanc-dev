@@ -233,20 +233,24 @@ export default function ShortUrlPage() {
       return;
     }
     
-    // Comprehensive URL regex pattern
-    const urlRegex = /^https?:\/\/(?:[-\w.])+(?:\:[0-9]+)?(?:\/(?:[\w\/_.])*)?(?:\?(?:[\w&=%.])*)?(?:\#(?:[\w.])*)?$/;
+    // Normalize the protocol part to lowercase for validation while keeping original input
+    const normalizedUrl = inputUrl.replace(/^(https?)/i, (match) => match.toLowerCase());
+    
+    // Comprehensive URL regex pattern (case-insensitive for protocol)
+    const urlRegex = /^https?:\/\/(?:[-\w.])+(?:\:[0-9]+)?(?:\/(?:[\w\/_.])*)?(?:\?(?:[\w&=%.])*)?(?:\#(?:[\w.])*)?$/i;
     
     // More specific domain validation regex
     const domainRegex = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
     
-    // First check with regex
-    if (!urlRegex.test(inputUrl)) {
+    // First check with regex using normalized URL
+    if (!urlRegex.test(normalizedUrl)) {
       setUrlValid(false);
       return;
     }
     
     try {
-      const url = new URL(inputUrl);
+      // Use normalized URL for URL constructor to handle case-insensitive protocols
+      const url = new URL(normalizedUrl);
       
       // Check if the URL has a valid protocol (http or https)
       if (url.protocol !== 'http:' && url.protocol !== 'https:') {
