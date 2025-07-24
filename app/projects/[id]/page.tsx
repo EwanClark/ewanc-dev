@@ -63,7 +63,7 @@ const projects = {
     description:
       "Server-side rendered portfolio application using Next.js App Router with TypeScript, Supabase authentication infrastructure, and shadcn/ui component library. Features multi-provider OAuth integration, profile management with image cropping capabilities, SEO optimization with dynamic metadata generation, and comprehensive project showcases with interactive carousels.",
     icon: <FaGlobe className="h-8 w-8" />,
-    tags: ["Next.js", "TypeScript", "React", "Vercel", "shadcn/ui", "Tailwind CSS", "React Icons", "Chart.js", "Radix UI"],
+    tags: ["Next.js", "TypeScript", "React", "Vercel", "shadcn/ui", "Tailwind CSS", "React Icons", "Radix UI"],
     github: "https://github.com/EwanClark/ewanc-dev",
     demo: "https://ewanc.dev",
     images: [

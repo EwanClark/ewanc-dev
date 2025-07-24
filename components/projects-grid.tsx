@@ -22,7 +22,7 @@ const projects = [
     title: "Portfolio Website",
     description: "Server-side rendered portfolio using Next.js App Router with TypeScript, Supabase authentication, and shadcn/ui component library. Features profile management with image cropping and dynamic metadata generation.",
     icon: <FaGlobe className="h-6 w-6" />,
-    tags: ["Next.js", "TypeScript", "React", "Vercel", "shadcn/ui", "Tailwind CSS", "React Icons", "Chart.js", "Radix UI"],
+    tags: ["Next.js", "TypeScript", "React", "Vercel", "shadcn/ui", "Tailwind CSS", "React Icons", "Radix UI"],
     images: [
       "/placeholders/desktop-2.png",
       "/placeholders/mobile-1.png",
