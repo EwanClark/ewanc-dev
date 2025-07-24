@@ -1,88 +1,24 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import Image from "next/image";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
-
-const TechIcon = ({ name, lightIcon, darkIcon }: { name: string; lightIcon?: string; darkIcon: string }) => {
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  
-  // Prevent hydration mismatch by only rendering after mount
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-  
-  // Determine the correct icon to use
-  const getIconSrc = () => {
-    if (!mounted) {
-      // During SSR, we can't know the theme, so use dark as default
-      return darkIcon;
-    }
-    
-    // After mounting, use the resolved theme to determine the correct icon
-    if (lightIcon && resolvedTheme === "light") {
-      return lightIcon;
-    }
-    
-    return darkIcon;
-  };
-  
-  return (
-    <div className="transition-opacity duration-200">
-      <Image 
-        src={getIconSrc()} 
-        width={32} 
-        height={32} 
-        alt={name} 
-        className="w-8 h-8" 
-        priority={false}
-      />
-    </div>
-  );
-};
+import { TechIcon, techIconMap } from "@/lib/tech-icons"
 
 const techStack = [
   {
     category: "Programming Languages",
-    technologies: [
-      { name: "TypeScript", icon: <TechIcon name="TypeScript" darkIcon="/typescript.svg" /> },
-      { name: "JavaScript", icon: <TechIcon name="JavaScript" darkIcon="/javascript.svg" /> },
-      { name: "Python", icon: <TechIcon name="Python" darkIcon="/python.svg" /> },
-      { name: "Rust", icon: <TechIcon name="Rust" lightIcon="/rust-light.svg" darkIcon="/rust.svg" /> },
-      { name: "C++", icon: <TechIcon name="C++" darkIcon="/cpp.svg" /> },
-    ],
+    technologies: ["TypeScript", "JavaScript", "Python", "Rust", "C++"],
   },
   {
-    category: "Frontend Development",
-    technologies: [
-      { name: "Next.js", icon: <TechIcon name="Next.js" darkIcon="/nextjs.svg" /> },
-      { name: "React", icon: <TechIcon name="React" darkIcon="/react.svg" /> },
-      { name: "Tailwind", icon: <TechIcon name="Tailwind" darkIcon="/tailwindcss.svg" /> },
-      { name: "Electron", icon: <TechIcon name="Electron" darkIcon="/electron.svg" /> },
-      { name: "Figma", icon: <TechIcon name="Figma" darkIcon="/figma.svg" /> },
-    ],
+    category: "Frontend Development", 
+    technologies: ["Next.js", "React", "Tailwind", "Electron", "Figma"],
   },
   {
     category: "Backend Development",
-    technologies: [
-      { name: "Express", icon: <TechIcon name="Express" lightIcon="/expressjs-light.svg" darkIcon="/expressjs.svg" /> },
-      { name: "Supabase", icon: <TechIcon name="Supabase" darkIcon="/supabase.svg" /> },
-      { name: "MongoDB", icon: <TechIcon name="MongoDB" darkIcon="/mongodb.svg" /> },
-      { name: "Vercel", icon: <TechIcon name="Vercel" lightIcon="/vercel-light.svg" darkIcon="/vercel.svg" /> },
-      { name: "AWS", icon: <TechIcon name="AWS" lightIcon="/aws-light.svg" darkIcon="/aws.svg" /> },
-    ],
+    technologies: ["Express", "Supabase", "MongoDB", "Vercel", "AWS"],
   },
   {
     category: "Tools",
-    technologies: [
-      { name: "Cursor", icon: <TechIcon name="Cursor" lightIcon="/cursor-light.svg" darkIcon="/cursor.svg" /> },
-      { name: "Git", icon: <TechIcon name="Git" darkIcon="/git.svg" /> },
-      { name: "Excalidraw", icon: <TechIcon name="Excalidraw" darkIcon="/excalidraw.svg" /> },
-      { name: "Hyprland", icon: <TechIcon name="Hyprland" darkIcon="/hyprland.svg" /> },
-      { name: "Arch Linux", icon: <TechIcon name="Arch Linux" darkIcon="/arch.svg" /> },
-    ],
+    technologies: ["Cursor", "Git", "Excalidraw", "Hyprland", "Arch Linux"],
   },
 ]
 
@@ -95,19 +31,29 @@ export function TechStack() {
           <div key={category.category}>
             <h3 className="text-lg font-medium mb-4 text-muted-foreground">{category.category}</h3>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-              {category.technologies.map((tech) => (
-                <Card
-                  key={tech.name}
-                  className="p-4 hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer group"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0">
-                      {tech.icon}
+              {category.technologies.map((techName) => {
+                const iconConfig = techIconMap[techName]
+                return (
+                  <Card
+                    key={techName}
+                    className="p-4 hover:shadow-xl transition-all duration-300 hover:scale-[1.02] cursor-pointer group bg-gradient-to-br from-card to-card/50 border-border/50"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0">
+                        {iconConfig && (
+                          <TechIcon 
+                            name={techName}
+                            lightIcon={iconConfig.lightIcon}
+                            darkIcon={iconConfig.darkIcon}
+                            size={24}
+                          />
+                        )}
+                      </div>
+                      <span className="font-semibold text-sm group-hover:text-primary transition-colors">{techName}</span>
                     </div>
-                    <span className="font-semibold text-sm">{tech.name}</span>
-                  </div>
-                </Card>
-              ))}
+                  </Card>
+                )
+              })}
             </div>
           </div>
         ))}
