@@ -16,9 +16,12 @@ const projects = {
     github: "https://github.com/EwanClark/ewanc-dev",
     demo: "https://ewanc.dev/projects/short-url",
     images: [
-      "/placeholders/desktop-1.png",
-      "/placeholders/desktop-2.png",
-      "/placeholders/demo-1.png"
+      "/shorturl-1.png",
+      "/shorturl-2.png",
+      "/shorturl-3.png",
+      "/shorturl-4.png",
+      "/shorturl-5.png",
+      "/shorturl-6.png"
     ],
     technicalDetails: [
       {
@@ -67,9 +70,12 @@ const projects = {
     github: "https://github.com/EwanClark/ewanc-dev",
     demo: "https://ewanc.dev",
     images: [
-      "/placeholders/desktop-2.png",
-      "/placeholders/mobile-1.png",
-      "/placeholders/demo-2.png"
+      "/portfolio-1.png",
+      "/portfolio-2.png",
+      "/portfolio-3.png",
+      "/portfolio-4.png",
+      "/portfolio-5.png",
+      "/portfolio-6.png"
     ],
     technicalDetails: [
       {

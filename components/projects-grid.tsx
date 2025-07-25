@@ -12,9 +12,12 @@ const projects = [
     icon: <FaLink className="h-6 w-6" />,
     tags: ["Next.js", "TypeScript", "React", "Vercel", "Supabase", "PostgreSQL", "Real-time", "OAuth", "IpInfo"],
     images: [
-      "/placeholders/desktop-1.png",
-      "/placeholders/desktop-2.png",
-      "/placeholders/demo-1.png"
+      "/shorturl-1.png",
+      "/shorturl-2.png",
+      "/shorturl-3.png",
+      "/shorturl-4.png",
+      "/shorturl-5.png",
+      "/shorturl-6.png"
     ]
   },
   {
@@ -24,9 +27,13 @@ const projects = [
     icon: <FaGlobe className="h-6 w-6" />,
     tags: ["Next.js", "TypeScript", "React", "Vercel", "shadcn/ui", "Tailwind CSS", "React Icons", "Radix UI"],
     images: [
-      "/placeholders/desktop-2.png",
-      "/placeholders/mobile-1.png",
-      "/placeholders/demo-2.png"
+      "/portfolio-1.png",
+      "/portfolio-2.png",
+      "/portfolio-3.png",
+      "/portfolio-4.png",
+      "/portfolio-5.png",
+      "/portfolio-6.png",
+      "/portfolio-7.png"
     ]
   },
 ]
