@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 
 const baseUrl = 'https://ewanc.dev'
 const siteName = 'Ewan Clark - Full Stack Developer'
-const defaultTitle = 'Ewan Clark - Full Stack Developer'
+const defaultTitle = 'Ewan Clark - Developer'
 const defaultDescription = 'Ewan Clark - Year 8 programmer and full-stack developer from London. Self-taught specializing in backend development.'
 
 export function generateMetadata({

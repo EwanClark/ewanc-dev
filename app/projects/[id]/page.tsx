@@ -136,40 +136,53 @@ export default async function ProjectPage({
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container py-8">
-        {/* Back to Projects Link */}
-        <div className="mb-8">
-          <Link href="/projects" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
-            <FaArrowLeft className="h-4 w-4" />
-            Back to Projects
-          </Link>
-        </div>
+      <div className="container px-4 py-6 sm:px-6 sm:py-8 lg:py-12">
+        <div className="max-w-7xl mx-auto">
+          {/* Back to Projects Link */}
+          <div className="mb-6 sm:mb-8 lg:mb-10">
+            <Link href="/projects" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors hover:translate-x-[-2px] transition-transform duration-200">
+              <FaArrowLeft className="h-4 w-4" />
+              <span className="text-sm sm:text-base">Back to Projects</span>
+            </Link>
+          </div>
 
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-          {/* Left Column - Project Info */}
-          <div>
-            <div className="flex items-start gap-4">
-              <div className="text-muted-foreground flex-shrink-0">{project.icon}</div>
-              <div className="flex-1">
-                <h1 className="text-3xl sm:text-4xl font-bold mb-4">{project.title}</h1>
-                <p className="text-muted-foreground text-lg leading-relaxed mb-6">{project.description}</p>
+          {/* Hero Section */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 xl:gap-16 mb-12 sm:mb-16 lg:mb-20">
+            {/* Left Column - Project Info */}
+            <div className="order-2 xl:order-1">
+              <div className="space-y-6 sm:space-y-8">
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="text-muted-foreground shrink-0 mt-1">{project.icon}</div>
+                  <div className="min-w-0 flex-1">
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4 sm:mb-6 leading-tight">
+                      {project.title}
+                    </h1>
+                    <p className="text-muted-foreground text-sm sm:text-base lg:text-lg leading-relaxed mb-6 sm:mb-8">
+                      {project.description}
+                    </p>
+                  </div>
+                </div>
                 
-                <div className="flex flex-wrap gap-2 mb-8">
-                  {project.tags.map((tag) => (
-                    <TechBadge key={tag} tech={tag} />
-                  ))}
+                {/* Tech Stack */}
+                <div className="space-y-3 sm:space-y-4">
+                  <h3 className="text-sm sm:text-base font-semibold text-foreground">Technologies Used</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {project.tags.map((tag) => (
+                      <TechBadge key={tag} tech={tag} />
+                    ))}
+                  </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4">
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
                   <Link href={project.github} target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none">
-                    <Button variant="outline" className="w-full sm:w-auto gap-2 hover:bg-muted/80 transition-all">
+                    <Button variant="outline" className="w-full sm:w-auto gap-2 hover:bg-muted/80 transition-all text-sm sm:text-base px-6 py-2.5 sm:px-8 sm:py-3">
                       <FaGithub className="h-4 w-4" />
                       View Code
                     </Button>
                   </Link>
                   <Link href={project.demo} target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none">
-                    <Button className="w-full sm:w-auto gap-2 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary transition-all">
+                    <Button className="w-full sm:w-auto gap-2 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary transition-all text-sm sm:text-base px-6 py-2.5 sm:px-8 sm:py-3">
                       <FaExternalLinkAlt className="h-4 w-4" />
                       Live Demo
                     </Button>
@@ -177,37 +190,45 @@ export default async function ProjectPage({
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Right Column - Project Carousel */}
-          <div className="relative aspect-video lg:aspect-[4/3] overflow-hidden rounded-xl bg-muted shadow-xl">
-            <ProjectCarousel 
-              images={project.images}
-              alt={project.title}
-              className="w-full h-full"
-            />
-          </div>
-        </div>
-
-        {/* Technical Specification */}
-        <section className="space-y-8">
-          <div>
-            <h2 className="text-2xl font-semibold mb-2">Technical Implementation</h2>
-            <p className="text-muted-foreground">Detailed breakdown of key technical features and architectural decisions.</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {project.technicalDetails.map((detail, index) => (
-              <div 
-                key={index} 
-                className={`p-6 rounded-lg border bg-gradient-to-br ${detail.accent} transition-all duration-300 hover:scale-[1.02] hover:shadow-lg`}
-              >
-                <h3 className="font-semibold text-lg mb-3 text-foreground">{detail.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{detail.description}</p>
+            {/* Right Column - Project Carousel */}
+            <div className="order-1 xl:order-2">
+              <div className="relative aspect-video overflow-hidden rounded-xl bg-muted shadow-2xl border border-border/50">
+                <ProjectCarousel 
+                  images={project.images}
+                  alt={project.title}
+                  className="w-full h-full"
+                />
               </div>
-            ))}
+            </div>
           </div>
-        </section>
+
+          {/* Technical Implementation Section */}
+          <section className="space-y-8 sm:space-y-10 lg:space-y-12">
+            <div className="text-center max-w-3xl mx-auto">
+              <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-semibold mb-3 sm:mb-4">Technical Implementation</h2>
+              <p className="text-muted-foreground text-sm sm:text-base lg:text-lg leading-relaxed">
+                Detailed breakdown of key technical features, architectural decisions, and implementation details.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+              {project.technicalDetails.map((detail, index) => (
+                <div 
+                  key={index} 
+                  className={`group p-4 sm:p-6 lg:p-8 rounded-xl border bg-gradient-to-br ${detail.accent} transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/5`}
+                >
+                  <h3 className="font-semibold text-base sm:text-lg lg:text-xl mb-3 sm:mb-4 text-foreground group-hover:text-primary transition-colors">
+                    {detail.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm sm:text-base leading-relaxed group-hover:text-foreground/90 transition-colors">
+                    {detail.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   )

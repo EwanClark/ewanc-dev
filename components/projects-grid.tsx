@@ -34,36 +34,49 @@ const projects = [
 export function ProjectsGrid() {
   return (
     <section>
-      <div className="flex items-center justify-start mb-12">
-        <h2 className="text-2xl font-semibold">Projects</h2>
+      <div className="flex items-center justify-start mb-8 sm:mb-12">
+        <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold">Projects</h2>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10">
         {projects.map((project) => (
-          <Link key={project.id} href={`/projects/${project.id}`} className="group">
-            <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-[1.01] cursor-pointer bg-gradient-to-br from-card to-card/50 border-border/50 group-hover:border-primary/20">
+          <Link key={project.id} href={`/projects/${project.id}`} className="group block">
+            <Card className="h-full overflow-hidden border border-border/50 bg-gradient-to-br from-card to-card/50 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:scale-[1.02] group-hover:border-primary/20">
               {/* Project Carousel */}
-              <ProjectCarousel 
-                images={project.images}
-                alt={project.title}
-              />
+              <div className="relative aspect-video overflow-hidden">
+                <ProjectCarousel 
+                  images={project.images}
+                  alt={project.title}
+                  className="w-full h-full"
+                />
+              </div>
 
-              <CardHeader className="pb-4">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="text-muted-foreground group-hover:text-foreground transition-colors">
+              <CardHeader className="p-4 sm:p-6 pb-3 sm:pb-4">
+                <div className="flex items-start gap-3 sm:gap-4 mb-2 sm:mb-3">
+                  <div className="text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1">
                     {project.icon}
                   </div>
-                  <CardTitle className="text-lg group-hover:text-primary transition-colors">{project.title}</CardTitle>
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-lg sm:text-xl lg:text-2xl group-hover:text-primary transition-colors leading-tight">
+                      {project.title}
+                    </CardTitle>
+                  </div>
                 </div>
               </CardHeader>
               
-              <CardContent className="space-y-4">
-                <CardDescription className="text-sm leading-relaxed group-hover:text-foreground/90 transition-colors">
+              <CardContent className="p-4 sm:p-6 pt-0">
+                <CardDescription className="text-sm sm:text-base leading-relaxed group-hover:text-foreground/90 transition-colors line-clamp-4 mb-4 sm:mb-6">
                   {project.description}
                 </CardDescription>
+                
                 <div className="flex flex-wrap gap-2">
-                  {project.tags.map((tag) => (
+                  {project.tags.slice(0, 6).map((tag) => (
                     <TechBadge key={tag} tech={tag} />
                   ))}
+                  {project.tags.length > 6 && (
+                    <div className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted/80 text-muted-foreground border border-border/50">
+                      +{project.tags.length - 6} more
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
