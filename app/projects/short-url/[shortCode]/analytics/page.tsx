@@ -338,7 +338,7 @@ export default function AnalyticsPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         prefetch={false}
-                        className="break-all text-foreground hover:text-primary underline decoration-foreground/60 hover:decoration-primary transition-all duration-200 underline-offset-2 hover:underline-offset-4"
+                        className="break-all text-muted-foreground hover:text-primary underline decoration-muted-foreground/60 hover:decoration-primary transition-all duration-200 underline-offset-2 hover:underline-offset-4"
                         title="Open short URL"
                       >
                         {process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/{analytics.shortCode}
@@ -351,7 +351,7 @@ export default function AnalyticsPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         prefetch={false}
-                        className="break-all text-foreground hover:text-primary underline decoration-foreground/60 hover:decoration-primary transition-all duration-200 underline-offset-2 hover:underline-offset-4"
+                        className="break-all text-muted-foreground hover:text-primary underline decoration-muted-foreground/60 hover:decoration-primary transition-all duration-200 underline-offset-2 hover:underline-offset-4"
                         title={analytics.originalUrl}
                       >
                         {analytics.originalUrl}
