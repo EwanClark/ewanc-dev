@@ -21,7 +21,7 @@ const timelineEvents = [
 		icon: <IoBriefcaseOutline className="h-5 w-5" />,
 	},
 	{
-		title: "Full Stack Developer",
+		title: "Full-Stack Developer",
 		company: "Innovate Solutions",
 		date: "2020 - 2023",
 		description:

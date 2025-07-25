@@ -109,26 +109,25 @@ export function Navbar() {
                 {/* Mobile Auth Section */}
                 {user ? (
                   <div className="border-t pt-4 mt-4">
-                    <div className="flex items-center gap-3 px-4 py-2 mb-4">
-                      <Avatar className="h-8 w-8">
+                    {/* Profile Button - Clickable */}
+                    <Link
+                      href="/profile"
+                      onClick={handleMobileNavClick}
+                      className="flex items-center gap-3 px-4 py-3 mb-4 rounded-lg hover:bg-accent transition-colors"
+                    >
+                      <Avatar className="h-10 w-10">
                         <AvatarImage src={user.avatarSource === "default" ? undefined : (user.avatarUrl || undefined)} alt={user.name ?? undefined} />
                         <AvatarFallback className="bg-[#121212] text-white">
                           {(user.name || user.email || 'User').split(' ').map(part => part[0] || '').join('').substring(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium">{user.name}</span>
-                        <span className="text-xs text-muted-foreground">{user.email}</span>
+                      <div className="flex flex-col flex-1 min-w-0">
+                        <span className="text-sm font-medium truncate">{user.name}</span>
+                        <span className="text-xs text-muted-foreground truncate">{user.email}</span>
                       </div>
-                    </div>
-                    <Link
-                      href="/profile"
-                      onClick={handleMobileNavClick}
-                      className="flex items-center gap-3 px-4 py-2 text-sm font-medium transition-colors hover:text-foreground/80 hover:bg-accent rounded-md"
-                    >
-                      <FaRegUser className="h-4 w-4" />
-                      Profile
+                      <FaRegUser className="h-4 w-4 text-muted-foreground" />
                     </Link>
+                    
                     <button
                       onClick={() => {
                         signOut()

@@ -3,6 +3,7 @@
 import type React from "react";
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import {
@@ -252,30 +253,30 @@ export default function AnalyticsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-background">
         <Navbar />
-        <div className="container py-4 px-4 sm:py-6 sm:px-6 lg:px-8">
+        <div className="container px-4 py-6 sm:px-6 sm:py-8 lg:py-12">
           <div className="max-w-7xl mx-auto">
-            <div className="mb-4 sm:mb-6">
+            <div className="mb-6 sm:mb-8">
               <div className="h-8 sm:h-10 bg-muted rounded mb-3 sm:mb-4 animate-pulse"></div>
               <div className="h-6 sm:h-8 bg-muted rounded w-3/4 mb-2 animate-pulse"></div>
               <div className="h-3 sm:h-4 bg-muted rounded w-1/2 animate-pulse"></div>
             </div>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
               {[...Array(4)].map((_, i) => (
-                <Card key={i}>
+                <Card key={i} className="border border-border/50">
                   <CardContent className="p-4 sm:p-6">
                     <div className="h-12 sm:h-16 bg-muted rounded animate-pulse"></div>
                   </CardContent>
                 </Card>
               ))}
             </div>
-            <Card className="mb-4 sm:mb-6">
+            <Card className="mb-6 sm:mb-8 border border-border/50">
               <CardContent className="p-4 sm:p-6">
                 <div className="h-64 sm:h-96 bg-muted rounded animate-pulse"></div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="border border-border/50">
               <CardContent className="p-4 sm:p-6">
                 <div className="h-64 sm:h-96 bg-muted rounded animate-pulse"></div>
               </CardContent>
@@ -288,18 +289,20 @@ export default function AnalyticsPage() {
 
   if (!analytics) {
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-background">
         <Navbar />
-        <div className="container py-6 sm:py-8 px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-xl sm:text-2xl font-bold mb-4">Analytics Not Found</h1>
-            <p className="text-muted-foreground mb-4 text-sm sm:text-base">
-              The analytics for this URL could not be found.
-            </p>
-            <Button onClick={() => router.back()} size="sm" className="sm:size-default">
-              <FaArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
+        <div className="container px-4 py-6 sm:px-6 sm:py-8 lg:py-12">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="space-y-4">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Analytics Not Found</h1>
+              <p className="text-muted-foreground text-sm sm:text-base max-w-md mx-auto">
+                The analytics for this URL could not be found or you don't have permission to view them.
+              </p>
+              <Button onClick={() => router.back()} className="px-6">
+                <FaArrowLeft className="w-4 h-4 mr-2" />
+                Back to URLs
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -307,34 +310,58 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container py-4 px-4 sm:py-6 sm:px-6 lg:py-8 lg:px-8">
+      <div className="container px-4 py-6 sm:px-6 sm:py-8 lg:py-12">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="mb-4 sm:mb-6">
+          <div className="mb-6 sm:mb-8 lg:mb-10">
             <Button
               variant="ghost"
               onClick={() => router.back()}
-              className="mb-3 sm:mb-4 -ml-2 sm:-ml-4"
-              size="sm"
+              className="mb-4 sm:mb-6 -ml-2 sm:-ml-4 transition-all duration-200 hover:scale-105"
             >
               <FaArrowLeft className="w-4 h-4 mr-2" />
               Back to URLs
             </Button>
-            <div className="flex flex-col gap-3 sm:gap-4">
+            <div className="space-y-3 sm:space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
                 <div className="min-w-0 flex-1">
-                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 break-words">
-                    Analytics for {process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/{analytics.shortCode}
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold mb-3 break-words">
+                    Analytics Dashboard
                   </h1>
-                  <p className="text-muted-foreground text-sm sm:text-base break-all leading-relaxed">
-                    {analytics.originalUrl}
-                  </p>
+                  <div className="space-y-2">
+                    <div className="text-sm sm:text-base text-muted-foreground">
+                      <span className="font-medium">Short URL:</span>{" "}
+                      <Link 
+                        href={`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/${analytics.shortCode}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        prefetch={false}
+                        className="break-all text-muted-foreground hover:text-primary underline decoration-muted-foreground/60 hover:decoration-primary transition-all duration-200 underline-offset-2 hover:underline-offset-4"
+                        title="Open short URL"
+                      >
+                        {process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/{analytics.shortCode}
+                      </Link>
+                    </div>
+                    <div className="text-sm sm:text-base text-muted-foreground">
+                      <span className="font-medium">Destination:</span>{" "}
+                      <Link 
+                        href={analytics.originalUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        prefetch={false}
+                        className="break-all text-muted-foreground hover:text-primary underline decoration-muted-foreground/60 hover:decoration-primary transition-all duration-200 underline-offset-2 hover:underline-offset-4"
+                        title={analytics.originalUrl}
+                      >
+                        {analytics.originalUrl}
+                      </Link>
+                    </div>
+                  </div>
                 </div>
                 {analytics.isPasswordProtected && (
-                  <Badge variant="secondary" className="self-start shrink-0">
-                    <IoShield className="w-3 h-3 mr-1" />
+                  <Badge variant="secondary" className="self-start shrink-0 px-3 py-1">
+                    <IoShield className="w-3 h-3 mr-1.5" />
                     Password Protected
                   </Badge>
                 )}
@@ -343,51 +370,51 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Summary Stats */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
-            <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+            <Card className="border border-border/50 bg-gradient-to-br from-card to-card/50 hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Total Clicks</p>
-                    <p className="text-lg sm:text-2xl font-bold">{analytics.totalClicks}</p>
+                    <p className="text-lg sm:text-2xl lg:text-3xl font-bold text-primary">{analytics.totalClicks}</p>
                   </div>
-                  <CiGlobe className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground shrink-0" />
+                  <CiGlobe className="w-6 h-6 sm:w-8 sm:h-8 text-primary/60 shrink-0" />
                 </div>
               </CardContent>
             </Card>
-            <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
+            <Card className="border border-border/50 bg-gradient-to-br from-card to-card/50 hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Unique Visitors</p>
-                    <p className="text-lg sm:text-2xl font-bold">{analytics.uniqueClicks}</p>
+                    <p className="text-lg sm:text-2xl lg:text-3xl font-bold text-blue-500">{analytics.uniqueClicks}</p>
                   </div>
-                  <FaRegUser className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground shrink-0" />
+                  <FaRegUser className="w-6 h-6 sm:w-8 sm:h-8 text-blue-500/60 shrink-0" />
                 </div>
               </CardContent>
             </Card>
-            <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
+            <Card className="border border-border/50 bg-gradient-to-br from-card to-card/50 hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Created</p>
-                    <p className="text-sm sm:text-lg lg:text-2xl font-bold">{analytics.createdAt.toLocaleDateString()}</p>
+                    <p className="text-sm sm:text-lg lg:text-xl font-bold text-green-500">{analytics.createdAt.toLocaleDateString()}</p>
                   </div>
-                  <FaRegClock className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground shrink-0" />
+                  <FaRegClock className="w-6 h-6 sm:w-8 sm:h-8 text-green-500/60 shrink-0" />
                 </div>
               </CardContent>
             </Card>
-            <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
+            <Card className="border border-border/50 bg-gradient-to-br from-card to-card/50 hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div className="min-w-0">
-                    <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Avg. Daily</p>
-                    <p className="text-lg sm:text-2xl font-bold">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Daily Average</p>
+                    <p className="text-lg sm:text-2xl lg:text-3xl font-bold text-orange-500">
                       {Math.round(analytics.totalClicks / Math.max(1, Math.ceil((Date.now() - analytics.createdAt.getTime()) / (1000 * 60 * 60 * 24))))}
                     </p>
                   </div>
-                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
-                    <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-green-500" />
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-orange-500/10 flex items-center justify-center shrink-0">
+                    <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-orange-500" />
                   </div>
                 </div>
               </CardContent>
@@ -395,23 +422,19 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Enhanced Click Analytics Chart */}
-          <Card className="mb-4 sm:mb-6 hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
+          <Card className="mb-6 sm:mb-8 border border-border/50 bg-gradient-to-br from-card to-card/50 hover:shadow-lg transition-all duration-300">
             <CardHeader className="p-4 sm:p-6">
-              <div className="flex flex-col gap-3 sm:gap-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div>
-                  <CardTitle className="text-lg sm:text-xl">Clicks Over Time (Last 30 Days)</CardTitle>
-                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                  <CardTitle className="text-lg sm:text-xl lg:text-2xl">Clicks Over Time (Last 30 Days)</CardTitle>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-2">
                     Hover over the chart to see detailed daily statistics
                   </p>
                 </div>
                 <div className="flex gap-4 sm:gap-6 text-sm">
-                  <div className="text-center">
-                    <div className="text-base sm:text-lg font-bold text-green-600">{averageDailyClicks}</div>
-                    <div className="text-xs sm:text-sm text-muted-foreground">Avg/Day</div>
-                  </div>
                   {peakDay && (
                     <div className="text-center">
-                      <div className="text-base sm:text-lg font-bold text-blue-600">{peakDay.clicks}</div>
+                      <div className="text-base sm:text-lg lg:text-xl font-bold text-blue-600">{peakDay.clicks}</div>
                       <div className="text-xs sm:text-sm text-muted-foreground">Peak Day</div>
                     </div>
                   )}
@@ -493,16 +516,16 @@ export default function AnalyticsPage() {
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
-              <div className="mt-3 sm:mt-4 flex flex-wrap gap-3 sm:gap-4 text-xs text-muted-foreground">
-                <div className="flex items-center gap-1">
+              <div className="mt-4 sm:mt-6 flex flex-wrap gap-3 sm:gap-4 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1.5">
                   <div className="w-3 h-3 rounded-full bg-primary"></div>
                   <span>Daily Clicks</span>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   <div className="w-3 h-1 bg-destructive"></div>
                   <span>Peak Day</span>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   <div className="w-3 h-1 border border-primary border-dashed"></div>
                   <span>Hover Cursor</span>
                 </div>
@@ -511,16 +534,19 @@ export default function AnalyticsPage() {
           </Card>
 
           {/* Detailed Click Table */}
-          <Card className="hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
+          <Card className="border border-border/50 bg-gradient-to-br from-card to-card/50 hover:shadow-lg transition-all duration-300">
             <CardHeader className="p-4 sm:p-6">
-              <CardTitle className="text-lg sm:text-xl">Detailed Click Data</CardTitle>
+              <CardTitle className="text-lg sm:text-xl lg:text-2xl">Detailed Click Data</CardTitle>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Real-time tracking of all clicks with geographic and device information
+              </p>
             </CardHeader>
             <CardContent className="p-0 sm:p-6 sm:pt-0">
               {/* Mobile Card View */}
-              <div className="block sm:hidden">
+              <div className="block lg:hidden">
                 <div className="space-y-3 p-4">
-                  {analytics.clicks.map((click) => (
-                    <Card key={click.id} className="p-4 space-y-3 hover:shadow-md transition-all duration-200 hover:scale-[1.01] cursor-pointer">
+                  {analytics.clicks.length > 0 ? analytics.clicks.map((click) => (
+                    <Card key={click.id} className="p-4 space-y-3 border border-border/30 bg-background/50 hover:bg-background/80 transition-all duration-200">
                       <div className="flex items-center justify-between">
                         <div className="text-sm font-medium">
                           {click.timestamp.toLocaleDateString()}
@@ -533,7 +559,7 @@ export default function AnalyticsPage() {
                       <div className="grid grid-cols-2 gap-3 text-xs">
                         <div>
                           <div className="text-muted-foreground mb-1">IP Address</div>
-                          <div className="font-mono text-xs">{click.ip}</div>
+                          <div className="font-mono text-xs break-all">{click.ip}</div>
                         </div>
                         <div>
                           <div className="text-muted-foreground mb-1">ISP</div>
@@ -543,42 +569,46 @@ export default function AnalyticsPage() {
 
                       <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                          <FiMapPin className="w-3 h-3 text-muted-foreground" />
+                          <FiMapPin className="w-3 h-3 text-muted-foreground shrink-0" />
                           <span className="text-xs">{click.city}, {click.region}, {click.country}</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <FaDesktop className="w-3 h-3 text-muted-foreground" />
-                          <div className="flex gap-2 flex-wrap">
-                            <Badge variant="outline" className="text-xs py-0">{click.device}</Badge>
-                            <Badge variant="outline" className="text-xs py-0">{click.browser}</Badge>
-                            <Badge variant="outline" className="text-xs py-0">{click.os}</Badge>
+                        <div className="flex items-start gap-2">
+                          <FaDesktop className="w-3 h-3 text-muted-foreground shrink-0 mt-0.5" />
+                          <div className="flex gap-1 flex-wrap">
+                            <Badge variant="outline" className="text-xs py-0 px-1.5">{click.device}</Badge>
+                            <Badge variant="outline" className="text-xs py-0 px-1.5">{click.browser}</Badge>
+                            <Badge variant="outline" className="text-xs py-0 px-1.5">{click.os}</Badge>
                           </div>
                         </div>
                       </div>
 
-
-
                       {analytics.isPasswordProtected && (
-                        <div>
-                          <div className="text-muted-foreground text-xs mb-1">Authorized</div>
+                        <div className="pt-2 border-t border-border/30">
+                          <div className="text-muted-foreground text-xs mb-1">Authorization Status</div>
                           {click.authorized === null ? (
                             <Badge variant="outline" className="text-xs">N/A</Badge>
                           ) : click.authorized ? (
                             <Badge variant="default" className="bg-green-500 text-xs">
-                              ✓ Yes
+                              ✓ Authorized
                             </Badge>
                           ) : (
-                            <Badge variant="destructive" className="text-xs">✗ No</Badge>
+                            <Badge variant="destructive" className="text-xs">✗ Denied</Badge>
                           )}
                         </div>
                       )}
                     </Card>
-                  ))}
+                  )) : (
+                    <div className="text-center py-12 text-muted-foreground">
+                      <FaDesktop className="h-12 w-12 mx-auto mb-4 opacity-30" />
+                      <p className="text-base font-medium mb-2">No clicks yet</p>
+                      <p className="text-sm">Click data will appear here when someone visits your short URL.</p>
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Desktop Table View */}
-              <div className="hidden sm:block overflow-x-auto">
+              <div className="hidden lg:block overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -589,13 +619,12 @@ export default function AnalyticsPage() {
                       <TableHead className="min-w-[80px]">Device</TableHead>
                       <TableHead className="min-w-[80px]">Browser</TableHead>
                       <TableHead className="min-w-[100px]">OS</TableHead>
-
                       {analytics.isPasswordProtected && <TableHead className="min-w-[100px]">Authorized</TableHead>}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {analytics.clicks.map((click) => (
-                      <TableRow key={click.id}>
+                    {analytics.clicks.length > 0 ? analytics.clicks.map((click) => (
+                      <TableRow key={click.id} className="hover:bg-muted/50">
                         <TableCell>
                           <div className="text-sm">
                             <div>{click.timestamp.toLocaleDateString()}</div>
@@ -619,7 +648,6 @@ export default function AnalyticsPage() {
                         </TableCell>
                         <TableCell>{click.browser}</TableCell>
                         <TableCell>{click.os}</TableCell>
-
                         {analytics.isPasswordProtected && (
                           <TableCell>
                             {click.authorized === null ? (
@@ -634,7 +662,17 @@ export default function AnalyticsPage() {
                           </TableCell>
                         )}
                       </TableRow>
-                    ))}
+                    )) : (
+                      <TableRow>
+                        <TableCell colSpan={analytics.isPasswordProtected ? 8 : 7} className="text-center py-12">
+                          <div className="text-muted-foreground">
+                            <FaDesktop className="h-12 w-12 mx-auto mb-4 opacity-30" />
+                            <p className="text-base font-medium mb-2">No clicks yet</p>
+                            <p className="text-sm">Click data will appear here when someone visits your short URL.</p>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )}
                   </TableBody>
                 </Table>
               </div>
