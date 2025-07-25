@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
-import { FaArrowLeft, FaLink, FaGlobe, FaGithub, FaExternalLinkAlt } from "react-icons/fa"
+import { FaArrowLeft, FaLink, FaGlobe, FaExternalLinkAlt, FaGithub } from "react-icons/fa"
 import Link from "next/link"
 import { TechBadge } from "@/lib/tech-icons"
 import { ProjectCarousel } from "@/components/ui/project-carousel"
@@ -183,7 +183,7 @@ export default async function ProjectPage({
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
                   <Link href={project.github} target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none">
                     <Button variant="outline" className="w-full sm:w-auto gap-2 hover:bg-muted/80 transition-all text-sm sm:text-base px-6 py-2.5 sm:px-8 sm:py-3">
-                      <FaGithub className="h-4 w-4" />
+                      <FaGithub style={{ width: 20, height: 20 }} />
                       View Code
                     </Button>
                   </Link>
@@ -204,6 +204,7 @@ export default async function ProjectPage({
                   images={project.images}
                   alt={project.title}
                   className="w-full h-full"
+                  enableModal={true}
                 />
               </div>
             </div>
