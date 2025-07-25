@@ -408,7 +408,7 @@ export default function AnalyticsPage() {
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div className="min-w-0">
-                    <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Avg. Daily</p>
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Daily Average</p>
                     <p className="text-lg sm:text-2xl lg:text-3xl font-bold text-orange-500">
                       {Math.round(analytics.totalClicks / Math.max(1, Math.ceil((Date.now() - analytics.createdAt.getTime()) / (1000 * 60 * 60 * 24))))}
                     </p>
@@ -432,10 +432,6 @@ export default function AnalyticsPage() {
                   </p>
                 </div>
                 <div className="flex gap-4 sm:gap-6 text-sm">
-                  <div className="text-center">
-                    <div className="text-base sm:text-lg lg:text-xl font-bold text-green-600">{averageDailyClicks}</div>
-                    <div className="text-xs sm:text-sm text-muted-foreground">Avg/Day</div>
-                  </div>
                   {peakDay && (
                     <div className="text-center">
                       <div className="text-base sm:text-lg lg:text-xl font-bold text-blue-600">{peakDay.clicks}</div>
