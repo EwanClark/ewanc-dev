@@ -3,6 +3,7 @@
 import type React from "react";
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import {
@@ -332,13 +333,29 @@ export default function AnalyticsPage() {
                   <div className="space-y-2">
                     <div className="text-sm sm:text-base text-muted-foreground">
                       <span className="font-medium">Short URL:</span>{" "}
-                      <code className="bg-muted px-2 py-1 rounded text-sm">
+                      <Link 
+                        href={`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/${analytics.shortCode}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        prefetch={false}
+                        className="break-all text-foreground hover:text-primary underline decoration-foreground/60 hover:decoration-primary transition-all duration-200 underline-offset-2 hover:underline-offset-4"
+                        title="Open short URL"
+                      >
                         {process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/{analytics.shortCode}
-                      </code>
+                      </Link>
                     </div>
                     <div className="text-sm sm:text-base text-muted-foreground">
                       <span className="font-medium">Destination:</span>{" "}
-                      <span className="break-all">{analytics.originalUrl}</span>
+                      <Link 
+                        href={analytics.originalUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        prefetch={false}
+                        className="break-all text-foreground hover:text-primary underline decoration-foreground/60 hover:decoration-primary transition-all duration-200 underline-offset-2 hover:underline-offset-4"
+                        title={analytics.originalUrl}
+                      >
+                        {analytics.originalUrl}
+                      </Link>
                     </div>
                   </div>
                 </div>
