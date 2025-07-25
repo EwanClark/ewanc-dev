@@ -184,9 +184,6 @@ export function ImageCropModal({ isOpen, onClose, onCropComplete, imageSrc }: Im
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
           <Button onClick={handleCropComplete} disabled={!completedCrop}>
             Apply Crop
           </Button>
