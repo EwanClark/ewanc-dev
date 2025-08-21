@@ -142,25 +142,12 @@ export default function ProfilePage() {
             if (!selectedProvider) {
               setSelectedProvider(providerToUse)
             }
-            
-            console.log('Provider avatar selected:', {
-              providerToUse,
-              matchingProvider,
-              avatarUrl,
-              selectedProviderBefore: selectedProvider
-            })
           }
           break
         default:
           avatarUrl = null
       }
       
-      console.log('Sending profile update:', {
-        name: fullName,
-        avatarUrl,
-        avatarSource
-      })
-
       const { error } = await updateProfile({
         name: fullName,
         avatarUrl,
