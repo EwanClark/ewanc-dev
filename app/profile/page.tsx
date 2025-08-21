@@ -132,15 +132,35 @@ export default function ProfilePage() {
           avatarUrl = null
           break
         case 'provider':
-          if (selectedProvider && availableProviders?.length > 0) {
-            const matchingProvider = availableProviders.find(p => p.provider === selectedProvider)
+          if (availableProviders?.length > 0) {
+            // Use selectedProvider if set, otherwise default to first available provider
+            const providerToUse = selectedProvider || availableProviders[0].provider
+            const matchingProvider = availableProviders.find(p => p.provider === providerToUse)
             avatarUrl = matchingProvider?.avatarUrl || null
+            
+            // Update selectedProvider state if it wasn't set
+            if (!selectedProvider) {
+              setSelectedProvider(providerToUse)
+            }
+            
+            console.log('Provider avatar selected:', {
+              providerToUse,
+              matchingProvider,
+              avatarUrl,
+              selectedProviderBefore: selectedProvider
+            })
           }
           break
         default:
           avatarUrl = null
       }
       
+      console.log('Sending profile update:', {
+        name: fullName,
+        avatarUrl,
+        avatarSource
+      })
+
       const { error } = await updateProfile({
         name: fullName,
         avatarUrl,

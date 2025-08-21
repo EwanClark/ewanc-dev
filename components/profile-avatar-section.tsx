@@ -164,6 +164,11 @@ export function ProfileAvatarSection({
               onValueChange={(value) => {
                 const newValue = value as AvatarSource;
                 setAvatarSource(newValue);
+                
+                // If switching to provider mode and no provider is selected, select the first available
+                if (newValue === 'provider' && !selectedProvider && availableProviders?.length > 0) {
+                  setSelectedProvider(availableProviders[0].provider);
+                }
               }}
               className="grid grid-cols-1 sm:grid-cols-2 gap-3"
             >

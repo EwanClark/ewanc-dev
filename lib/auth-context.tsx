@@ -425,10 +425,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (data.avatarSource !== undefined)
         updates.avatar_source = data.avatarSource;
 
-      const { error } = await supabase
+      console.log('Database update - user ID:', user.id, 'updates:', updates);
+
+      const { error, data: result } = await supabase
         .from("profiles")
         .update(updates)
-        .eq("id", user.id);
+        .eq("id", user.id)
+        .select();
+
+      console.log('Database update result:', { error, result });
 
       if (error) {
         throw error;
