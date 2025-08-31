@@ -14,7 +14,7 @@ export async function GET(
     const { data: shortUrl, error: fetchError } = await supabase
       .from("short_urls")
       .select("*")
-      .eq("short_code", shortCode)
+      .ilike("short_code", shortCode)
       .eq("is_active", true)
       .single();
 

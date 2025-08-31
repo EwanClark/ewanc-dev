@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     const { data: existingUrl } = await supabase
       .from('short_urls')
       .select('id')
-      .eq('short_code', shortCode)
+      .ilike('short_code', shortCode)
       .single();
 
     if (existingUrl) {

@@ -24,7 +24,7 @@ export async function DELETE(
     const { data: existingUrl, error: fetchError } = await supabase
       .from('short_urls')
       .select('id, user_id')
-      .eq('short_code', shortCode)
+      .ilike('short_code', shortCode)
       .eq('user_id', user.id)
       .single();
 

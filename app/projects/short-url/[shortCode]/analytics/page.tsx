@@ -115,7 +115,7 @@ export default function AnalyticsPage() {
       const { data: urlData, error } = await supabase
         .from('short_urls')
         .select('id')
-        .eq('short_code', shortCode)
+        .ilike('short_code', shortCode)
         .single();
 
       if (!urlData?.id) {
