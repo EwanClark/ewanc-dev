@@ -68,10 +68,22 @@ export async function GET(
         country: click.country || 'Unknown',
         userAgent: click.user_agent || '',
         authorized: click.authorized,
-
         device: click.device || 'Unknown',
         browser: click.browser || 'Unknown',
         os: click.os || 'Unknown',
+        
+        // Enhanced analytics fields
+        vpn: click.vpn,
+        tor: click.tor,
+        vm: click.vm,
+        incognito: click.incognito,
+        timezone: click.timezone,
+        language: click.language,
+        screenSize: click.screen_size,
+        batteryLevel: click.battery_level,
+        chargingStatus: click.charging_status,
+        connectionType: click.connection_type,
+        localIp: click.local_ip,
       }))
     };
 

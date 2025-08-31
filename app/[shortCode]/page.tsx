@@ -6,6 +6,9 @@ import {
   getLocationFromIP,
   parseUserAgent,
   formatDeviceType,
+  detectVPN,
+  detectTor,
+  detectVMFromUserAgent,
 } from "@/lib/analytics";
 
 interface PageProps {
@@ -35,6 +38,12 @@ async function trackClick(
     // Get user agent from headers
     const userAgent = headersList.get("user-agent") || "";
 
+    // Collect headers for analysis
+    const headersObject: { [key: string]: string | null } = {};
+    headersList.forEach((value, key) => {
+      headersObject[key.toLowerCase()] = value;
+    });
+
     // Get location data from IP with timeout to prevent blocking
     let locationData = { country: null, region: null, city: null, isp: null };
     try {
@@ -51,6 +60,35 @@ async function trackClick(
     // Parse user agent for device info
     const deviceData = parseUserAgent(userAgent);
 
+    // Detect VPN/Proxy with timeout
+    let isVPN = false;
+    try {
+      isVPN = await Promise.race([
+        detectVPN(clientIp, headersObject),
+        new Promise<boolean>((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout')), 2000)
+        )
+      ]);
+    } catch (error) {
+      console.log("VPN detection timed out or failed, using default");
+    }
+
+    // Detect Tor with timeout
+    let isTor = false;
+    try {
+      isTor = await Promise.race([
+        detectTor(clientIp),
+        new Promise<boolean>((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout')), 2000)
+        )
+      ]);
+    } catch (error) {
+      console.log("Tor detection timed out or failed, using default");
+    }
+
+    // Detect VM from user agent
+    const isVM = detectVMFromUserAgent(userAgent);
+
     // Insert click record with enhanced data
     const { data, error } = await supabase
       .from("short_url_analytics")
@@ -66,6 +104,18 @@ async function trackClick(
         device: formatDeviceType(deviceData.device),
         browser: deviceData.browser,
         os: deviceData.os,
+        vpn: isVPN,
+        tor: isTor,
+        vm: isVM,
+        // Client-side data will be updated separately
+        incognito: null,
+        timezone: null,
+        language: null,
+        screen_size: null,
+        battery_level: null,
+        charging_status: null,
+        connection_type: null,
+        local_ip: null,
       })
       .select("id")
       .single();
@@ -192,19 +242,20 @@ export default async function ShortCodePage({ params, searchParams }: PageProps)
       updateClickAuthorization(clickId, true).catch(error => 
         console.error("Background click authorization update failed:", error)
       );
+      
+      // Redirect with existing clickId
+      const encodedUrl = encodeURIComponent(shortUrl.original_url);
+      redirect(`/${shortCode}/redirect?url=${encodedUrl}&clickId=${clickId}`);
     } else {
       // Track successful attempt if no existing click ID (fallback)
-      trackClick(headersList, shortUrl.id, true).catch(error =>
-        console.error("Background click tracking failed:", error)
-      );
+      const newClickId = await trackClick(headersList, shortUrl.id, true);
+      const encodedUrl = encodeURIComponent(shortUrl.original_url);
+      redirect(`/${shortCode}/redirect?url=${encodedUrl}&clickId=${newClickId}`);
     }
   } else {
-    // Track regular click for non-password protected URLs asynchronously
-    trackClick(headersList, shortUrl.id, null).catch(error =>
-      console.error("Background click tracking failed:", error)
-    );
+    // Track regular click for non-password protected URLs
+    const newClickId = await trackClick(headersList, shortUrl.id, null);
+    const encodedUrl = encodeURIComponent(shortUrl.original_url);
+    redirect(`/${shortCode}/redirect?url=${encodedUrl}&clickId=${newClickId}`);
   }
-
-  // Redirect to the original URL - this will throw a redirect error which is normal
-  redirect(shortUrl.original_url);
 } 

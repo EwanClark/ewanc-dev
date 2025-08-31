@@ -39,10 +39,20 @@ type ClickData = {
   country: string;
   userAgent: string;
   authorized: boolean | null; // null for non-password protected URLs
-
   device: string;
   browser: string;
   os: string;
+  vpn?: boolean | null;
+  tor?: boolean | null;
+  vm?: boolean | null;
+  incognito?: boolean | null;
+  timezone?: string | null;
+  language?: string | null;
+  screenSize?: string | null;
+  batteryLevel?: number | null;
+  chargingStatus?: boolean | null;
+  connectionType?: string | null;
+  localIp?: string | null;
 };
 
 type UrlAnalytics = {
@@ -174,6 +184,17 @@ export default function AnalyticsPage() {
               device: payload.new.device || 'Unknown',
               browser: payload.new.browser || 'Unknown',
               os: payload.new.os || 'Unknown',
+              vpn: payload.new.vpn || 'Unknown',
+              tor: payload.new.tor || 'Unknown',
+              vm: payload.new.vm || 'Unknown',
+              incognito: payload.new.incognito || 'Unknown',
+              timezone: payload.new.timezone || 'Unknown',
+              language: payload.new.language || 'Unknown',
+              screenSize: payload.new.screen_size || 'Unknown',
+              batteryLevel: payload.new.battery_level || 'Unknown',
+              chargingStatus: payload.new.charging_status || 'Unknown',
+              connectionType: payload.new.connection_type || 'Unknown',
+              localIp: payload.new.local_ip || 'Unknown',
             };
 
             setAnalytics(prev => {

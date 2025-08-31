@@ -100,8 +100,69 @@ CREATE TABLE IF NOT EXISTS short_url_analytics (
   os VARCHAR(50),
   
   -- Authorization for password-protected URLs
-  authorized BOOLEAN NULL
+  authorized BOOLEAN NULL,
+  
+  -- Additional analytics fields
+  vpn BOOLEAN DEFAULT NULL,
+  tor BOOLEAN DEFAULT NULL,
+  vm BOOLEAN DEFAULT NULL,
+  incognito BOOLEAN DEFAULT NULL,
+  timezone VARCHAR(100),
+  language VARCHAR(10),
+  screen_size VARCHAR(50),
+  battery_level INTEGER,
+  charging_status BOOLEAN,
+  connection_type VARCHAR(50),
+  local_ip INET
 );
+
+-- Add new columns to existing table if they don't exist
+DO $$ 
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'short_url_analytics' AND column_name = 'vpn') THEN
+    ALTER TABLE short_url_analytics ADD COLUMN vpn BOOLEAN DEFAULT NULL;
+  END IF;
+  
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'short_url_analytics' AND column_name = 'tor') THEN
+    ALTER TABLE short_url_analytics ADD COLUMN tor BOOLEAN DEFAULT NULL;
+  END IF;
+  
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'short_url_analytics' AND column_name = 'vm') THEN
+    ALTER TABLE short_url_analytics ADD COLUMN vm BOOLEAN DEFAULT NULL;
+  END IF;
+  
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'short_url_analytics' AND column_name = 'incognito') THEN
+    ALTER TABLE short_url_analytics ADD COLUMN incognito BOOLEAN DEFAULT NULL;
+  END IF;
+  
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'short_url_analytics' AND column_name = 'timezone') THEN
+    ALTER TABLE short_url_analytics ADD COLUMN timezone VARCHAR(100);
+  END IF;
+  
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'short_url_analytics' AND column_name = 'language') THEN
+    ALTER TABLE short_url_analytics ADD COLUMN language VARCHAR(10);
+  END IF;
+  
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'short_url_analytics' AND column_name = 'screen_size') THEN
+    ALTER TABLE short_url_analytics ADD COLUMN screen_size VARCHAR(50);
+  END IF;
+  
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'short_url_analytics' AND column_name = 'battery_level') THEN
+    ALTER TABLE short_url_analytics ADD COLUMN battery_level INTEGER;
+  END IF;
+  
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'short_url_analytics' AND column_name = 'charging_status') THEN
+    ALTER TABLE short_url_analytics ADD COLUMN charging_status BOOLEAN;
+  END IF;
+  
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'short_url_analytics' AND column_name = 'connection_type') THEN
+    ALTER TABLE short_url_analytics ADD COLUMN connection_type VARCHAR(50);
+  END IF;
+  
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'short_url_analytics' AND column_name = 'local_ip') THEN
+    ALTER TABLE short_url_analytics ADD COLUMN local_ip INET;
+  END IF;
+END $$;
 
 -- Create indexes for better performance (only if they don't exist)
 CREATE INDEX IF NOT EXISTS idx_short_urls_user_id ON short_urls(user_id);
