@@ -5,8 +5,11 @@ import { IoSchoolOutline } from "react-icons/io5";
 import { FaCode } from "react-icons/fa6";
 import { FiMapPin } from "react-icons/fi";
 import { LuCalendar } from "react-icons/lu";
+import { getAge } from "@/lib/age-calculator";
 
 export default function AboutPage() {
+  const age = getAge();
+  
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -26,7 +29,7 @@ export default function AboutPage() {
                       Self-Taught Developer
                     </h3>
                     <p className="text-muted-foreground mb-4">
-                      Currently in Year 8, I&apos;ve been successfully building
+                      Currently {age} years old, I&apos;ve been successfully building
                       applications since 2020, focusing primarily on backend
                       development and full-stack applications. My journey
                       started with curiosity about how complex technologies

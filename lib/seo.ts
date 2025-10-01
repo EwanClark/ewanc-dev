@@ -1,9 +1,10 @@
 import { Metadata } from 'next'
+import { getAge } from './age-calculator'
 
 const baseUrl = 'https://ewanc.dev'
 const siteName = 'Ewan Clark - Full Stack Developer'
 const defaultTitle = 'Ewan Clark - Developer'
-const defaultDescription = 'Ewan Clark - Year 8 programmer and full-stack developer from London. Self-taught specializing in backend development.'
+const defaultDescription = `Ewan Clark - ${getAge()} year old programmer and full-stack developer from London. Self-taught specializing in backend development.`
 
 export function generateMetadata({
   title,
@@ -36,7 +37,7 @@ export function generateMetadata({
     'Developer',
     'Full Stack Developer',
     'Backend Developer',
-    'Year 8',
+    `${getAge()} years old`,
     'London',
     'Self-Taught Programmer',
     'Web Developer',

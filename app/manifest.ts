@@ -1,10 +1,11 @@
 import { MetadataRoute } from 'next'
+import { getAge } from '@/lib/age-calculator'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Ewan Clark - Full-Stack Developer Portfolio',
     short_name: 'Ewan Clark Dev',
-    description: 'Ewan Clark - Year 8 Full-Stack Developer from London. Self-taught developer specializing in backend development, full-stack applications, and modern web technologies.',
+    description: `Ewan Clark - ${getAge()} year old Full-Stack Developer from London. Self-taught developer specializing in backend development, full-stack applications, and modern web technologies.`,
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',
