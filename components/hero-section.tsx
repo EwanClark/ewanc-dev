@@ -11,7 +11,7 @@ export function HeroSection() {
           <div className="flex-shrink-0 order-1 lg:order-1">
             <div className="w-40 h-40 sm:w-48 sm:h-48 lg:w-64 lg:h-64 rounded-full bg-muted border-2 border-border overflow-hidden relative">
               <Image 
-                src="/profile-picture-optimized.jpg" 
+                src="/profile-picture.jpg" 
                 alt="Profile Picture" 
                 fill
                 priority

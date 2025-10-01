@@ -185,7 +185,7 @@ Edit the following files to customize the portfolio:
 - `app/about/page.tsx` - Modify about page content
 - `components/projects-grid.tsx` - Add/remove projects
 - `components/tech-stack.tsx` - Update skills and technologies
-- `public/profile-picture-optimized.jpg` - Replace with your photo
+- `public/profile-picture.jpg` - Replace with your photo
 
 ### Styling
 - `tailwind.config.ts` - Customize Tailwind configuration
