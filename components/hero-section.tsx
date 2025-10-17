@@ -28,7 +28,7 @@ export function HeroSection() {
           </div>
 
           <div className="flex-1 max-w-2xl order-2 lg:order-2 text-center lg:text-left">
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 sm:mb-6">Full Stack Developer</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 sm:mb-6">Full-Stack Developer</h1>
             <p className="text-lg sm:text-xl text-muted-foreground mb-4 sm:mb-6 leading-relaxed">
               {age} year old self-taught developer specializing in backend development and full-stack applications. Building
               web solutions with modern technologies.
