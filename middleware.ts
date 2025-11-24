@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { updateSession } from "@/utils/supabase/middleware"
-import { createServerClient } from "@supabase/ssr"
 import { startsWithReservedRoute } from "@/lib/route-utils"
 
 export async function middleware(req: NextRequest) {
@@ -15,35 +14,9 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next()
   }
 
-  // Updates the session if needed and returns the updated response
-  const response = await updateSession(req)
-
-  // Get the session from the request
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return Array.from(req.cookies.getAll()).map(cookie => ({
-            name: cookie.name,
-            value: cookie.value,
-          }))
-        },
-        setAll(cookies) {
-          cookies.forEach(cookie => {
-            response.cookies.set({
-              name: cookie.name,
-              value: cookie.value,
-              ...cookie.options,
-            })
-          })
-        }
-      },
-    }
-  )
-
-  const { data: { user } } = await supabase.auth.getUser()
+  // Updates the session if needed and returns the updated response + user
+  // This avoids a duplicate getUser() call - single auth round-trip
+  const { response, user } = await updateSession(req)
 
   // If the user is not signed in and the route is protected, redirect to login
   const protectedRoutes = ["/dashboard", "/profile"]

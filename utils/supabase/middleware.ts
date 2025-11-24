@@ -1,7 +1,13 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
+import type { User } from '@supabase/supabase-js'
 
-export async function updateSession(request: NextRequest) {
+export interface SessionResult {
+  response: NextResponse
+  user: User | null
+}
+
+export async function updateSession(request: NextRequest): Promise<SessionResult> {
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -20,6 +26,13 @@ export async function updateSession(request: NextRequest) {
           }))
         },
         setAll(cookies) {
+          // Create a single new response to hold all cookies
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          })
+          
           cookies.forEach(cookie => {
             // Update the request cookies
             request.cookies.set({
@@ -28,12 +41,7 @@ export async function updateSession(request: NextRequest) {
               ...cookie.options,
             })
             
-            // Update the response cookies
-            response = NextResponse.next({
-              request: {
-                headers: request.headers,
-              },
-            })
+            // Update the response cookies (on the same response object)
             response.cookies.set({
               name: cookie.name,
               value: cookie.value,
@@ -46,7 +54,8 @@ export async function updateSession(request: NextRequest) {
   )
 
   // This will refresh session if expired - required for Server Components
-  await supabase.auth.getUser()
+  // Return the user so callers don't need to make a duplicate auth call
+  const { data: { user } } = await supabase.auth.getUser()
 
-  return response
+  return { response, user }
 }
