@@ -39,7 +39,7 @@ export default function Hero() {
             }`}
           >
             {/* Glow effect */}
-            <div className="absolute -inset-2 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full blur-xl" />
+            <div className="absolute -inset-2 bg-linear-to-br from-primary/20 to-accent/20 rounded-full blur-xl" />
             
             {/* Image container */}
             <div className="relative w-44 h-44 md:w-56 md:h-56 rounded-full overflow-hidden ring-2 ring-border bg-background">
@@ -92,32 +92,14 @@ export default function Hero() {
                     style={{ animationDelay: `${i * 50}ms` }}
                   >
                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/60 border border-border/50 hover:border-border hover:bg-secondary transition-all cursor-default">
-                      <skill.icon className={`w-4 h-4 ${skill.color} transition-transform group-hover:scale-110`} />
-                      <span className="text-sm text-foreground/80 group-hover:text-foreground transition-colors">
+                      <skill.icon className={`w-5 h-5 ${skill.color} transition-transform group-hover:scale-110`} />
+                      <span className="text-base text-foreground/80 group-hover:text-foreground transition-colors">
                         {skill.name}
                       </span>
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* GitHub link */}
-            <div
-              className={`pt-2 transition-all duration-700 delay-[400ms] ${
-                mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
-            >
-              <Link 
-                href="https://github.com/ewanclark" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-border bg-secondary/50 hover:bg-secondary hover:border-border/80 transition-all text-sm font-medium group"
-              >
-                <FaGithub className="w-5 h-5" />
-                <span>github.com/ewanclark</span>
-                <span className="text-muted-foreground group-hover:translate-x-0.5 transition-transform">→</span>
-              </Link>
             </div>
           </div>
         </div>
