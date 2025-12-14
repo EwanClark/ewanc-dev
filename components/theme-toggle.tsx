@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 const ThemeToggle = () => {
   const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -16,44 +17,16 @@ const ThemeToggle = () => {
   const handleThemeToggle = useCallback(() => {
     const newTheme = resolvedTheme === 'dark' ? 'light' : 'dark'
     
-    // Inject animation styles
-    const styleId = `theme-transition-${Date.now()}`
-    const style = document.createElement('style')
-    style.id = styleId
-    style.textContent = `
-      @supports (view-transition-name: root) {
-        ::view-transition-old(root) { 
-          animation: none;
-        }
-        ::view-transition-new(root) {
-          animation: circle-expand 0.4s ease-out;
-          transform-origin: top right;
-        }
-        @keyframes circle-expand {
-          from {
-            clip-path: circle(0% at 100% 0%);
-          }
-          to {
-            clip-path: circle(150% at 100% 0%);
-          }
-        }
-      }
-    `
-    document.head.appendChild(style)
+    // Trigger icon animation
+    setIsAnimating(true)
     
-    // Clean up after transition
+    // First spin out the current icon fast, then spin in the new icon slowly
     setTimeout(() => {
-      document.getElementById(styleId)?.remove()
-    }, 500)
-    
-    // Trigger view transition
-    if ('startViewTransition' in document) {
-      (document as any).startViewTransition(() => {
-        setTheme(newTheme)
-      })
-    } else {
       setTheme(newTheme)
-    }
+    }, 300) // Change theme halfway through animation
+    
+    setTimeout(() => setIsAnimating(false), 600) // Total animation time
+    
   }, [resolvedTheme, setTheme])
 
   if (!mounted) {
@@ -61,19 +34,50 @@ const ThemeToggle = () => {
   }
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={handleThemeToggle}
-      className="h-9 w-9 transition-all duration-200 hover:scale-105"
-      aria-label={`Switch to ${resolvedTheme === 'light' ? 'dark' : 'light'} theme`}
-    >
-      {resolvedTheme === 'light' ? (
-        <Sun className="h-5! w-5!" />
-      ) : (
-        <Moon className="h-5! w-5!" />
-      )}
-    </Button>
+    <>
+      <style>{`
+        @keyframes spin-out-fast {
+          0% { transform: rotate(0deg); opacity: 1; }
+          100% { transform: rotate(720deg); opacity: 0; }
+        }
+        @keyframes spin-in-slow {
+          0% { transform: rotate(-180deg); opacity: 0; }
+          100% { transform: rotate(0deg); opacity: 1; }
+        }
+      `}</style>
+      
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={handleThemeToggle}
+        className="h-9 w-9 group relative overflow-hidden"
+        aria-label={`Switch to ${resolvedTheme === 'light' ? 'dark' : 'light'} theme`}
+      >
+        <div 
+          className="flex items-center justify-center"
+          style={{
+            animation: isAnimating 
+              ? 'spin-out-fast 0.4s ease-in-out forwards, spin-in-slow 0.4s 0.4s ease-out forwards'
+              : 'none'
+          }}
+        >
+          {resolvedTheme === 'light' ? (
+            <Sun className="h-5 w-5 transition-all duration-200 group-hover:rotate-6 group-hover:scale-105" />
+          ) : (
+            <Moon className="h-5 w-5 transition-all duration-200 group-hover:-rotate-6 group-hover:scale-105" />
+          )}
+        </div>
+        
+        {/* Subtle ripple effect on click */}
+        <span 
+          className={`absolute inset-0 rounded-md bg-foreground/5 ${
+            isAnimating 
+              ? 'animate-[ping_0.4s_cubic-bezier(0.4,0,0.2,1)]' 
+              : 'opacity-0'
+          }`}
+        />
+      </Button>
+    </>
   )
 }
 
