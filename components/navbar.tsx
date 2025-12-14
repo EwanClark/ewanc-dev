@@ -33,8 +33,8 @@ export default function Navbar() {
           <Link href="/" className="font-semibold text-lg hover:text-foreground/80 transition-all duration-200">
             Portfolio
           </Link>
-
-          {/* Desktop Navigation */}
+          
+          {/* Navigation */}
           <nav className="hidden md:flex items-center gap-6">
             {navItems.map((item) => (
               <Link
@@ -52,33 +52,6 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Mobile Navigation */}
-          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden h-9 w-9 transition-all duration-200 hover:scale-105">
-                <Menu className="h-4 w-4" />
-                <span className="sr-only">Toggle navigation menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-              <nav className="flex flex-col gap-4 mt-8">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={handleMobileNavClick}
-                    className={cn(
-                      "text-lg font-medium transition-colors hover:text-foreground/80 px-4 py-2 rounded-md hover:bg-accent",
-                      pathname === item.href ? "text-foreground bg-accent" : "text-foreground/60",
-                    )}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </nav>
-            </SheetContent>
-          </Sheet>
-
           {/* Theme Toggle */}
           <ThemeToggle />
 

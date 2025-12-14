@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import Image from "next/image"
 import { FaNodeJs, FaPython } from "react-icons/fa"
 import { SiTypescript, SiNextdotjs } from "react-icons/si"
@@ -14,23 +13,35 @@ const skills = [
 ]
 
 export default function Hero() {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   return (
-    <section id="hero" className="relative flex flex-col">
-      {/* Main content */}
-      <div className="container mx-auto max-w-4xl px-6 pt-20 pb-12 md:pt-28 md:pb-16 relative z-10">
-        <div className="flex flex-col md:flex-row items-center gap-10 md:gap-14">
-          {/* Profile Picture */}
-          <div 
-            className={`relative shrink-0 transition-all duration-700 ${
-              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-            }`}
-          >
+    <>
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(2rem);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-in-up {
+          opacity: 0;
+          animation: fadeInUp 0.7s ease-out forwards;
+        }
+      `}</style>
+      
+      <section id="hero" className="relative flex flex-col">
+        {/* Main content */}
+        <div className="container mx-auto max-w-4xl px-6 pt-20 pb-12 md:pt-28 md:pb-16 relative z-10">
+          <div className="flex flex-col md:flex-row items-center gap-10 md:gap-14">
+            {/* Profile Picture */}
+            <div 
+              className="relative shrink-0 animate-fade-in-up"
+              style={{ animationDelay: '400ms' }}
+            >
             {/* Glow effect */}
             <div className="absolute -inset-2 bg-linear-to-br from-primary/20 to-accent/20 rounded-full blur-xl" />
             
@@ -50,9 +61,8 @@ export default function Hero() {
           <div className="flex-1 text-center md:text-left space-y-5">
             {/* Name */}
             <div
-              className={`transition-all duration-700 delay-100 ${
-                mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
+              className="animate-fade-in-up"
+              style={{ animationDelay: '500ms' }}
             >
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2">
                 Ewan Clark
@@ -64,18 +74,16 @@ export default function Hero() {
 
             {/* Bio */}
             <p 
-              className={`text-foreground/80 text-lg leading-relaxed max-w-lg transition-all duration-700 delay-200 ${
-                mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
+              className="text-foreground/80 text-lg leading-relaxed max-w-lg animate-fade-in-up"
+              style={{ animationDelay: '600ms' }}
             > 
               {getAge()} Year Old Full-Stack Developer with a passion on building complex backend applications with modern technologies.
             </p>
 
             {/* Skills - compact icon row */}
             <div
-              className={`transition-all duration-700 delay-300 ${
-                mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
+              className="animate-fade-in-up"
+              style={{ animationDelay: '700ms' }}
             >
               <div className="flex flex-wrap justify-center md:justify-start gap-3">
                 {skills.map((skill, i) => (
@@ -98,5 +106,6 @@ export default function Hero() {
         </div>
       </div>
     </section>
+    </>
   )
 }

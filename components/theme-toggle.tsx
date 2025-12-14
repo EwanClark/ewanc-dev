@@ -62,9 +62,9 @@ const ThemeToggle = () => {
           }}
         >
           {resolvedTheme === 'light' ? (
-            <Sun className="h-5 w-5 transition-all duration-200 group-hover:rotate-6 group-hover:scale-105" />
+            <Sun className="!h-5 !w-5 transition-all duration-200 group-hover:rotate-6 group-hover:scale-105" />
           ) : (
-            <Moon className="h-5 w-5 transition-all duration-200 group-hover:-rotate-6 group-hover:scale-105" />
+            <Moon className="!h-5 !w-5 transition-all duration-200 group-hover:-rotate-6 group-hover:scale-105" />
           )}
         </div>
         
