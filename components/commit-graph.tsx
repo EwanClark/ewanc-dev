@@ -205,6 +205,7 @@ export default function CommitGraph() {
 
   return (
     <section 
+      id="commits"
       className={`relative py-8 transition-all duration-700 ${
         mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
       }`}
