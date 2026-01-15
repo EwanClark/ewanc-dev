@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import Hero from "@/components/hero";
 import CommitGraph from "@/components/commit-graph";
 import ScrollIndicator from "@/components/scroll-indicator";
+import Projects from "@/components/projects";
 
 async function getInitialGitHubData() {
   try {
@@ -32,6 +33,8 @@ export default async function Home() {
   return (
     <main className="min-h-screen">
       <Hero />
+      <ScrollIndicator section="projects" />
+      <Projects />
       <ScrollIndicator section="commits" />
       <CommitGraph initialData={initialData} />
     </main>

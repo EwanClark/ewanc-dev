@@ -7,6 +7,7 @@ import { SiTypescript, SiNextdotjs } from "react-icons/si"
 import { getAge } from "@/lib/age"
 import { Button } from "@/components/ui/button"
 import ThemeToggle from "@/components/theme-toggle"
+import TechPill from "@/components/tech-pill"
 
 const skills = [
   { name: "Next.js", icon: SiNextdotjs, color: "text-foreground" },
@@ -73,13 +74,12 @@ export default function Hero() {
                     Ewan Clark
                   </h1>
                   {/* Controls - Theme Toggle & GitHub */}
-                  <div className="flex items-center gap-1.5 md:gap-2 shrink-0 md:ml-4">
+                  <div className="flex items-end gap-1.5 md:gap-2 shrink-0 md:ml-40">
                     <ThemeToggle />
 
                     <Link href="https://github.com/ewanclark/" target="_blank" rel="noopener noreferrer">
                       <Button variant="ghost" size="icon" className="h-9 w-9 transition-all duration-200 hover:scale-105">
                         <FaGithub style={{ width: 20, height: 20 }} />
-                        <span className="sr-only">GitHub</span>
                       </Button>
                     </Link>
                   </div>
@@ -110,12 +110,7 @@ export default function Hero() {
                     className="group relative"
                     style={{ animationDelay: `${i * 50}ms` }}
                   >
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/60 border border-border/50 hover:border-border hover:bg-secondary transition-all cursor-default">
-                      <skill.icon className={`w-5 h-5 ${skill.color} transition-transform group-hover:scale-110`} />
-                      <span className="text-base text-foreground/80 group-hover:text-foreground transition-colors">
-                        {skill.name}
-                      </span>
-                    </div>
+                    <TechPill label={skill.name} icon={skill.icon} colorClass={skill.color} />
                   </div>
                 ))}
               </div>
