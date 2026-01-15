@@ -77,7 +77,7 @@ export default function Hero() {
               className="text-foreground/80 text-lg leading-relaxed max-w-lg animate-fade-in-up"
               style={{ animationDelay: '600ms' }}
             > 
-              {getAge()} Year Old Full-Stack Developer with a passion on building complex backend applications with modern technologies.
+              {getAge()} Year Old Full-Stack Developer based in the UK, focusing on backend systems.
             </p>
 
             {/* Skills - compact icon row */}
