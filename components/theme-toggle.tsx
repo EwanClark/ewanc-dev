@@ -23,9 +23,9 @@ const ThemeToggle = () => {
     // First spin out the current icon fast, then spin in the new icon slowly
     setTimeout(() => {
       setTheme(newTheme)
-    }, 300) // Change theme halfway through animation
+    }, 400) // Change theme when spin-out completes
     
-    setTimeout(() => setIsAnimating(false), 600) // Total animation time
+    setTimeout(() => setIsAnimating(false), 800) // Total animation time (0.4s spin-out + 0.4s spin-in)
     
   }, [resolvedTheme, setTheme])
 

@@ -1,9 +1,12 @@
 "use client"
 
 import Image from "next/image"
-import { FaNodeJs, FaPython } from "react-icons/fa"
+import Link from "next/link"
+import { FaNodeJs, FaPython, FaGithub } from "react-icons/fa"
 import { SiTypescript, SiNextdotjs } from "react-icons/si"
 import { getAge } from "@/lib/age"
+import { Button } from "@/components/ui/button"
+import ThemeToggle from "@/components/theme-toggle"
 
 const skills = [
   { name: "Next.js", icon: SiNextdotjs, color: "text-foreground" },
@@ -64,12 +67,27 @@ export default function Hero() {
               className="animate-fade-in-up"
               style={{ animationDelay: '500ms' }}
             >
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2">
-                Ewan Clark
-              </h1>
-              <p className="text-xl text-muted-foreground font-light">
-                Full-Stack Developer
-              </p>
+              <div className="flex flex-col gap-2">
+                <div className="flex flex-wrap items-center justify-center gap-3 md:justify-start">
+                  <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+                    Ewan Clark
+                  </h1>
+                  {/* Controls - Theme Toggle & GitHub */}
+                  <div className="flex items-center gap-1.5 md:gap-2 shrink-0 md:ml-4">
+                    <ThemeToggle />
+
+                    <Link href="https://github.com/ewanclark/" target="_blank" rel="noopener noreferrer">
+                      <Button variant="ghost" size="icon" className="h-9 w-9 transition-all duration-200 hover:scale-105">
+                        <FaGithub style={{ width: 20, height: 20 }} />
+                        <span className="sr-only">GitHub</span>
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+                <p className="text-xl text-muted-foreground font-light">
+                  Full-Stack Developer
+                </p>
+              </div>
             </div>
 
             {/* Bio */}
