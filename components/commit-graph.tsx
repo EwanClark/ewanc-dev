@@ -236,13 +236,30 @@ export default function CommitGraph({ initialData }: CommitGraphProps) {
   const dayLabelWidth = 40
 
   return (
-    <section 
-      id="commits"
-      className={`relative py-8 transition-all duration-700 ${
-        mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-      }`}
-    >
-      <div className="w-full px-6 md:px-12 lg:px-16">
+    <>
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(2rem);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-in-up {
+          opacity: 0;
+          animation: fadeInUp 0.7s ease-out forwards;
+        }
+      `}</style>
+      
+      <section 
+        id="commits"
+        className="relative py-8 animate-fade-in-up"
+        style={{ animationDelay: '400ms' }}
+      >
+        <div className="w-full px-6 md:px-12 lg:px-16">
         {/* Header with username as link */}
         <div className="flex justify-center mb-6">
           <a
@@ -382,5 +399,6 @@ export default function CommitGraph({ initialData }: CommitGraphProps) {
         </div>
       </div>
     </section>
+    </>
   )
 }
