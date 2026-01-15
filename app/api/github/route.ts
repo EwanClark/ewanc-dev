@@ -71,6 +71,7 @@ export async function GET() {
     return NextResponse.json({
       totalContributions: calendar.totalContributions,
       weeks: calendar.weeks,
+      cachedAt: new Date().toISOString(),
     })
   } catch (error) {
     console.error("Failed to fetch GitHub contributions:", error)

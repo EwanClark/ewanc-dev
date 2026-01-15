@@ -16,6 +16,7 @@ interface ContributionWeek {
 interface ContributionData {
   totalContributions: number
   weeks: ContributionWeek[]
+  cachedAt?: string
 }
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -61,10 +62,14 @@ function normalizeContributionWeeks(weeks: ContributionWeek[]): ContributionWeek
   return normalizedWeeks
 }
 
-export default function CommitGraph() {
+interface CommitGraphProps {
+  initialData?: ContributionData | null
+}
+
+export default function CommitGraph({ initialData }: CommitGraphProps) {
   const { resolvedTheme } = useTheme()
-  const [data, setData] = useState<ContributionData | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [data, setData] = useState<ContributionData | null>(initialData || null)
+  const [loading, setLoading] = useState(!initialData)
   const [error, setError] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
   const [tooltip, setTooltip] = useState<{
@@ -79,8 +84,29 @@ export default function CommitGraph() {
 
   useEffect(() => {
     setMounted(true)
-    fetchContributions()
-  }, [])
+    
+    // If we have initial data, check if it's stale and refetch if needed
+    if (initialData) {
+      // If data is stale, fetch fresh data in background
+      if (isDataStale(initialData.cachedAt)) {
+        fetchContributions()
+      }
+    } else {
+      // No initial data, fetch immediately
+      fetchContributions()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Only run once on mount
+
+  function isDataStale(cachedAt?: string): boolean {
+    if (!cachedAt) return true
+    
+    const cacheTime = new Date(cachedAt).getTime()
+    const now = Date.now()
+    const twentyFourHours = 24 * 60 * 60 * 1000
+    
+    return (now - cacheTime) > twentyFourHours
+  }
 
   async function fetchContributions() {
     try {
@@ -88,8 +114,12 @@ export default function CommitGraph() {
       if (!response.ok) throw new Error("Failed to fetch")
       const result = await response.json()
       setData(result)
+      setError(null)
     } catch {
-      setError("Failed to load contributions")
+      // Only show error if we don't have initial data
+      if (!initialData) {
+        setError("Failed to load contributions")
+      }
     } finally {
       setLoading(false)
     }
@@ -172,7 +202,9 @@ export default function CommitGraph() {
   function getColorClass(level: number): string {
     if (level === 0) return "bg-muted"
     
-    const isDark = resolvedTheme === "dark"
+    // Use resolvedTheme only after component has mounted to prevent hydration mismatch
+    // During SSR, resolvedTheme is undefined, so we default to light mode
+    const isDark = mounted && resolvedTheme !== undefined && resolvedTheme === "dark"
     
     if (isDark) {
       // Dark mode: keep as is (darker = less, lighter = more)
@@ -285,7 +317,7 @@ export default function CommitGraph() {
                 </div>
 
                 {/* Contribution grid */}
-                <div className="flex" style={{ gap: cellGap }}>
+                <div className="flex" style={{ gap: cellGap }} suppressHydrationWarning>
                   {displayWeeks.map((week, weekIndex) => (
                     <div key={weekIndex} className="flex flex-col" style={{ gap: cellGap }}>
                       {week.contributionDays.map((day, dayIndex) => {
@@ -308,7 +340,7 @@ export default function CommitGraph() {
 
               {/* Legend and contribution count */}
               <div className="flex items-center justify-between mt-5">
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground" suppressHydrationWarning>
                   <span>Less</span>
                   {[0, 1, 2, 3, 4].map((level) => (
                     <div
