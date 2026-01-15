@@ -266,10 +266,12 @@ export default function CommitGraph({ initialData }: CommitGraphProps) {
             href="https://github.com/EwanClark"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2.5 text-foreground hover:text-primary transition-colors"
+            className="group flex items-center gap-2.5 text-foreground transition-colors hover:text-primary"
           >
-            <FaGithub className="w-5 h-5" />
-            <span className="font-medium text-base">@ewanclark</span>
+            <FaGithub className="w-5 h-5 transition-transform duration-150 ease-out group-hover:-translate-y-0.5 group-hover:scale-105" />
+            <span className="font-medium text-base transition-transform duration-150 ease-out group-hover:-translate-y-0.5">
+              @ewanclark
+            </span>
           </a>
         </div>
 
