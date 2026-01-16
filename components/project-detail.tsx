@@ -77,22 +77,22 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
             {project.description}
-            <div className="my-4 flex flex-wrap gap-2">
-              {project.skills.map((skill) => (
-                <div
-                  key={skill.label}
-                  className="group flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/60 border border-border/50 hover:border-border hover:bg-secondary transition-all"
-                >
-                  <skill.icon
-                    className={`w-5 h-5 ${skill.color} transition-transform group-hover:scale-110`}
-                  />
-                  <span className="text-sm font-medium text-foreground group-hover:text-foreground transition-colors">
-                    {skill.label}
-                  </span>
-                </div>
-              ))}
-            </div>
           </DialogDescription>
+          <div className="my-4 flex flex-wrap gap-2">
+            {project.skills.map((skill) => (
+              <div
+                key={skill.label}
+                className="group flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/60 border border-border/50 hover:border-border hover:bg-secondary transition-all"
+              >
+                <skill.icon
+                  className={`w-5 h-5 ${skill.color} transition-transform group-hover:scale-110`}
+                />
+                <span className="text-sm font-medium text-foreground group-hover:text-foreground transition-colors">
+                  {skill.label}
+                </span>
+              </div>
+            ))}
+          </div>
           <div className="relative w-full h-52 rounded-lg overflow-hidden">
             <Image
               src={project.image}
