@@ -1,29 +1,87 @@
-import { headers } from "next/headers";
 import Hero from "@/components/hero";
 import CommitGraph from "@/components/commit-graph";
 import ScrollIndicator from "@/components/scroll-indicator";
 import Projects from "@/components/projects";
 
+interface ContributionDay {
+  contributionCount: number
+  date: string
+}
+
+interface ContributionWeek {
+  contributionDays: ContributionDay[]
+}
+
+interface GitHubResponse {
+  data: {
+    user: {
+      contributionsCollection: {
+        contributionCalendar: {
+          totalContributions: number
+          weeks: ContributionWeek[]
+        }
+      }
+    }
+  }
+}
+
 async function getInitialGitHubData() {
   try {
-    // Fetch from API route - Next.js Data Cache will handle caching
-    const headersList = await headers();
-    const host = headersList.get("host");
-    const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-    const baseUrl = `${protocol}://${host}`;
-    
-    const response = await fetch(`${baseUrl}/api/github`, {
-      next: { revalidate: 6*60*60 }, // Revalidate every 24 hours
-    });
-    
-    if (!response.ok) {
-      return null;
+    const token = process.env.GITHUB_ACCESS_TOKEN
+
+    if (!token) {
+      return null
     }
-    
-    return await response.json();
+
+    const query = `
+      query {
+        user(login: "EwanClark") {
+          contributionsCollection {
+            contributionCalendar {
+              totalContributions
+              weeks {
+                contributionDays {
+                  contributionCount
+                  date
+                }
+              }
+            }
+          }
+        }
+      }
+    `
+
+    // Fetch directly from GitHub API - enables static generation
+    // Uses stale-while-revalidate: returns cached data immediately if available,
+    // then revalidates in background. If cache is older than 6 hours, still returns
+    // stale data immediately, then fetches fresh data in background.
+    const response = await fetch("https://api.github.com/graphql", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query }),
+      next: { 
+        revalidate: 6*60*60, // Revalidate every 6 hours (stale-while-revalidate)
+      },
+    })
+
+    if (!response.ok) {
+      return null
+    }
+
+    const data: GitHubResponse = await response.json()
+    const calendar = data.data.user.contributionsCollection.contributionCalendar
+
+    return {
+      totalContributions: calendar.totalContributions,
+      weeks: calendar.weeks,
+      cachedAt: new Date().toISOString(),
+    }
   } catch (error) {
-    console.error("Failed to fetch initial GitHub data:", error);
-    return null;
+    console.error("Failed to fetch initial GitHub data:", error)
+    return null
   }
 }
 

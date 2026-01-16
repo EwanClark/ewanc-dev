@@ -103,9 +103,9 @@ export default function CommitGraph({ initialData }: CommitGraphProps) {
     
     const cacheTime = new Date(cachedAt).getTime()
     const now = Date.now()
-    const twentyFourHours = 24 * 60 * 60 * 1000
+    const sixHours = 6 * 60 * 60 * 1000 // 6 hours in milliseconds
     
-    return (now - cacheTime) > twentyFourHours
+    return (now - cacheTime) > sixHours
   }
 
   async function fetchContributions() {
