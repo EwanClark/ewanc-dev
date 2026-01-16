@@ -13,7 +13,7 @@ async function getInitialGitHubData() {
     const baseUrl = `${protocol}://${host}`;
     
     const response = await fetch(`${baseUrl}/api/github`, {
-      next: { revalidate: 24*60*60 }, // Revalidate every 24 hours
+      next: { revalidate: 6*60*60 }, // Revalidate every 24 hours
     });
     
     if (!response.ok) {

@@ -58,7 +58,7 @@ export async function GET() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ query }),
-      next: { revalidate: 24*60*60 }, // Cache for 1 day
+      next: { revalidate: 4*60*60 }, // Cache for 1 day
     })
 
     if (!response.ok) {
