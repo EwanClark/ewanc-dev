@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { FaNodeJs, FaPython, FaGithub } from "react-icons/fa"
+import { FaNodeJs, FaPython, FaGithub, FaMapMarkerAlt } from "react-icons/fa"
 import { SiTypescript, SiNextdotjs } from "react-icons/si"
 import { getAge } from "@/lib/age"
 import { Button } from "@/components/ui/button"
@@ -84,9 +84,17 @@ export default function Hero() {
                     </Link>
                   </div>
                 </div>
-                <p className="text-xl text-muted-foreground font-light">
-                  Full-Stack Developer
-                </p>
+                <div className="flex flex-col items-center md:items-start gap-2">
+                  {/* Job Title */}
+                  <p className="text-xl text-muted-foreground font-light">
+                    Full-Stack Developer
+                  </p>
+                  {/* Location */}
+                  <div className="flex items-center gap-2 text-muted-foreground/80">
+                    <FaMapMarkerAlt className="w-4 h-4" />
+                    <span className="text-sm font-medium">London, UK</span>
+                  </div>
+                </div>
               </div>
             </div>
 
