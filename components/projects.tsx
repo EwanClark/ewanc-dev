@@ -27,7 +27,7 @@ export default function Projects() {
 
       <section 
         id="projects" 
-        className="mb-8 py-8 animate-fade-in-up"
+        className="py-12 animate-fade-in-up"
         style={{ animationDelay: '400ms' }}
       >
         <div className="container mx-auto max-w-4xl px-6">

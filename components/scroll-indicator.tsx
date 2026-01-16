@@ -27,7 +27,7 @@ export default function ScrollIndicator({ section }: { section: string }) {
         }
       `}</style>
       <div
-        className="flex justify-center pb-10 animate-fade-in-up"
+        className="flex justify-center my-10 animate-fade-in-up"
         style={{ animationDelay: "400ms" }}
       >
       <button

@@ -256,7 +256,7 @@ export default function CommitGraph({ initialData }: CommitGraphProps) {
       
       <section 
         id="commits"
-        className="relative py-8 animate-fade-in-up"
+        className="relative py-12 animate-fade-in-up"
         style={{ animationDelay: '400ms' }}
       >
         <div className="w-full px-6 md:px-12 lg:px-16">

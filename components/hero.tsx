@@ -39,7 +39,7 @@ export default function Hero() {
       
       <section id="hero" className="relative flex flex-col">
         {/* Main content */}
-        <div className="container mx-auto max-w-4xl px-6 pt-20 pb-12 md:pt-28 md:pb-16 relative z-10">
+        <div className="container mx-auto max-w-4xl px-6 pt-20 pb-12 md:pt-28 md:pb-12 relative z-10">
           <div className="flex flex-col md:flex-row items-center gap-10 md:gap-14">
             {/* Profile Picture */}
             <div 
