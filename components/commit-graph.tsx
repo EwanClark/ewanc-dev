@@ -231,7 +231,7 @@ export default function CommitGraph({ initialData }: CommitGraphProps) {
   const displayWeeks = getWeeksStartingMonday(normalizedWeeks)
   const monthLabels = getMonthLabels(displayWeeks)
 
-  const cellSize = 16
+  const cellSize = 20
   const cellGap = 4
   const dayLabelWidth = 40
 
