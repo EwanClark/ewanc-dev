@@ -2,6 +2,7 @@ import Hero from "@/components/hero";
 import CommitGraph from "@/components/commit-graph";
 import ScrollIndicator from "@/components/scroll-indicator";
 import Projects from "@/components/projects";
+import TechStack from "@/components/tech-stack";
 
 interface ContributionDay {
   contributionCount: number
@@ -93,6 +94,8 @@ export default async function Home() {
       <Hero />
       <ScrollIndicator section="projects" />
       <Projects />
+      <ScrollIndicator section="tech-stack" />
+      <TechStack />
       <ScrollIndicator section="commits" />
       <CommitGraph initialData={initialData} />
     </main>

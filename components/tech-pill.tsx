@@ -1,11 +1,11 @@
 import { cn } from "@/lib/utils";
 
-type SizeVariant = "sm" | "md";
+type SizeVariant = "sm" | "md" | "lg";
 
 interface TechPillProps {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
-  colorClass: string;
+  colorClass?: string;
   size?: SizeVariant;
   className?: string;
 }
@@ -13,6 +13,7 @@ interface TechPillProps {
 const sizeStyles: Record<SizeVariant, { icon: string; text: string; padding: string }> = {
   sm: { icon: "w-4! h-4!", text: "text-sm", padding: "px-2.5 py-1.25" },
   md: { icon: "w-5! h-5!", text: "text-base", padding: "px-3 py-1.5" },
+  lg: { icon: "w-8! h-8!", text: "text-xl", padding: "px-5 py-3" },
 };
 
 export default function TechPill({
