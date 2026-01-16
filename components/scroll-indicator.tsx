@@ -1,8 +1,6 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import { useState } from "react";
-import { useEffect } from "react";
 
 const scrollToSection = (section: string) => {
   const el = document.getElementById(section);
@@ -10,18 +8,28 @@ const scrollToSection = (section: string) => {
 };
 
 export default function ScrollIndicator({ section }: { section: string }) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   return (
-    <div
-      className={`flex justify-center pb-10 transition-all duration-700 delay-500 ${
-        mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-      }`}
-    >
+    <>
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(2rem);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-in-up {
+          opacity: 0;
+          animation: fadeInUp 0.7s ease-out forwards;
+        }
+      `}</style>
+      <div
+        className="flex justify-center pb-10 animate-fade-in-up"
+        style={{ animationDelay: "400ms" }}
+      >
       <button
         onClick={() => scrollToSection(section)}
         className="group flex flex-col items-center gap-2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
@@ -32,6 +40,7 @@ export default function ScrollIndicator({ section }: { section: string }) {
         </span>
         <ChevronDown className="w-5 h-5 animate-bounce" />
       </button>
-    </div>
+      </div>
+    </>
   );
 }
