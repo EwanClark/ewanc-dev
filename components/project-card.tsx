@@ -18,11 +18,11 @@ interface ProjectCardProps {
 export function ProjectCard({ project, onClick }: ProjectCardProps) {
   return (
     <Card 
-      className="group relative bg-card border cursor-pointer hover:shadow-lg transition-colors duration-200 hover:bg-accent/40 flex flex-col h-full"
+      className="group relative bg-card border cursor-pointer hover:shadow-lg transition-colors duration-200 hover:bg-accent/40 flex flex-col"
       onClick={onClick}
     >
       <CardHeader className="pb-4">
-        <div className="relative w-full h-52 rounded-lg overflow-hidden mb-4">
+        <div className="relative w-full h-81 rounded-lg overflow-hidden mb-4">
           <Image
             src={project.image}
             fill

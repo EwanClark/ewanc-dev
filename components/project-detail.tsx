@@ -93,7 +93,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
               </div>
             ))}
           </div>
-          <div className="relative w-full h-52 rounded-lg overflow-hidden">
+          <div className="relative w-full h-64 rounded-lg overflow-hidden">
             <Image
               src={project.image}
               fill

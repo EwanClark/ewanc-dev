@@ -30,17 +30,17 @@ export default function Projects() {
         className="py-12 animate-fade-in-up"
         style={{ animationDelay: '400ms' }}
       >
-        <div className="container mx-auto max-w-4xl px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+        <div className="container mx-auto max-w-2xl px-6">
+          <div className="grid grid-cols-1 gap-6">
             {projects.map((project, index) => (
               <div
                 key={index}
-                className="animate-fade-in-up h-full"
+                className="animate-fade-in-up"
                 style={{ animationDelay: `${500 + index * 100}ms` }}
               >
                 <Dialog>
                   <DialogTrigger asChild>
-                    <div className="w-full h-full">
+                    <div className="w-full">
                       <ProjectCard project={project} onClick={() => {}} />
                     </div>
                   </DialogTrigger>
