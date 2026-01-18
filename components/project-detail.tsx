@@ -102,7 +102,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
             />
           </div>
         </DialogHeader>
-        <div className="mt-4 space-y-4">
+        <div className="space-y-4">
           <div>
             <h4 className="font-semibold text-primary mb-2 text-base">
               Features
