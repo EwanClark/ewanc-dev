@@ -28,7 +28,7 @@ export async function GET() {
   if (!token) {
     return NextResponse.json(
       { error: "GitHub token not configured" },
-      { status: 500 }
+      { status: 401 }
     )
   }
 
@@ -58,7 +58,7 @@ export async function GET() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ query }),
-      next: { revalidate: 4*60*60 }, // Cache for 1 day
+      cache: 'no-store',
     })
 
     if (!response.ok) {
@@ -71,7 +71,6 @@ export async function GET() {
     return NextResponse.json({
       totalContributions: calendar.totalContributions,
       weeks: calendar.weeks,
-      cachedAt: new Date().toISOString(),
     })
   } catch (error) {
     console.error("Failed to fetch GitHub contributions:", error)

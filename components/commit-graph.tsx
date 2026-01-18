@@ -16,7 +16,6 @@ interface ContributionWeek {
 interface ContributionData {
   totalContributions: number
   weeks: ContributionWeek[]
-  cachedAt?: string
 }
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -62,14 +61,27 @@ function normalizeContributionWeeks(weeks: ContributionWeek[]): ContributionWeek
   return normalizedWeeks
 }
 
-interface CommitGraphProps {
-  initialData?: ContributionData | null
+function generateSkeletonWeeks(): ContributionWeek[] {
+  const skeletonWeeks: ContributionWeek[] = []
+  
+  for (let week = 0; week < 53; week++) {
+    const weekDays: (ContributionDay | null)[] = []
+    for (let day = 0; day < 7; day++) {
+      weekDays.push({
+        contributionCount: 0,
+        date: "",
+      })
+    }
+    skeletonWeeks.push({ contributionDays: weekDays })
+  }
+  
+  return skeletonWeeks
 }
 
-export default function CommitGraph({ initialData }: CommitGraphProps) {
+export default function CommitGraph() {
   const { resolvedTheme } = useTheme()
-  const [data, setData] = useState<ContributionData | null>(initialData || null)
-  const [loading, setLoading] = useState(!initialData)
+  const [data, setData] = useState<ContributionData | null>(null)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
   const [tooltip, setTooltip] = useState<{
@@ -84,29 +96,9 @@ export default function CommitGraph({ initialData }: CommitGraphProps) {
 
   useEffect(() => {
     setMounted(true)
-    
-    // If we have initial data, check if it's stale and refetch if needed
-    if (initialData) {
-      // If data is stale, fetch fresh data in background
-      if (isDataStale(initialData.cachedAt)) {
-        fetchContributions()
-      }
-    } else {
-      // No initial data, fetch immediately
-      fetchContributions()
-    }
+    fetchContributions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // Only run once on mount
-
-  function isDataStale(cachedAt?: string): boolean {
-    if (!cachedAt) return true
-    
-    const cacheTime = new Date(cachedAt).getTime()
-    const now = Date.now()
-    const sixHours = 6 * 60 * 60 * 1000 // 6 hours in milliseconds
-    
-    return (now - cacheTime) > sixHours
-  }
+  }, [])
 
   async function fetchContributions() {
     try {
@@ -116,10 +108,7 @@ export default function CommitGraph({ initialData }: CommitGraphProps) {
       setData(result)
       setError(null)
     } catch {
-      // Only show error if we don't have initial data
-      if (!initialData) {
-        setError("Failed to load contributions")
-      }
+      setError("Failed to load contributions")
     } finally {
       setLoading(false)
     }
@@ -227,9 +216,9 @@ export default function CommitGraph({ initialData }: CommitGraphProps) {
     }
   }
 
-  const normalizedWeeks = data ? normalizeContributionWeeks(data.weeks) : []
-  const displayWeeks = getWeeksStartingMonday(normalizedWeeks)
-  const monthLabels = getMonthLabels(displayWeeks)
+  const normalizedWeeks = data ? normalizeContributionWeeks(data.weeks) : generateSkeletonWeeks()
+  const displayWeeks = data ? getWeeksStartingMonday(normalizedWeeks) : normalizedWeeks
+  const monthLabels = data ? getMonthLabels(displayWeeks) : []
 
   const cellSize = 20
   const cellGap = 4
@@ -280,19 +269,7 @@ export default function CommitGraph({ initialData }: CommitGraphProps) {
           ref={containerRef}
           className="relative overflow-x-auto flex justify-center"
         >
-          {loading ? (
-            <div className="flex items-center justify-center h-40">
-              <div className="flex gap-1">
-                {[0, 1, 2].map((i) => (
-                  <div
-                    key={i}
-                    className="w-2.5 h-2.5 rounded-full bg-primary/50 animate-pulse"
-                    style={{ animationDelay: `${i * 150}ms` }}
-                  />
-                ))}
-              </div>
-            </div>
-          ) : error ? (
+          {error ? (
             <div className="flex items-center justify-center h-40 text-muted-foreground">
               {error}
             </div>
@@ -303,7 +280,7 @@ export default function CommitGraph({ initialData }: CommitGraphProps) {
                 className="flex text-xs text-muted-foreground mb-2"
                 style={{ paddingLeft: dayLabelWidth }}
               >
-                {monthLabels.map((label, i) => {
+                {data && monthLabels.map((label, i) => {
                   return (
                     <div
                       key={`${label.month}-${label.weekIndex}`}
@@ -346,9 +323,9 @@ export default function CommitGraph({ initialData }: CommitGraphProps) {
                           <div
                             key={dayIndex}
                             style={{ width: cellSize, height: cellSize }}
-                            className={`rounded-[3px] cursor-pointer transition-all duration-150 hover:ring-2 hover:ring-foreground/20 hover:ring-offset-1 hover:ring-offset-background ${getColorClass(level)}`}
-                            onMouseEnter={(e) => handleMouseEnter(e, day, dayIndex)}
-                            onMouseLeave={handleMouseLeave}
+                            className={`rounded-[3px] transition-all duration-150 ${data ? 'cursor-pointer hover:ring-2 hover:ring-foreground/20 hover:ring-offset-1 hover:ring-offset-background' : ''} ${getColorClass(level)}`}
+                            onMouseEnter={data ? (e) => handleMouseEnter(e, day, dayIndex) : undefined}
+                            onMouseLeave={data ? handleMouseLeave : undefined}
                           />
                         )
                       })}
