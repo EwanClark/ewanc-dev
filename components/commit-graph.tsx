@@ -97,7 +97,6 @@ export default function CommitGraph() {
   useEffect(() => {
     setMounted(true)
     fetchContributions()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function fetchContributions() {
