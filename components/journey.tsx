@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { journeyEntries, JourneyEntry } from "@/data/journey";
 import { cn } from "@/lib/utils";
 
 function JourneyItem({ entry }: { entry: JourneyEntry }) {
   const [isHovered, setIsHovered] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const hasAlternateDates = entry.alternateDate || entry.alternateEndDate;
   const isAlternateActive = isHovered && hasAlternateDates;
@@ -13,6 +14,12 @@ function JourneyItem({ entry }: { entry: JourneyEntry }) {
   const displayEndDate = isAlternateActive
     ? entry.alternateEndDate ?? entry.endDate
     : entry.endDate;
+
+  const handleMouseHover = (entering: boolean) => {
+    if (!hasAlternateDates) return;
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => setIsHovered(entering), 50);
+  };
 
   return (
     <div className="space-y-2">
@@ -32,8 +39,8 @@ function JourneyItem({ entry }: { entry: JourneyEntry }) {
             hasAlternateDates &&
               "cursor-pointer border-b-2 border-dashed border-muted-foreground/30! hover:border-muted-foreground/60! transition-colors pb-0.5"
           )}
-          onMouseEnter={() => hasAlternateDates && setIsHovered(true)}
-          onMouseLeave={() => hasAlternateDates && setIsHovered(false)}
+          onMouseEnter={() => handleMouseHover(true)}
+          onMouseLeave={() => handleMouseHover(false)}
         >
           <span
             className={cn(
