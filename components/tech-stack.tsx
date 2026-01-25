@@ -1,5 +1,3 @@
-"use client"
-
 import TechPill from "@/components/tech-pill"
 import { techs } from "@/data/tech"
 
