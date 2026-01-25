@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react"
 import { useTheme } from "next-themes"
 import { FaGithub } from "react-icons/fa"
+import { cn } from "@/lib/utils"
 
 interface ContributionDay {
   contributionCount: number
@@ -322,7 +323,11 @@ export default function CommitGraph() {
                           <div
                             key={dayIndex}
                             style={{ width: cellSize, height: cellSize }}
-                            className={`rounded-[3px] transition-all duration-150 ${data ? 'cursor-pointer hover:ring-2 hover:ring-foreground/20 hover:ring-offset-1 hover:ring-offset-background' : ''} ${getColorClass(level)}`}
+                            className={cn(
+                              "rounded-[3px] transition-all duration-150",
+                              data && "cursor-pointer hover:ring-2 hover:ring-foreground/20 hover:ring-offset-1 hover:ring-offset-background",
+                              getColorClass(level)
+                            )}
                             onMouseEnter={data ? (e) => handleMouseEnter(e, day, dayIndex) : undefined}
                             onMouseLeave={data ? handleMouseLeave : undefined}
                           />

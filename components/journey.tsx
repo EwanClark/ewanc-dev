@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { journeyEntries, JourneyEntry } from "@/lib/journey-data";
+import { cn } from "@/lib/utils";
 
 function JourneyItem({ entry }: { entry: JourneyEntry }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -26,29 +27,28 @@ function JourneyItem({ entry }: { entry: JourneyEntry }) {
           )}
         </div>
         <div
-          className={`text-sm text-muted-foreground sm:text-right inline-block ${
-            hasAlternateDates
-              ? "cursor-pointer border-b-2 border-dashed border-muted-foreground/30! hover:border-muted-foreground/60! transition-colors pb-0.5"
-              : ""
-          }`}
+          className={cn(
+            "text-sm text-muted-foreground sm:text-right inline-block",
+            hasAlternateDates &&
+              "cursor-pointer border-b-2 border-dashed border-muted-foreground/30! hover:border-muted-foreground/60! transition-colors pb-0.5"
+          )}
           onMouseEnter={() => hasAlternateDates && setIsHovered(true)}
           onMouseLeave={() => hasAlternateDates && setIsHovered(false)}
         >
           <span
-            className={`transition-opacity duration-250 ${
-              displayDate?.toLowerCase() === "now" ? "font-semibold text-blue-500" : ""
-            }`}
+            className={cn(
+              "transition-opacity duration-250",
+              displayDate?.toLowerCase() === "now" && "font-semibold text-blue-500"
+            )}
           >
             {displayDate}
             {displayEndDate && (
               <>
                 {" - "}
                 <span
-                  className={
-                    displayEndDate.toLowerCase() === "now"
-                      ? "font-semibold text-blue-500"
-                      : ""
-                  }
+                  className={cn(
+                    displayEndDate.toLowerCase() === "now" && "font-semibold text-blue-500"
+                  )}
                 >
                   {displayEndDate}
                 </span>

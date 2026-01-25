@@ -4,6 +4,7 @@ import { Moon, Sun } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 const ThemeToggle = () => {
   const { setTheme, resolvedTheme } = useTheme()
@@ -54,12 +55,10 @@ const ThemeToggle = () => {
         aria-label={`Switch to ${resolvedTheme === 'light' ? 'dark' : 'light'} theme`}
       >
         <div 
-          className="flex items-center justify-center"
-          style={{
-            animation: isAnimating 
-              ? 'spin-out-fast 0.4s ease-in-out forwards, spin-in-slow 0.4s 0.4s ease-out forwards'
-              : 'none'
-          }}
+          className={cn(
+            "flex items-center justify-center",
+            isAnimating && "animate-[spin-out-fast_0.4s_ease-in-out_forwards,spin-in-slow_0.4s_0.4s_ease-out_forwards]"
+          )}
         >
           {resolvedTheme === 'light' ? (
             <Sun className="h-5! w-5! transition-all duration-200 group-hover:rotate-6 group-hover:scale-105" />
