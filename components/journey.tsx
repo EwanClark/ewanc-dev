@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { journeyEntries, JourneyEntry } from "@/lib/journey-data";
+import { journeyEntries, JourneyEntry } from "@/data/journey";
 import { cn } from "@/lib/utils";
 
 function JourneyItem({ entry }: { entry: JourneyEntry }) {

@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Project } from "@/lib/project-data";
+import { Project } from "@/data/project";
 
 interface ProjectDetailProps {
   project: Project;

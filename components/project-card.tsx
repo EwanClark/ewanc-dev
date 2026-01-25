@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Project } from "@/lib/project-data";
+import { Project } from "@/data/project";
 import TechPill from "@/components/tech-pill";
 
 interface ProjectCardProps {

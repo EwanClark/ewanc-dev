@@ -1,7 +1,7 @@
 "use client"
 
 import TechPill from "@/components/tech-pill"
-import { techs } from "@/lib/tech-data"
+import { techs } from "@/data/tech"
 
 export default function TechStack() {
   return (

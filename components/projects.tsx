@@ -1,7 +1,7 @@
 "use client";
 
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { projects } from "@/lib/project-data";
+import { projects } from "@/data/project";
 import { ProjectCard } from "@/components/project-card";
 import { ProjectDetail } from "@/components/project-detail";
 
