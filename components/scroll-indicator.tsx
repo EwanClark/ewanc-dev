@@ -7,7 +7,13 @@ const scrollToSection = (section: string) => {
   if (el) el.scrollIntoView({ behavior: "smooth" });
 };
 
-export default function ScrollIndicator({ section }: { section: string }) {
+export default function ScrollIndicator({ 
+  sectionId, 
+  sectionName 
+}: { 
+  sectionId: string;
+  sectionName: string;
+}) {
   return (
     <>
       <style>{`
@@ -31,12 +37,12 @@ export default function ScrollIndicator({ section }: { section: string }) {
         style={{ animationDelay: "400ms" }}
       >
       <button
-        onClick={() => scrollToSection(section)}
+        onClick={() => scrollToSection(sectionId)}
         className="group flex flex-col items-center gap-2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
-        aria-label={`Scroll to ${section}`}
+        aria-label={`Scroll to ${sectionName}`}
       >
         <span className="text-xs uppercase tracking-[0.2em] font-medium">
-          {section}
+          {sectionName}
         </span>
         <ChevronDown className="w-5 h-5 animate-bounce" />
       </button>
