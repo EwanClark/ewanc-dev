@@ -4,6 +4,7 @@ import ScrollIndicator from "@/components/scroll-indicator";
 import Projects from "@/components/projects";
 import TechStack from "@/components/tech-stack";
 import Journey from "@/components/journey";
+import About from "@/components/about";
 
 export default function Home() {
   return (
@@ -17,6 +18,8 @@ export default function Home() {
       <TechStack />
       <ScrollIndicator section="commits" />
       <CommitGraph />
+      <ScrollIndicator section="about" />
+      <About />
     </main>
   );
 }
