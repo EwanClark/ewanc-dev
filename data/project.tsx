@@ -1,4 +1,3 @@
-
 import { SiTypescript, SiNextdotjs } from "react-icons/si"
 export interface ProjectSkill {
   label: string;
