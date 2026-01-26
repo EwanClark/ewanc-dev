@@ -22,12 +22,13 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
       onClick={onClick}
     >
       <CardHeader className="pb-4">
-        <div className="relative w-full h-81 rounded-lg overflow-hidden mb-4">
+        <div className="relative w-full aspect-video rounded-lg overflow-hidden mb-4 bg-secondary/20">
           <Image
             src={project.image}
             fill
             alt={project.title}
             className="object-cover transition-all duration-200 hover:brightness-110"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
         <div className="flex items-center justify-between gap-3">

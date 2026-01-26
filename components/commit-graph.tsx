@@ -137,14 +137,16 @@ export default function CommitGraph() {
   function handleMouseEnter(e: React.MouseEvent, day: ContributionDay, dayIndex: number) {
     const rect = e.currentTarget.getBoundingClientRect()
     const containerRect = containerRef.current?.getBoundingClientRect()
+    const scrollLeft = containerRef.current?.scrollLeft ?? 0
+    const scrollTop = containerRef.current?.scrollTop ?? 0
     
     if (containerRect) {
       // Show tooltip below for top 2 rows (dayIndex 0 and 1)
       const showBelow = dayIndex < 2
       setTooltip({
         visible: true,
-        x: rect.left - containerRect.left + rect.width / 2,
-        y: rect.top - containerRect.top,
+        x: rect.left - containerRect.left + rect.width / 2 + scrollLeft,
+        y: rect.top - containerRect.top + scrollTop,
         date: day.date,
         count: day.contributionCount,
         showBelow,
@@ -267,14 +269,14 @@ export default function CommitGraph() {
         {/* Graph container */}
         <div
           ref={containerRef}
-          className="relative overflow-x-auto flex justify-center"
+          className="commit-graph-scroll relative flex w-full overflow-x-auto justify-start"
         >
           {error ? (
             <div className="flex items-center justify-center h-40 text-muted-foreground">
               {error}
             </div>
           ) : (
-            <div className="inline-block">
+            <div className="inline-block min-w-max px-2 mx-auto">
               {/* Month labels row */}
               <div 
                 className="flex text-xs text-muted-foreground mb-2"

@@ -93,12 +93,13 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
               </div>
             ))}
           </div>
-          <div className="relative w-full h-64 rounded-lg overflow-hidden">
+          <div className="relative w-full aspect-video sm:aspect-16/10 rounded-lg overflow-hidden bg-secondary/20">
             <Image
               src={project.image}
               fill
               alt={project.title}
-              className="object-cover"
+              className="object-cover rounded-lg"
+              sizes="(max-width: 768px) 100vw, 500px"
             />
           </div>
         </DialogHeader>

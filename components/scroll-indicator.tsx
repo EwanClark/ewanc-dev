@@ -33,7 +33,7 @@ export default function ScrollIndicator({
         }
       `}</style>
       <div
-        className="flex justify-center my-10 animate-fade-in-up"
+        className="flex justify-center my-6 sm:my-10 animate-fade-in-up"
         style={{ animationDelay: "400ms" }}
       >
       <button

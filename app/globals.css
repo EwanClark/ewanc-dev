@@ -64,6 +64,35 @@ body {
   color: var(--color-foreground);
 }
 
+/* Commit graph scrollbar styling */
+.commit-graph-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(0 0% 60% / 0.6) transparent;
+}
+
+.dark .commit-graph-scroll {
+  scrollbar-color: hsl(0 0% 80% / 0.35) transparent;
+}
+
+.commit-graph-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.commit-graph-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.commit-graph-scroll::-webkit-scrollbar-thumb {
+  background-color: hsl(0 0% 60% / 0.6);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.dark .commit-graph-scroll::-webkit-scrollbar-thumb {
+  background-color: hsl(0 0% 80% / 0.35);
+}
+
 /* Blob animation for hero backgrounds */
 @keyframes blob {
   0% {
