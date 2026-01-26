@@ -10,12 +10,12 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       <Hero />
-      <ScrollIndicator sectionId="journey" sectionName="journey" />
-      <Journey />
       <ScrollIndicator sectionId="projects" sectionName="projects" />
       <Projects />
       <ScrollIndicator sectionId="tech-stack" sectionName="tech stack" />
       <TechStack />
+      <ScrollIndicator sectionId="journey" sectionName="journey" />
+      <Journey />
       <ScrollIndicator sectionId="commits" sectionName="commits" />
       <CommitGraph />
       <ScrollIndicator sectionId="about" sectionName="about me" />
