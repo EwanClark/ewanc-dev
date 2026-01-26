@@ -113,8 +113,8 @@ export default function Hero() {
                 {skills.map((skill, i) => (
                   <div
                     key={skill.name}
-                    className="group relative"
-                    style={{ animationDelay: `${i * 50}ms` }}
+                    className="group relative animate-fade-in-up"
+                    style={{ animationDelay: `${500 + i * 100}ms` }}
                   >
                     <TechPill label={skill.name} icon={skill.icon} colorClass={skill.color} />
                   </div>
