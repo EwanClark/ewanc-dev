@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
-import { FaNodeJs, FaPython, FaGithub, FaMapMarkerAlt } from "react-icons/fa"
+import { FaNodeJs, FaPython, FaGithub, FaMapMarkerAlt, FaRegEnvelope } from "react-icons/fa"
+import { FiMail } from "react-icons/fi";
 import { SiTypescript, SiNextdotjs } from "react-icons/si"
 import { getAge } from "@/lib/age"
 import { Button } from "@/components/ui/button"
@@ -71,9 +72,15 @@ export default function Hero() {
                   <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
                     Ewan Clark
                   </h1>
-                  {/* Controls - Theme Toggle & GitHub */}
-                  <div className="flex items-end gap-1.5 md:gap-2 shrink-0 md:ml-40">
+                  {/* Controls - Theme Toggle & Email & GitHub */}
+                  <div className="flex items-end gap-1.5 md:gap-2 shrink-0 md:ml-30">
                     <ThemeToggle />
+
+                    <Link href="mailto:ewanclark4312@gmail.com">
+                      <Button variant="ghost" size="icon" className="h-9 w-9 transition-all duration-200 hover:scale-105">
+                        <FiMail style={{ width: 20, height: 20 }} />
+                      </Button>
+                    </Link>
 
                     <Link href="https://github.com/ewanclark/" target="_blank" rel="noopener noreferrer">
                       <Button variant="ghost" size="icon" className="h-9 w-9 transition-all duration-200 hover:scale-105">
