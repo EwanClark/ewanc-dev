@@ -15,7 +15,24 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Ewan Clark - Portfolio",
-  description: "Ewan Clark's developer portfolio website.",
+  description: "Full-Stack Developer based in London, UK. Specializing in backend systems. Explore my projects, tech stack, and development journey.",
+  keywords: ["Ewan Clark", "Ewan", "Developer", "Full-Stack Developer", "Backend Developer", "Portfolio", "London", "UK"],
+  authors: [{ name: "Ewan Clark" }],
+  creator: "Ewan Clark",
+  openGraph: {
+    title: "Ewan Clark - Portfolio",
+    description: "Full-Stack Developer based in London, UK. Specializing in backend systems. Explore my projects, tech stack, and development journey.",
+    url: "https://ewanc.dev",
+    siteName: "Ewan Clark Developer Portfolio",
+    locale: "en_GB",
+    type: "website",
+    images: [
+      {
+        url: "/profile-picture.png",
+        alt: "Ewan Clark",
+      },
+    ],
+  }
 };
 
 export default function RootLayout({
