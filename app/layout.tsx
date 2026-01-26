@@ -14,6 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ewanc.dev"),
   title: "Ewan Clark - Portfolio",
   description: "Full-Stack Developer based in London, UK. Specializing in backend systems. Explore my projects, tech stack, and development journey.",
   keywords: ["Ewan Clark", "Ewan", "Developer", "Full-Stack Developer", "Backend Developer", "Portfolio", "London", "UK"],
