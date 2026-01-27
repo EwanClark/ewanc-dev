@@ -62,14 +62,16 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
             </Button>
           </Link>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9"
-            onClick={() => window.open(project.live, "_blank")}
-          >
-            <ExternalLink className="h-4 w-4" />
-          </Button>
+          {project.live && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9"
+              onClick={() => window.open(project.live, "_blank")}
+            >
+              <ExternalLink className="h-4 w-4" />
+            </Button>
+          )}
         </div>
         <DialogHeader className="text-left">
           <DialogTitle className="text-2xl font-extrabold text-primary tracking-tight pr-20">

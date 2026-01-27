@@ -1,3 +1,5 @@
+import { getAge } from "@/lib/age";
+
 export interface AboutSection {
   id: string;
   title: string;
@@ -9,31 +11,25 @@ export const aboutSections: AboutSection[] = [
   {
     id: "tools",
     title: "Tools",
-    quick: "I use Cursor and GitHub Copilot. They speed things up, but I review everything before it goes in.",
-    detailed: "I use AI tools daily—mainly Cursor for navigating codebases and Copilot for routine tasks. They're helpful, but I don't trust them blindly. I always review suggestions, test them, and understand what they're doing. Sometimes they're wrong, sometimes they're overcomplicated. The goal is faster iteration, not replacing thinking."
+    quick: "I use Cursor + Codex with Arch Linux + Hyprland to improve my productivity while keeping it minimalistic.",
+    detailed: "I use Cursor and Codex for coding assistance, Arch Linux for its minimalism, and Hyprland for its customizability. I've tailored my workflow around these tools for maximum efficiency."
   },
   {
     id: "approach",
-    title: "How I Work",
-    quick: "I write code that's easy to understand and change. Simple over clever.",
-    detailed: "I'd rather write boring code that works than clever code that breaks. I think about who's going to read this in six months—probably me, and I'll have forgotten what I was thinking. I document decisions as I make them, not after. I test things to make sure they work, not because I'm supposed to. Sometimes I overthink things, sometimes I underthink them. I'm working on finding the balance."
+    title: "My Approach",
+    quick: "DRY (Don't Repeat Yourself) keeps code maintainable. With AI making code less valuable, we need to be more experimental to find the best approach.",
+    detailed: "DRY (Don't Repeat Yourself) is one of the most important coding principles, especially when using AI, making code more readable and maintainable. Since AI is making the actual code less valuable, rather than sticking with one implementation, we can experiment with multiple approaches to find the best result."
   },
   {
-    id: "collaboration",
-    title: "Working With Me",
-    quick: "I ask questions when I'm stuck. I prefer async communication. I'll tell you if something doesn't make sense.",
-    detailed: "If I'm blocked, I'll ask. If something seems off, I'll say so. I prefer async communication—Slack messages, PR comments, that kind of thing. I'm not great at small talk, but I'm good at explaining technical things. I appreciate when people are direct with me. Code reviews are about making the code better, not about being right. If I'm wrong about something, tell me."
+    id: "background",
+    title: "Background",
+    quick: `I've always been interested in technology, which led me to coding and learning by building. I'm entirely self-taught at ${getAge()} years old.`,
+    detailed: `I've been interested in computers and technology since I was 7. I started coding at 11 with Python and learning to think like a developer. A year later, I began web development with HTML, CSS, and JavaScript, learning by building. I moved on to more complex frameworks like Next.js and Tailwind CSS. I'm entirely self-taught at ${getAge()} years old and always eager to learn more. I'd love to hear about any opportunities.`
   },
   {
     id: "interests",
     title: "What I'm Into",
-    quick: "Backend systems, databases, and how tools shape how we work.",
-    detailed: "I like backend stuff—APIs, databases, making things fast and reliable. I'm interested in how development tools change how we write code. I build side projects to learn new things. I read a lot of code. I don't have a CS degree, so I learn by doing and reading documentation."
-  },
-  {
-    id: "values",
-    title: "What Matters",
-    quick: "Shipping things that work. Learning. Not working weekends.",
-    detailed: "I want to build things that actually work and that people use. I'd rather ship something good enough than perfect something that never ships. I'm always learning—there's too much I don't know. I work hard during work hours, but I don't work weekends unless something's actually on fire. Burnout helps nobody."
+    quick: "I'm into AI, Linux and customizing my desktop environment to improve my workflow.",
+    detailed: "I'm interested in complex backend systems, AI, Linux, and customization. I love customizing my Linux setup to make it look stunning while being efficient and minimalistic. You can find my dotfiles on GitHub!"
   }
 ];

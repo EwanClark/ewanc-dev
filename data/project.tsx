@@ -1,4 +1,6 @@
-import { SiTypescript, SiNextdotjs } from "react-icons/si"
+import { SiRust, SiNextdotjs, SiTailwindcss, SiVercel, SiGnubash, SiLinux } from "react-icons/si"
+import { IoLogoElectron } from "react-icons/io5";
+
 export interface ProjectSkill {
   label: string;
   color: string;
@@ -13,60 +15,101 @@ export interface Project {
   skills: ProjectSkill[];
   features: string[];
   github: string;
-  live: string;
+  live?: string;
 }
 
 export const projects: Project[] = [
   {
-    title: "Example Project",
-    image: "/placeholder.png",
-    description: "A sample project showcasing modern web development.",
+    title: "Line Counter",
+    image: "/projects/linecounter.png",
+    description: "A GUI, CLI and website to count lines, words, and characters of either files or folders.",
     skills: [
       {
-        label: "TypeScript",
+        label: "Electron",
         color: "text-blue-400",
-        icon: SiTypescript,
+        icon: IoLogoElectron,
         description: "JavaScript with type safety.",
+      },
+      {
+        label: "Rust",
+        color: "text-orange-500",
+        icon: SiRust,
+        description: "React Framework",
       },
       {
         label: "Next.js",
         color: "text-foreground",
         icon: SiNextdotjs,
         description: "React Framework",
-      },
+      }
     ],
     features: [
-      "Modern UI/UX design",
-      "Responsive layout",
-      "Fast performance",
+      "GUI application in Electron",
+      "CLI tool in Rust",
+      "Web application in Next.js",
+      "Counts lines, words, and characters",
+      "Files, Folders or GitHub repositories",
     ],
-    github: "https://github.com/example/project",
-    live: "https://example.com",
+    github: "https://github.com/ewanclark/linecounter",
   },  
   {
-    title: "Another Project",
-    image: "/placeholder.png",
-    description: "Another example showcasing different technologies.",
+    title: "Portfolio",
+    image: "/projects/portfolio.png",
+    description: "My personal portfolio website built to showcase my projects and skills.",
     skills: [
-      {
-        label: "TypeScript",
-        color: "text-blue-400",
-        icon: SiTypescript,
-        description: "JavaScript with type safety.",
-      },
       {
         label: "Next.js",
         color: "text-foreground",
         icon: SiNextdotjs,
         description: "React Framework",
       },
+      {
+        label: "Tailwind CSS",
+        color: "text-blue-400",
+        icon: SiTailwindcss,
+        description: "CSS Framework",
+      },
+      {
+        label: "Vercel",
+        color: "text-foreground",
+        icon: SiVercel,
+        description: "Deployment",
+      }
     ],
     features: [
-      "API integration",
-      "Database management",
-      "Authentication system",
+      "Smooth animations",
+      "Dark/Light mode",
+      "Quick to get information",
+      "Minimalistic design",
     ],
-    github: "https://github.com/example/another-project",
-    live: "https://example2.com",
+    github: "https://github.com/ewanclark/ewanc-dev",
+    live: "https://ewanc.dev",
+  },
+  {
+    title: "Arch Install Script",
+    image: "/projects/archinstall.png",
+    description: "A script to quickly install Arch Linux with custom setup options for advanced features.",
+    skills: [
+      {
+        label: "Bash",
+        color: "text-foreground",
+        icon: SiGnubash,
+        description: "Shell Scripting",
+      },
+      {
+        label: "Linux",
+        color: "text-foreground",
+        icon: SiLinux,
+        description: "Operating System",
+      },
+    ],
+    features: [
+      "Customizable setup options",
+      "Secure boot setup",
+      "Nvidia GPU setup",
+      "Interactive partitioning",
+      "Automatic hardware detection",
+    ],
+    github: "https://github.com/ewanclark/archinstall",
   }
 ];
