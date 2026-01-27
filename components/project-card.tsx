@@ -27,8 +27,9 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
             src={project.image}
             fill
             alt={project.title}
-            className="object-cover transition-all duration-200 hover:brightness-110"
+            className="object-contain transition-all duration-200 hover:brightness-110"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            quality={100}
           />
         </div>
         <div className="flex items-center justify-between gap-3">
