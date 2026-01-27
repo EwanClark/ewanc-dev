@@ -1,81 +1,60 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { AuthProvider } from "@/lib/auth-context"
-import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
-import { Toaster } from "@/components/ui/toaster"
-import { generateMetadata, generatePersonStructuredData, generateWebsiteStructuredData } from "@/lib/seo"
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
 
-// Optimize font loading
-const inter = Inter({ 
+const geistSans = Geist({
+  variable: "--font-geist-sans",
   subsets: ["latin"],
-  display: 'swap',
-  preload: true,
-  fallback: ['system-ui', 'arial'],
-})
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
-  ...generateMetadata(),
-  icons: {
-    icon: '/favicon.ico',
-  },
-  other: {
-    'theme-color': '#000000',
+  metadataBase: new URL("https://ewanc.dev"),
+  title: "Ewan Clark - Portfolio",
+  description: "Full-Stack Developer based in London, UK. Specializing in backend systems. Explore my projects, tech stack, and development journey.",
+  keywords: ["Ewan Clark", "Ewan", "Developer", "Full-Stack Developer", "Backend Developer", "Portfolio", "London", "UK"],
+  authors: [{ name: "Ewan Clark" }],
+  creator: "Ewan Clark",
+  openGraph: {
+    title: "Ewan Clark - Portfolio",
+    description: "Full-Stack Developer based in London, UK. Specializing in backend systems. Explore my projects, tech stack, and development journey.",
+    url: "https://ewanc.dev",
+    siteName: "Ewan Clark Developer Portfolio",
+    locale: "en_GB",
+    type: "website",
+    images: [
+      {
+        url: "/profile-picture.png",
+        alt: "Ewan Clark",
+      },
+    ],
   }
-}
+};
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
-  const personSchema = generatePersonStructuredData()
-  const websiteSchema = generateWebsiteStructuredData()
-
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        {/* Preload critical resources */}
-        <link rel="preload" href="/profile-picture.jpg" as="image" />
-        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
-        <link rel="dns-prefetch" href="//ewanc.dev" />
-        <link rel="dns-prefetch" href="//vitals.vercel-analytics.com" />
-        
-        {/* SEO and performance meta tags */}
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        
-        {/* Canonical URL will be set by individual pages */}
-        
-        {/* Structured Data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(personSchema),
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(websiteSchema),
-          }}
-        />
-      </head>
-      <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true} disableTransitionOnChange>
-          <AuthProvider>{children}</AuthProvider>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
         </ThemeProvider>
-        <Toaster />
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
-  )
+  );
 }

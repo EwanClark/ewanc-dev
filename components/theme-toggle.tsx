@@ -1,55 +1,83 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { FaMoon } from "react-icons/fa"
-import { IoSunny } from "react-icons/io5";
-import { useTheme } from "next-themes"
+import { Moon, Sun } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
+import { useTheme } from 'next-themes'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
-import { Button } from "@/components/ui/button"
-
-export function ThemeToggle() {
+const ThemeToggle = () => {
   const { setTheme, resolvedTheme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
+  const [mounted, setMounted] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false)
 
-  React.useEffect(() => {
+  useEffect(() => {
     setMounted(true)
   }, [])
 
-  const toggleTheme = () => {
-    setTheme(resolvedTheme === "light" ? "dark" : "light")
-  }
-
-  const getIcon = () => {
-    if (!mounted) {
-      return <IoSunny className="h-4 w-4" />
-    }
+  const handleThemeToggle = useCallback(() => {
+    const newTheme = resolvedTheme === 'dark' ? 'light' : 'dark'
     
-    return resolvedTheme === "light" 
-      ? <IoSunny className="h-4 w-4" />
-      : <FaMoon className="h-4 w-4" />
-  }
-
-  const getTooltipText = () => {
-    if (!mounted) {
-      return "Toggle theme"
-    }
+    // Trigger icon animation
+    setIsAnimating(true)
     
-    // Use resolvedTheme for tooltip text as well
-    return resolvedTheme === "light" 
-      ? "Switch to dark mode" 
-      : "Switch to light mode"
+    // First spin out the current icon fast, then spin in the new icon slowly
+    setTimeout(() => {
+      setTheme(newTheme)
+    }, 400) // Change theme when spin-out completes
+    
+    setTimeout(() => setIsAnimating(false), 800) // Total animation time (0.4s spin-out + 0.4s spin-in)
+    
+  }, [resolvedTheme, setTheme])
+
+  if (!mounted) {
+    return null
   }
 
   return (
-    <Button 
-      variant="ghost" 
-      size="icon" 
-      className="h-9 w-9 transition-all duration-200 hover:scale-105" 
-      onClick={toggleTheme}
-      title={getTooltipText()}
-    >
-      {getIcon()}
-      <span className="sr-only">{getTooltipText()}</span>
-    </Button>
+    <>
+      <style>{`
+        @keyframes spin-out-fast {
+          0% { transform: rotate(0deg); opacity: 1; }
+          100% { transform: rotate(720deg); opacity: 0; }
+        }
+        @keyframes spin-in-slow {
+          0% { transform: rotate(-180deg); opacity: 0; }
+          100% { transform: rotate(0deg); opacity: 1; }
+        }
+      `}</style>
+      
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={handleThemeToggle}
+        className="h-9 w-9 group relative overflow-hidden"
+        aria-label={`Switch to ${resolvedTheme === 'light' ? 'dark' : 'light'} theme`}
+      >
+        <div 
+          className={cn(
+            "flex items-center justify-center",
+            isAnimating && "animate-[spin-out-fast_0.4s_ease-in-out_forwards,spin-in-slow_0.4s_0.4s_ease-out_forwards]"
+          )}
+        >
+          {resolvedTheme === 'light' ? (
+            <Sun className="h-5! w-5! transition-all duration-200 group-hover:rotate-6 group-hover:scale-105" />
+          ) : (
+            <Moon className="h-5! w-5! transition-all duration-200 group-hover:-rotate-6 group-hover:scale-105" />
+          )}
+        </div>
+        
+        {/* Subtle ripple effect on click */}
+        <span 
+          className={`absolute inset-0 rounded-md bg-foreground/5 ${
+            isAnimating 
+              ? 'animate-[ping_0.4s_cubic-bezier(0.4,0,0.2,1)]' 
+              : 'opacity-0'
+          }`}
+        />
+      </Button>
+    </>
   )
-} 
+}
+
+export default ThemeToggle

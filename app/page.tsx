@@ -1,17 +1,25 @@
-import { HeroSection } from "@/components/hero-section"
-import { TechStack } from "@/components/tech-stack"
-import { ProjectsGrid } from "@/components/projects-grid"
-// import { ExperienceTimeline } from "@/components/experience-timeline" // Uncomment when ready to show experience
+import Hero from "@/components/hero";
+import CommitGraph from "@/components/commit-graph";
+import ScrollIndicator from "@/components/scroll-indicator";
+import Projects from "@/components/projects";
+import TechStack from "@/components/tech-stack";
+import Journey from "@/components/journey";
+import About from "@/components/about";
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
-      <HeroSection />
-      <div className="container py-12 space-y-20">
-        {/* <ExperienceTimeline /> */}
-        <TechStack />
-        <ProjectsGrid />
-      </div>
-    </div>
-  )
+    <main className="min-h-screen">
+      <Hero />
+      <ScrollIndicator sectionId="projects" sectionName="projects" />
+      <Projects />
+      <ScrollIndicator sectionId="tech-stack" sectionName="tech stack" />
+      <TechStack />
+      <ScrollIndicator sectionId="journey" sectionName="journey" />
+      <Journey />
+      <ScrollIndicator sectionId="commits" sectionName="commits" />
+      <CommitGraph />
+      <ScrollIndicator sectionId="about" sectionName="about me" />
+      <About />
+    </main>
+  );
 }

@@ -1,20 +1,18 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { FaArrowLeft } from "react-icons/fa"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Home } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">404</h1>
-        <p className="text-muted-foreground mb-8">The page you&apos;re looking for doesn&apos;t exist.</p>
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <h1 className="text-2xl font-semibold mb-4">404</h1>
+      <h2 className="text-xl mb-4">This page could not be found.</h2>
+      <Button asChild className="gap-2">
         <Link href="/">
-          <Button className="gap-2">
-            <FaArrowLeft className="h-4 w-4" />
-            Back to Home
-          </Button>
+          <Home className="w-4 h-4" />
+          Home
         </Link>
-      </div>
+      </Button>
     </div>
-  )
+  );
 }
