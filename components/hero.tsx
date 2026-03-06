@@ -3,7 +3,7 @@ import Link from "next/link"
 import { FaNodeJs, FaPython, FaGithub, FaMapMarkerAlt, FaRegEnvelope } from "react-icons/fa"
 import { FiMail } from "react-icons/fi";
 import { SiTypescript, SiNextdotjs } from "react-icons/si"
-import { getAge } from "@/lib/age"
+import Age from "@/components/age"
 import { Button } from "@/components/ui/button"
 import ThemeToggle from "@/components/theme-toggle"
 import TechPill from "@/components/tech-pill"
@@ -108,7 +108,7 @@ export default function Hero() {
               className="text-foreground/80 text-lg leading-relaxed max-w-lg animate-fade-in-up"
               style={{ animationDelay: '600ms' }}
             > 
-              {getAge()} Year Old Full-Stack Developer based in the UK, focusing on backend systems.
+              <Age /> Year Old Full-Stack Developer based in the UK, focusing on backend systems.
             </p>
 
             {/* Skills - compact icon row */}

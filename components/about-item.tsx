@@ -4,6 +4,18 @@ import { useState, useEffect } from "react";
 import { AboutSection } from "@/data/about";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
+import Age from "@/components/age";
+
+function renderWithAge(text: string) {
+  const parts = text.split("{{age}}");
+  if (parts.length === 1) return text;
+  return parts.map((part, i) => (
+    <span key={i}>
+      {part}
+      {i < parts.length - 1 && <Age />}
+    </span>
+  ));
+}
 
 export default function AboutSectionItem({ section }: { section: AboutSection }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -63,7 +75,7 @@ export default function AboutSectionItem({ section }: { section: AboutSection })
               style={{ transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)" }}
             >
               <p className="text-sm text-foreground/70 leading-relaxed mt-2">
-                {section.quick}
+                {renderWithAge(section.quick)}
               </p>
             </div>
             <div
@@ -76,7 +88,7 @@ export default function AboutSectionItem({ section }: { section: AboutSection })
               style={{ transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)" }}
             >
               <p className="text-sm text-foreground/70 leading-relaxed mt-2">
-                {section.detailed}
+                {renderWithAge(section.detailed)}
               </p>
             </div>
           </div>

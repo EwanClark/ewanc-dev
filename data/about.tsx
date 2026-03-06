@@ -1,5 +1,3 @@
-import { getAge } from "@/lib/age";
-
 export interface AboutSection {
   id: string;
   title: string;
@@ -7,6 +5,7 @@ export interface AboutSection {
   detailed: string;
 }
 
+/** Use {{age}} in strings for dynamic age that updates without rebuild */
 export const aboutSections: AboutSection[] = [
   {
     id: "tools",
@@ -23,8 +22,8 @@ export const aboutSections: AboutSection[] = [
   {
     id: "background",
     title: "Background",
-    quick: `I've always been interested in technology, which led me to coding and learning by building. I'm entirely self-taught at ${getAge()} years old.`,
-    detailed: `I've been interested in computers and technology since I was 7. I started coding at 11 with Python and learning to think like a developer. A year later, I began web development with HTML, CSS, and JavaScript, learning by building. I moved on to more complex frameworks like Next.js and Tailwind CSS. I'm entirely self-taught at ${getAge()} years old and always eager to learn more. I'd love to hear about any opportunities.`
+    quick: "I've always been interested in technology, which led me to coding and learning by building. I'm entirely self-taught at {{age}} years old.",
+    detailed: "I've been interested in computers and technology since I was 7. I started coding at 11 with Python and learning to think like a developer. A year later, I began web development with HTML, CSS, and JavaScript, learning by building. I moved on to more complex frameworks like Next.js and Tailwind CSS. I'm entirely self-taught at {{age}} years old and always eager to learn more. I'd love to hear about any opportunities."
   },
   {
     id: "interests",
