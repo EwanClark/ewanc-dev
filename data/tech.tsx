@@ -7,10 +7,10 @@ import {
   SiNodedotjs,
   SiGit,
   SiVercel,
-  SiAmazonwebservices,
 } from "react-icons/si"
 import { BiLogoPostgresql } from "react-icons/bi"
 import { siCursor } from "simple-icons"
+import { FaAws } from "react-icons/fa"
 
 const CursorIcon = ({ className }: { className?: string }) => (
   <svg
@@ -39,6 +39,6 @@ export const techs: Tech[] = [
   { name: "Python", icon: SiPython, color: "text-yellow-500" },
   { name: "Git", icon: SiGit, color: "text-orange-500" },
   { name: "Vercel", icon: SiVercel },
-  { name: "AWS", icon: SiAmazonwebservices, color: "text-orange-400" },
+  { name: "AWS", icon: FaAws, color: "text-orange-400" },
   { name: "Cursor", icon: CursorIcon, color: "text-foreground" },
 ]
